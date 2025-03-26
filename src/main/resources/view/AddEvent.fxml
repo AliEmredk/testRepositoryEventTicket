@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label layoutX="233.0" layoutY="32.0" text="Add an Event">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font></Label>
+            <Button fx:id="btnAddEvent" layoutX="183.0" layoutY="413.0" mnemonicParsing="false" text="Add" />
+            <Button fx:id="btnCancelEvent" cancelButton="true" layoutX="329.0" layoutY="413.0" mnemonicParsing="false" text="Cancel" />
+            <Label layoutX="79.0" layoutY="110.0" text="Name:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="82.0" layoutY="153.0" text="Start Date &amp; Time:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="301.0" layoutY="110.0" text="Location:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="79.0" layoutY="213.0" text="Notes:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="txtEventNotes" layoutX="127.0" layoutY="213.0" prefHeight="175.0" prefWidth="320.0" promptText="How to get to event, etc..." />
+            <TextField fx:id="txtEventName" layoutX="127.0" layoutY="107.0" promptText="Dog show" />
+            <TextField fx:id="txtEventStart" layoutX="201.0" layoutY="150.0" prefHeight="25.0" prefWidth="74.0" promptText="3/28 12:00" />
+            <TextField fx:id="txtEventLocation" layoutX="380.0" layoutY="107.0" promptText="Basement" />
+            <Label layoutX="304.0" layoutY="152.0" text="End Date &amp; Time:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEventEnd" layoutX="418.0" layoutY="150.0" prefHeight="25.0" prefWidth="74.0" promptText="3/28 21:00" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
