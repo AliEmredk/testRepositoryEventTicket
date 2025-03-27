@@ -14,7 +14,7 @@ public class EventDAO {
         String sql = "INSERT INTO Event (Location, Date, StartTime, EndTime, Note, Price, Location_Guidance, EventName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, event.getLocation());
             stmt.setString(2, event.getDate());
@@ -27,6 +27,44 @@ public class EventDAO {
 
             stmt.executeUpdate();
             System.out.println("Event added successfully");
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    event.setEventId(generatedId);  // Set the ID in the object
+                    System.out.println("Generated EventId: " + generatedId);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateEvent(int eventId, Event updatedEvent) {
+        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, updatedEvent.getLocation());
+            stmt.setString(2, updatedEvent.getDate());
+            stmt.setString(3, updatedEvent.getStartTime());
+            stmt.setString(4, updatedEvent.getEndTime());
+            stmt.setString(5, updatedEvent.getNote());
+            stmt.setInt(6, updatedEvent.getPrice());
+            stmt.setString(7, updatedEvent.getLocation_Guidance());
+            stmt.setString(8, updatedEvent.getEventName());
+            stmt.setInt(9, eventId);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                logChange("Event", "UPDATE", eventId, null);
+                System.out.println("Event updated successfully");
+            } else {
+                System.out.println("No event found with ID: " + eventId);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,18 +98,19 @@ public class EventDAO {
         String sql = "SELECT * FROM Event";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Event event = new Event(
-                rs.getString("Location"),
-                rs.getString("Date"),
-                rs.getString("StartTime"),
-                rs.getString("EndTime"),
-                rs.getString("Note"),
-                rs.getInt("Price"),
-                rs.getString("Location_Guidance"),
-                rs.getString("EventName")
+                        rs.getInt("EventId"),
+                        rs.getString("Location"),
+                        rs.getString("Date"),
+                        rs.getString("StartTime"),
+                        rs.getString("EndTime"),
+                        rs.getString("Note"),
+                        rs.getInt("Price"),
+                        rs.getString("Location_Guidance"),
+                        rs.getString("EventName")
                 );
                 eventList.add(event);
             }
@@ -103,7 +142,7 @@ public class EventDAO {
         String sql = "INSERT INTO EventUser (EventId, UserId) VALUES (?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -127,7 +166,7 @@ public class EventDAO {
         String sql = "DELETE FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -151,7 +190,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM Event WHERE EventId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             return stmt.executeQuery().next(); //If the rows exits, returns true
@@ -166,7 +205,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM LoginInfo WHERE UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, userId);
             return stmt.executeQuery().next(); //returns if the row exists
@@ -181,7 +220,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1,eventId);
             stmt.setInt(2,userId);
@@ -189,7 +228,7 @@ public class EventDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-    }
+        }
     }
     //--------------------------------------------------------------------------------------------------------
     // DON'T TOUCH THESE -_-
@@ -201,7 +240,7 @@ public class EventDAO {
         String sql = "INSERT INTO ChangeLog (TableName, ActionType, EventId, UserId) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, tableName);
             stmt.setString(2, actionType);
@@ -228,8 +267,8 @@ public class EventDAO {
         String sql = "SELECT * FROM ChangeLog ORDER BY ChangeTimestamp DESC";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             System.out.println("=== Change History ===");
             while (rs.next()) {

@@ -22,6 +22,8 @@ public class EventMainController {
     private ListView eventsListView;
     @FXML
     private Button logoutButtonEC;
+    @FXML
+    private Button btnEventCAdd;
 
     private final EventManagement eventManagement = new EventManagement();
 

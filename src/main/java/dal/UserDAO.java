@@ -35,15 +35,15 @@ public class UserDAO {
         String sql = "SELECT * FROM LoginInfo WHERE Username = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new User(rs.getString("Username"),
-                                rs.getString("Password"),
-                                rs.getString("Role"));
+                        rs.getString("Password"),
+                        rs.getString("Role"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,12 +70,12 @@ public class UserDAO {
         return userList;
     }
 
-    
+
     public void deleteUser(String username) {
         String sql = "DELETE FROM LoginInfo WHERE Username = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
             stmt.executeUpdate();
@@ -101,7 +101,7 @@ public class UserDAO {
         }   catch (SQLException e) {
             e.printStackTrace();
         }
-            return userList;
+        return userList;
 
     }
 }

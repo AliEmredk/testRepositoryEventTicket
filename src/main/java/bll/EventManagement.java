@@ -9,10 +9,16 @@ public class EventManagement {
 
     private final EventDAO eventDAO = new EventDAO();
 
-    public void createEvent(String location, String date, String startTime, String endTime, String note, int price, String location_Guidance, String eventName) {
+    public void createEvent(String location, String date, String startTime, String endTime, String note, int price, String location_Guidance, String eventName, int eventId) {
 
-        Event event = new Event(location, date, startTime, endTime, note, price, location_Guidance, eventName);
+        Event event = new Event(location, date, startTime, endTime, note, price, location_Guidance, eventName, eventId);
         eventDAO.createEvent(event);
+    }
+
+    public void editEvent(int eventId, String location, String date, String startTime, String endTime, String note, int price, String locationGuidance, String eventName) {
+
+        Event updatedEvent = new Event(location, date, startTime, endTime, note, price, locationGuidance, eventName, eventId);
+        eventDAO.updateEvent(eventId, updatedEvent);
     }
 
     public void deleteEvent(String eventName) {

@@ -11,7 +11,7 @@ public class TestAdminPageApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new  FXMLLoader(getClass().getResource("/view/Admin.fxml"));
+        FXMLLoader loader = new  FXMLLoader(getClass().getResource("/view/AdminMain.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Login Screen");
         primaryStage.setScene(new Scene(root));
