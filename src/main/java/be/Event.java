@@ -1,6 +1,7 @@
 package be;
 
-import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 public class Event {
 
@@ -87,6 +88,7 @@ public class Event {
     public void setLocation_Guidance(String location_Guidance) {
         Location_Guidance = location_Guidance;
     }
+
 
 
 }
