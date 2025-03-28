@@ -39,31 +39,31 @@ import java.io.IOException;
             /**
              * Generates a ticket and updates the UI with the ticket details.
              */
-            @FXML
-            public void generateTicket() {
-                if (ticketManager == null) {
-                    System.out.println("Error: TicketManager not found.");
-                    return;
-                }
-
-                String userId = "Event"; // Static user ID (this could be dynamic if needed)
-                Ticket ticket = ticketManager.generateTicket(userId);
-
-                if (ticket == null) {
-                    System.out.println("Error: Generated ticket is null.");
-                    return;
-                }
-
-                lblTicketId.setText("Ticket ID: " + ticket.getId());
-
-                // Load the barcode image using getBarcodeImageURL()
-                try {
-                    Image barcodeImage = new Image(ticket.getBarcode()); // Updated as per TODO comment
-                    imgBarcode.setImage(barcodeImage);
-                } catch (Exception e) {
-                    System.out.println("Error loading barcode image: " + e.getMessage());
-                }
-            }
+//            @FXML
+//            public void generateTicket() {
+//                if (ticketManager == null) {
+//                    System.out.println("Error: TicketManager not found.");
+//                    return;
+//                }
+//
+//                String userId = "Event"; // Static user ID (this could be dynamic if needed)
+//                Ticket ticket = ticketManager.generateTicket(userId);
+//
+//                if (ticket == null) {
+//                    System.out.println("Error: Generated ticket is null.");
+//                    return;
+//                }
+//
+//                lblTicketId.setText("Ticket ID: " + ticket.getId());
+//
+//                // Load the barcode image using getBarcodeImageURL()
+//                try {
+//                    Image barcodeImage = new Image(ticket.getBarcode()); // Updated as per TODO comment
+//                    imgBarcode.setImage(barcodeImage);
+//                } catch (Exception e) {
+//                    System.out.println("Error loading barcode image: " + e.getMessage());
+//                }
+//            }
 
             /**
              * Displays the ticket window.
