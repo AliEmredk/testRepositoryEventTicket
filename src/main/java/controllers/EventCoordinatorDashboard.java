@@ -20,7 +20,7 @@ public class EventCoordinatorDashboard extends BaseDashboard {
 
         ticketBtn.setOnAction(e -> {
             switchPane(ticketPane);
-            setActiveButton(ticketBtn, userBtn, eventsBtn, ticketBtn, settingsBtn);
+            setActiveButton(ticketBtn, eventsBtn, ticketBtn, settingsBtn);
         });
 
         int insertAfterEventsBtn = sidebar.getChildren().indexOf(eventsBtn) + 1;

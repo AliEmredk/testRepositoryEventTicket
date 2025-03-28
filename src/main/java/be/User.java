@@ -7,6 +7,15 @@ public class User {
     private String Password;
     private String Role;
 
+    // For loading from the database
+    public User(int User_Id, String Username, String Password, String Role) {
+        this.User_Id = User_Id;
+        this.Username = Username;
+        this.Password = Password;
+        this.Role = Role;
+    }
+
+    // For creating new users (before assigning an ID)
     public User(String Username, String Password, String Role) {
         this.Username = Username;
         this.Password = Password;
