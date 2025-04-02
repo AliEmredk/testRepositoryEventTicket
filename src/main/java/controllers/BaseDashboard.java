@@ -1,5 +1,9 @@
 package controllers;
 
+import be.Event;
+import bll.UserSession;
+import dal.LoginDAO;
+import dk.easv.EventsView;
 import dk.easv.SettingsView;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -16,15 +22,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import dal.EventDAO;
 
 import java.io.IOException;
 import java.net.URL;
+import be.User;
 
 public abstract class BaseDashboard {
 
     protected StackPane contentArea;
     protected Pane userPane, eventsPane, settingsPane;
     protected Button userBtn, eventsBtn, settingsBtn;
+
+    private LoginDAO loginDAO = new LoginDAO();
 
     protected abstract void addCustomButtons(VBox sidebar, StackPane contentArea);
 
@@ -53,7 +63,7 @@ public abstract class BaseDashboard {
         contentArea.setStyle("-fx-background-color: white;");
 
         userPane = createContentPane("User Management Content");
-        eventsPane = createContentPane("View Events Content");
+        eventsPane = new EventsView(UserSession.getRole());
         settingsPane = new SettingsView();
 
         contentArea.getChildren().addAll(userPane, eventsPane, settingsPane);
@@ -91,7 +101,6 @@ public abstract class BaseDashboard {
                 signOutBtn
         );
 
-        // ✅ Now that all core buttons are added, call this
         addCustomButtons(sidebar, contentArea);
 
         root.setLeft(sidebar);
@@ -233,6 +242,8 @@ public abstract class BaseDashboard {
 
         signOutBtn.setOnAction(e -> {
             try {
+                UserSession.clearSession();
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginMain.fxml"));
                 Parent loginRoot = loader.load();
 
