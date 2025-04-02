@@ -2,7 +2,6 @@ package dal;
 
 import be.Ticket;
 
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,11 +12,17 @@ import java.util.List;
 public class TicketDAO {
         private final DBAccess dbAccess = new DBAccess();
 
+        private Connection connection;
+
+        public TicketDAO(Connection connection) {
+            this.connection = connection;
+        }
+
     public List<Ticket> getAllTickets() {
         List<Ticket> tickets = new ArrayList<>();
         String sql = "SELECT t.TicketId, t.TicketType, c.CustomerId, c.FirstName, c.LastName, c.Email," +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
-                "b.BarcodeId, b.Barcode_Number " +
+                "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
                 "FROM Ticket t " +
                 "JOIN Customer c ON t.CustomerId = c.CustomerId " +
                 "JOIN Event e ON t.EventId = e.EventId " +
@@ -28,22 +33,27 @@ public class TicketDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                int ticketId = rs.getInt("TicketId");
+                String ticketType = rs.getString("TicketType");
+                int barcodeId = rs.getInt("BarcodeId");
+                byte[] barcodeImage = rs.getBytes("BarcodeImage");
+                String barcodeString = rs.getString("BarcodeString");
+                int eventId = rs.getInt("EventId");
+                String eventName = rs.getString("EventName");
+                String location = rs.getString("Location");
+                String date = rs.getString("Date");
+                String startTime = rs.getString("StartTime");
+                String endTime = rs.getString("EndTime");
+                String eventNote = rs.getString("Note");
+                int customerId = rs.getInt("CustomerId");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String email = rs.getString("Email");
+
                 Ticket ticket = new Ticket(
-                        rs.getInt("TicketId"),
-                        rs.getString("TicketType"),
-                        rs.getInt("BarcodeId"),
-                        rs.getString("Barcode_Number"),
-                        rs.getInt("EventId"),
-                        rs.getString("EventName"),
-                        rs.getString("Location"),
-                        rs.getString("Date"),
-                        rs.getString("StartTime"),
-                        rs.getString("EndTime"),
-                        rs.getString("EventNote"),
-                        rs.getInt("CustomerId"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Email")
+                        ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
+                        eventId, eventName, location, date, startTime, endTime, eventNote,
+                        customerId, firstName, lastName, email
                 );
                 tickets.add(ticket);
             }
@@ -70,4 +80,3 @@ public class TicketDAO {
     }
 
 }
-

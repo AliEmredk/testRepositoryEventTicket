@@ -1,38 +1,62 @@
 package bll;
 
+import be.Barcode;
 import be.Ticket;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+
+import com.google.zxing.WriterException;
+import dal.BarcodeDAO;
 import dal.TicketDAO;
 
 
     public class TicketManager {
-        private TicketDAO ticketDAO; // Corrected
+        private TicketDAO ticketDAO;
+        private BarcodeDAO barcodeDAO;
 
-        public TicketManager(TicketDAO ticketDAO) {
+        public TicketManager(TicketDAO ticketDAO, BarcodeDAO barcodeDAO) {
             this.ticketDAO = ticketDAO;
+            this.barcodeDAO = barcodeDAO;
         }
 
         public List<Ticket> getAllTickets() {
             return ticketDAO.getAllTickets();
         }
 
+        public Ticket generateTicket(int customerId, int eventId, String ticketType) {
+            try {
+                String barcodeString = UUID.randomUUID().toString().substring(0, 12).toUpperCase();
 
+                byte[] barcodeImage = BarCodeGenerator.generateBarcode(barcodeString);
 
+                Barcode barcode = new Barcode(0, barcodeImage, barcodeString);
+                int barcodeId = barcodeDAO.saveBarcode(barcode);
 
-//        public Ticket generateTicket(int eventId, String eventName, String location, String ticketType, int price, int barcodeId) {
-//            String uniqueId = UUID.randomUUID().toString();
-//
-//            String barcode = "";
-//            Ticket ticket = new Ticket(eventId, eventName, location, ticketType, price, barcodeId);
-//            try {
-//                ticketDAO.saveTicket(ticket); //Class
-//            } catch (SQLException e) {
-//                e.printStackTrace(); // Manage errors
-//            }
-//            return ticket;
-//        }
+                if (barcodeId <= 0) {
+                    System.out.println("Failed to save barcode, can't generate ticket");
+                    return null;
+                }
+
+                System.out.println("Barcode " + barcodeId + " generated");
+
+                Ticket ticket = new Ticket();
+                ticket.setBarcodeImage(barcodeImage);
+                ticket.setBarcodeId(barcodeId);
+                ticket.setBarcodeString(barcodeString);
+                ticket.setCustomerId(customerId);
+                ticket.setEventId(eventId);
+                ticket.setTicketType(ticketType);
+
+                ticketDAO.saveTicket(ticket);
+                return ticket;
+            } catch (SQLException | IOException | WriterException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
         public boolean saveTicket(Ticket ticket) {
             return ticketDAO.saveTicket(ticket);

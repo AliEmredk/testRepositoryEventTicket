@@ -1,14 +1,12 @@
 package be;
 
-import java.util.Random;
-import java.util.UUID;
-
 public class Ticket {
 
     private int ticketId;
     private String ticketType;
     private int barcodeId;
-    private String barcodeNumber;
+    private byte[] barcodeImage;
+    private String barcodeString;
     private int eventId;
     private String eventName;
     private String location;
@@ -22,14 +20,15 @@ public class Ticket {
     private String email;
 
 
-    public Ticket(int ticketId, String ticketType, int barcodeId, String barcodeNumber,
+    public Ticket(int ticketId, String ticketType, int barcodeId, byte[] barcodeImage, String barcodeString,
                   int eventId, String eventName, String location, String eventDate,
                   String startTime, String endTime, String eventNote,
                   int customerId, String firstName, String lastName, String email) {
         this.ticketId = ticketId;
         this.ticketType = ticketType;
         this.barcodeId = barcodeId;
-        this.barcodeNumber = barcodeNumber;
+        this.barcodeImage = barcodeImage;
+        this.barcodeString = barcodeString;
         this.eventId = eventId;
         this.eventName = eventName;
         this.location = location;
@@ -41,6 +40,10 @@ public class Ticket {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public Ticket() {
+
     }
 
 //    // One unique Code Bar with Random number
@@ -68,7 +71,8 @@ public class Ticket {
 public int getTicketId() { return ticketId; }
     public String getTicketType() { return ticketType; }
     public int getBarcodeId() { return barcodeId; }
-    public String getBarcodeNumber() { return barcodeNumber; }
+    public byte[] getBarcodeImage() { return barcodeImage; }
+    public String getBarcodeString() { return barcodeString; }
     public int getEventId() { return eventId; }
     public String getEventName() { return eventName; }
     public String getLocation() { return location; }
@@ -86,7 +90,8 @@ public int getTicketId() { return ticketId; }
 public void setTicketId(int ticketId) { this.ticketId = ticketId; }
     public void setTicketType(String ticketType) { this.ticketType = ticketType; }
     public void setBarcodeId(int barcodeId) { this.barcodeId = barcodeId; }
-    public void setBarcodeNumber(String barcodeNumber) { this.barcodeNumber = barcodeNumber; }
+    public void setBarcodeImage(byte[] barcodeImage) { this.barcodeImage = barcodeImage; }
+    public void setBarcodeString(String barcodeString) { this.barcodeString = barcodeString; }
     public void setEventId(int eventId) { this.eventId = eventId; }
     public void setEventName(String eventName) { this.eventName = eventName; }
     public void setLocation(String location) { this.location = location; }
@@ -105,7 +110,7 @@ public void setTicketId(int ticketId) { this.ticketId = ticketId; }
                 "ticketId=" + ticketId +
                 ", ticketType='" + ticketType + '\'' +
                 ", barcodeId=" + barcodeId +
-                ", barcodeNumber='" + barcodeNumber + '\'' +
+                ", barcodeString='" + barcodeString + '\'' +
                 ", eventId=" + eventId +
                 ", eventName='" + eventName + '\'' +
                 ", location='" + location + '\'' +

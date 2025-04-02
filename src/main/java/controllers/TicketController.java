@@ -58,7 +58,7 @@ import java.io.IOException;
 //
 //                // Load the barcode image using getBarcodeImageURL()
 //                try {
-//                    Image barcodeImage = new Image(ticket.getBarcode()); // Updated as per TODO comment
+//                    Image barcodeImage = new Image(ticket.getBarcodeImage()); // Updated as per TODO comment
 //                    imgBarcode.setImage(barcodeImage);
 //                } catch (Exception e) {
 //                    System.out.println("Error loading barcode image: " + e.getMessage());
