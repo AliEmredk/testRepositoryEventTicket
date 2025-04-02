@@ -14,7 +14,7 @@ public class EventDAO {
         String sql = "INSERT INTO Event (Location, Date, StartTime, EndTime, Note, Price, Location_Guidance, EventName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, event.getLocation());
             stmt.setString(2, event.getDate());
