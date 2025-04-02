@@ -13,7 +13,7 @@ public class BarcodeImageTest extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/BImageTest.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/BarcodeImageTest.fxml"));
         Parent root = loader.load();
 
         // Get controller
