@@ -106,4 +106,7 @@ public class Event {
     public void setEventId(int eventId) { this.eventId = eventId; }
 
 
+    public String getLocationGuidance() {
+        return Location_Guidance;
+    }
 }
