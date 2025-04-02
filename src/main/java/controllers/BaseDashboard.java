@@ -44,6 +44,7 @@ public abstract class BaseDashboard {
         logoView.setSmooth(true);
         VBox.setMargin(logoView, new Insets(0, 0, 30, 0));
 
+        userBtn = createSidebarButton("👤", "User Management");
         eventsBtn = createSidebarButton("📅", "View Events");
         settingsBtn = createSidebarButton("🔧", "Settings");
 
@@ -51,22 +52,29 @@ public abstract class BaseDashboard {
         contentArea.setPadding(new Insets(20));
         contentArea.setStyle("-fx-background-color: white;");
 
+        userPane = createContentPane("User Management Content");
         eventsPane = createContentPane("View Events Content");
         settingsPane = new SettingsView();
 
-        contentArea.getChildren().addAll(eventsPane, settingsPane);
+        contentArea.getChildren().addAll(userPane, eventsPane, settingsPane);
 
-        eventsPane.setVisible(true);
+        userPane.setVisible(true);
+        eventsPane.setVisible(false);
         settingsPane.setVisible(false);
+
+        userBtn.setOnAction(e -> {
+            switchPane(userPane);
+            setActiveButton(userBtn, userBtn, eventsBtn, settingsBtn);
+        });
 
         eventsBtn.setOnAction(e -> {
             switchPane(eventsPane);
-            setActiveButton(eventsBtn, eventsBtn, settingsBtn);
+            setActiveButton(eventsBtn, userBtn, eventsBtn, settingsBtn);
         });
 
         settingsBtn.setOnAction(e -> {
             switchPane(settingsPane);
-            setActiveButton(settingsBtn, eventsBtn, settingsBtn);
+            setActiveButton(settingsBtn, userBtn, eventsBtn, settingsBtn);
         });
 
         Button signOutBtn = createSignOutButton();
@@ -76,12 +84,14 @@ public abstract class BaseDashboard {
 
         sidebar.getChildren().addAll(
                 logoView,
+                userBtn,
                 eventsBtn,
                 settingsBtn,
                 spacer,
                 signOutBtn
         );
 
+        // ✅ Now that all core buttons are added, call this
         addCustomButtons(sidebar, contentArea);
 
         root.setLeft(sidebar);
@@ -92,7 +102,7 @@ public abstract class BaseDashboard {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        setActiveButton(eventsBtn, eventsBtn, settingsBtn);
+        setActiveButton(userBtn, userBtn, eventsBtn, settingsBtn);
     }
 
     protected Button createSidebarButton(String icon, String labelText) {
@@ -228,7 +238,7 @@ public abstract class BaseDashboard {
 
                 Scene loginScene = new Scene(loginRoot, 700, 500);
 
-                URL cssUrl = getClass().getResource("/view/loginstyle");
+                URL cssUrl = getClass().getResource("/view/loginstyle.css");
                 if (cssUrl != null) {
                     loginScene.getStylesheets().add(cssUrl.toExternalForm());
                 }
@@ -240,7 +250,6 @@ public abstract class BaseDashboard {
 
                 Stage currentStage = (Stage) signOutBtn.getScene().getWindow();
                 currentStage.close();
-
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
