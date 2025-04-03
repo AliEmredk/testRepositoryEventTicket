@@ -1,5 +1,7 @@
 package controllers;
 
+import bll.UserSession;
+import dk.easv.EventsView;
 import dk.easv.SettingsView;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +53,7 @@ public abstract class BaseDashboard {
         contentArea.setPadding(new Insets(20));
         contentArea.setStyle("-fx-background-color: white;");
 
-        eventsPane = createContentPane("View Events Content");
+        eventsPane = new EventsView(UserSession.getRole());
         settingsPane = new SettingsView();
 
         contentArea.getChildren().addAll(eventsPane, settingsPane);
