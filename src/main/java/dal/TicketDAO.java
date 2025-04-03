@@ -1,12 +1,12 @@
 package dal;
 
 import be.Ticket;
+import bll.BarCodeGenerator;
 
 import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,21 +53,52 @@ public class TicketDAO {
         return tickets;
     }
 
-    public boolean saveTicket(Ticket ticket) {
+    public int saveTicket(Ticket ticket) {
         String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketType, EventId) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setInt(1,ticket.getBarcodeId());
-            stmt.setInt(2,ticket.getCustomerId());
-            stmt.setString(3,ticket.getTicketType());
-            stmt.setInt(4,ticket.getEventId());
+            stmt.setInt(1, ticket.getBarcodeId());
+            stmt.setInt(2, ticket.getCustomerId());
+            stmt.setString(3, ticket.getTicketType());
+            stmt.setInt(4, ticket.getEventId());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Saving ticket failed, no rows affected.");
+            }
+
+            // Get the auto-generated ticketId
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Return the new ticketId
+                } else {
+                    throw new SQLException("Saving ticket failed, no ID obtained.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // Return an error code
+        }
+    }
+
+    private void saveBarcode(int ticketId, String barcodeNumber) {
+        String sql = "UPDATE Ticket SET Barcode_Number = ? WHERE TicketId = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setBytes(1, barcodeNumber.getBytes(StandardCharsets.UTF_8));
+            stmt.setInt(2, ticketId);
+
+            stmt.executeUpdate();
+            System.out.println("Barcode saved successfully for Ticket ID: " + ticketId);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
-    }
 
+    }
 }
 

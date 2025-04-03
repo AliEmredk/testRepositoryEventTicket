@@ -8,11 +8,11 @@ import dal.TicketDAO;
 
 
     public class TicketManager {
-        private TicketDAO ticketDAO; // Corrected
+        private final TicketDAO ticketDAO = new TicketDAO(); // Corrected
 
-        public TicketManager(TicketDAO ticketDAO) {
-            this.ticketDAO = ticketDAO;
-        }
+//        public TicketManager(TicketDAO ticketDAO) {
+//            this.ticketDAO = ticketDAO;
+//        }
 
         public List<Ticket> getAllTickets() {
             return ticketDAO.getAllTickets();
