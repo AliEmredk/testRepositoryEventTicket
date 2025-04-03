@@ -1,5 +1,7 @@
 package controllers;
 
+import bll.BarCodeGenerator;
+import be.Barcode;
 import be.Event;
 import dal.EventDAO;
 import javafx.collections.FXCollections;
@@ -8,17 +10,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class TicketManagementController {
 
+    @FXML
+    private Slider discountSlider;
+    @FXML
+    private Label discountValueLabel;
     @FXML
     private ComboBox<String> ticketTypeCombo;
     @FXML
@@ -56,6 +64,11 @@ public class TicketManagementController {
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
         amountSpinner.setValueFactory(valueFactory);
+
+        discountSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            int discount = newVal.intValue();
+            discountValueLabel.setText(discount + "% off");
+        });
     }
 
     private void loadEvents() {
@@ -71,17 +84,49 @@ public class TicketManagementController {
             return;
         }
 
-        // Update ticket preview labels
-        ticketIdLabel.setText("Ticket ID: " + generateTicketId());
+        // Generate new ticket ID and assign
+        String ticketId = generateTicketId();
+        ticketIdLabel.setText("Ticket ID: " + ticketId);
+
+        // Update ticket preview fields
         eventTitleLabel.setText(selectedEvent.getEventName());
         eventDateLabel.setText(selectedEvent.getDate());
         eventTimeLabel.setText(selectedEvent.getStartTime() + " – " + selectedEvent.getEndTime());
         eventLocationLabel.setText(selectedEvent.getLocation());
         ticketAmountLabel.setText("Amount: " + amountSpinner.getValue());
-        ticketDetailsLabel.setText(detailsField.getText());
 
-        // You can also set the QR code here if implemented
-        // qrCodeImageView.setImage(new Image("path/to/generated/qr.png"));
+        // Combine discount + custom details
+        int discount = (int) discountSlider.getValue();
+        String extraDetails = detailsField.getText().trim();
+        String discountText = (discount > 0) ? (discount + "% discount applied") : "";
+        String combinedDetails;
+
+        if (!extraDetails.isEmpty() && !discountText.isEmpty()) {
+            combinedDetails = discountText + " | " + extraDetails;
+        } else if (!extraDetails.isEmpty()) {
+            combinedDetails = extraDetails;
+        } else if (!discountText.isEmpty()) {
+            combinedDetails = discountText;
+        } else {
+            combinedDetails = "No additional details";
+        }
+
+        ticketDetailsLabel.setText(combinedDetails);
+
+        // Generate barcode
+        try {
+            byte[] barcodeBytes = BarCodeGenerator.generateBarcode(ticketId);
+            ByteArrayInputStream bis = new ByteArrayInputStream(barcodeBytes);
+            Image barcodeImage = new Image(bis);
+            qrCodeImageView.setImage(barcodeImage);
+
+            Barcode barcode = new Barcode(0, barcodeBytes, ticketId);
+            // Optional: save to DB -> barcodeDAO.saveBarcode(barcode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Barcode Error", "Could not generate barcode.");
+        }
     }
 
     private String generateTicketId() {

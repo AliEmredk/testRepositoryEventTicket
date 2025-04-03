@@ -109,4 +109,9 @@ public class Event {
     public String getLocationGuidance() {
         return Location_Guidance;
     }
+
+    @Override
+    public String toString(){
+        return EventName;
+    }
 }

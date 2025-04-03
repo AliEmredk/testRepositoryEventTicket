@@ -65,33 +65,4 @@ public class BarcodeDAO {
         }
         return null;
     }
-
-    /**
-     * Loads the barcode image as a JavaFX Image using the ticket ID.
-     */
-    public Image loadBarcodeAsImage(int ticketId) {
-        try {
-            String sql = """
-                SELECT b.BarcodeImage 
-                FROM Ticket t 
-                JOIN Barcode b ON t.BarcodeId = b.BarcodeId 
-                WHERE t.TicketId = ?
-                """;
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, ticketId);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                byte[] imageBytes = rs.getBytes("BarcodeImage");
-                if (imageBytes != null) {
-                    return new Image(new ByteArrayInputStream(imageBytes));
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Failed to load barcode image:");
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

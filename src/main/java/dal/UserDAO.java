@@ -51,7 +51,7 @@ public class UserDAO {
         return null;
     }
 
-    //Retrieve all users
+    // Retrieve all users
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM LoginInfo";
@@ -70,7 +70,6 @@ public class UserDAO {
         return userList;
     }
 
-
     public void deleteUser(String username) {
         String sql = "DELETE FROM LoginInfo WHERE Username = ?";
 
@@ -86,7 +85,7 @@ public class UserDAO {
         }
     }
 
-    //list all the event coordinators
+    // List all the event coordinators
     public List<User> getAllEventCoordinators() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM LoginInfo WHERE Role = 'Event Coordinator'";
@@ -96,12 +95,29 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                userList.add(new User(rs.getString("Username"), rs.getString("Password"),rs.getString("Role")));
+                userList.add(new User(rs.getString("Username"), rs.getString("Password"), rs.getString("Role")));
             }
-        }   catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return userList;
+    }
 
+
+    public void updatePassword(User user) {
+        String sql = "UPDATE LoginInfo SET Password = ? WHERE Username = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getPassword());
+            stmt.setString(2, user.getUsername());
+
+            stmt.executeUpdate();
+            System.out.println("Password updated for user: " + user.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,25 +1,32 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.TicketManagementController">
     <SplitPane orientation="HORIZONTAL" dividerPositions="0.5">
         <items>
+
             <!-- LEFT: Ticket Preview -->
             <VBox spacing="10" style="-fx-background-color: #fdfdfd; -fx-padding: 20; -fx-border-color: #ccc;">
                 <VBox spacing="10" style="
                         -fx-background-color: white;
                         -fx-padding: 20;
-                        -fx-border-color: #444;
-                        -fx-border-width: 1;
+                        -fx-border-color: black;
+                        -fx-border-style: dashed;
+                        -fx-border-width: 2;
                         -fx-border-radius: 10;
                         -fx-background-radius: 10;
-                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.5, 0, 2);">
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.5, 0, 2);"
+                      maxWidth="350"
+                      alignment="CENTER">
 
-                    <Label text="Payment Confirmed" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-                    <Label fx:id="ticketIdLabel" text="Booking ID #0000" style="-fx-font-size: 12px; -fx-text-fill: #888;" />
-                    <ImageView fx:id="qrCodeImageView" fitWidth="250" preserveRatio="true" />
+                    <Label text="🎟 PAYMENT CONFIRMED" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" />
+                    <Label fx:id="ticketIdLabel" text="Booking ID #0000" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-font-family: 'Courier New';" />
+
+                    <!-- Centered Barcode -->
+                    <HBox alignment="CENTER">
+                        <ImageView fx:id="qrCodeImageView" fitWidth="250" preserveRatio="true" />
+                    </HBox>
 
                     <Label fx:id="eventTitleLabel" text="Event Name" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
                     <Label fx:id="eventLocationLabel" text="By Venue Name" />
@@ -63,6 +70,7 @@
                     <Button text="Print Ticket" onAction="#printTicket" />
                 </HBox>
             </VBox>
+
         </items>
     </SplitPane>
 </StackPane>

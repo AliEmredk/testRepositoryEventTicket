@@ -90,8 +90,6 @@ public abstract class BaseDashboard {
                 spacer,
                 signOutBtn
         );
-
-        // ✅ Now that all core buttons are added, call this
         addCustomButtons(sidebar, contentArea);
 
         root.setLeft(sidebar);
@@ -238,7 +236,7 @@ public abstract class BaseDashboard {
 
                 Scene loginScene = new Scene(loginRoot, 700, 500);
 
-                URL cssUrl = getClass().getResource("/view/loginstyle.css");
+                URL cssUrl = getClass().getResource("/view/loginstyle");
                 if (cssUrl != null) {
                     loginScene.getStylesheets().add(cssUrl.toExternalForm());
                 }
