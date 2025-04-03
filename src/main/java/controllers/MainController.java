@@ -4,9 +4,11 @@ import be.Event;
 import bll.EventManagement;
 import bll.LoginCheck;
 import dal.EventDAO;
+import controllers.EventCoordinatorDashboard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.util.List;
 
@@ -65,11 +67,34 @@ public class MainController {
     }
 
     private void loadAdminScreen() {
-        System.out.println("Loading Admin Screen");
-    }
+        javafx.application.Platform.runLater(() -> {
+            try {
+                Stage dashboardStage = new Stage();
+                new AdminDashboard().start(dashboardStage);
 
+                // Close current login stage
+                Stage currentStage = (Stage) loginButton.getScene().getWindow();
+                currentStage.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
     private void loadECScreen() {
-        System.out.println("Loading Event Coordinator Screen");
+        javafx.application.Platform.runLater(() -> {
+            try {
+                Stage dashboardStage = new Stage();
+                new controllers.EventCoordinatorDashboard().start(dashboardStage);
+
+                // Close current login stage
+                Stage currentStage = (Stage) loginButton.getScene().getWindow();
+                currentStage.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void actionTestBtn(ActionEvent actionEvent) {

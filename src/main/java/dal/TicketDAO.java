@@ -1,23 +1,28 @@
 package dal;
 
 import be.Ticket;
-import bll.BarCodeGenerator;
 
-import javax.xml.transform.Result;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAO {
         private final DBAccess dbAccess = new DBAccess();
 
+        private Connection connection;
+
+        public TicketDAO(Connection connection) {
+            this.connection = connection;
+        }
+
     public List<Ticket> getAllTickets() {
         List<Ticket> tickets = new ArrayList<>();
         String sql = "SELECT t.TicketId, t.TicketType, c.CustomerId, c.FirstName, c.LastName, c.Email," +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
-                "b.BarcodeId, b.Barcode_Number " +
+                "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
                 "FROM Ticket t " +
                 "JOIN Customer c ON t.CustomerId = c.CustomerId " +
                 "JOIN Event e ON t.EventId = e.EventId " +
@@ -28,22 +33,27 @@ public class TicketDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                int ticketId = rs.getInt("TicketId");
+                String ticketType = rs.getString("TicketType");
+                int barcodeId = rs.getInt("BarcodeId");
+                byte[] barcodeImage = rs.getBytes("BarcodeImage");
+                String barcodeString = rs.getString("BarcodeString");
+                int eventId = rs.getInt("EventId");
+                String eventName = rs.getString("EventName");
+                String location = rs.getString("Location");
+                String date = rs.getString("Date");
+                String startTime = rs.getString("StartTime");
+                String endTime = rs.getString("EndTime");
+                String eventNote = rs.getString("Note");
+                int customerId = rs.getInt("CustomerId");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String email = rs.getString("Email");
+
                 Ticket ticket = new Ticket(
-                        rs.getInt("TicketId"),
-                        rs.getString("TicketType"),
-                        rs.getInt("BarcodeId"),
-                        rs.getString("Barcode_Number"),
-                        rs.getInt("EventId"),
-                        rs.getString("EventName"),
-                        rs.getString("Location"),
-                        rs.getString("Date"),
-                        rs.getString("StartTime"),
-                        rs.getString("EndTime"),
-                        rs.getString("EventNote"),
-                        rs.getInt("CustomerId"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Email")
+                        ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
+                        eventId, eventName, location, date, startTime, endTime, eventNote,
+                        customerId, firstName, lastName, email
                 );
                 tickets.add(ticket);
             }
@@ -53,52 +63,20 @@ public class TicketDAO {
         return tickets;
     }
 
-    public int saveTicket(Ticket ticket) {
+    public boolean saveTicket(Ticket ticket) {
         String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketType, EventId) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, ticket.getBarcodeId());
-            stmt.setInt(2, ticket.getCustomerId());
-            stmt.setString(3, ticket.getTicketType());
-            stmt.setInt(4, ticket.getEventId());
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Saving ticket failed, no rows affected.");
-            }
-
-            // Get the auto-generated ticketId
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1); // Return the new ticketId
-                } else {
-                    throw new SQLException("Saving ticket failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1; // Return an error code
-        }
-    }
-
-    private void saveBarcode(int ticketId, String barcodeNumber) {
-        String sql = "UPDATE Ticket SET Barcode_Number = ? WHERE TicketId = ?";
-
-        try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setBytes(1, barcodeNumber.getBytes(StandardCharsets.UTF_8));
-            stmt.setInt(2, ticketId);
-
-            stmt.executeUpdate();
-            System.out.println("Barcode saved successfully for Ticket ID: " + ticketId);
-
+            stmt.setInt(1,ticket.getBarcodeId());
+            stmt.setInt(2,ticket.getCustomerId());
+            stmt.setString(3,ticket.getTicketType());
+            stmt.setInt(4,ticket.getEventId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        return false;
     }
+
 }
-

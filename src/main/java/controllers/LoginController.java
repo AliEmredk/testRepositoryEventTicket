@@ -1,81 +1,97 @@
 package controllers;
 
 import bll.LoginCheck;
+import bll.UserSession;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import controllers.EventCoordinatorDashboard;
+import controllers.AdminDashboard;
 
 public class LoginController {
-
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private TextField visiblePasswordField;
-    @FXML
-    private CheckBox showPasswordCheckBox;
-    @FXML
-    private Button loginButton;
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private TextField visiblePasswordField;
+    @FXML private CheckBox showPasswordCheckBox;
+    @FXML private Button loginButton;
+    @FXML private ImageView backgroundView;
 
     private final LoginCheck loginCheck = new LoginCheck();
 
     @FXML
-    public void initialize() {
-        // Sync the visible password field with the actual password field
+    private void initialize() {
+        // Load background image
+        Image image = new Image(getClass().getResource("/images/easvticket.jpg").toExternalForm());
+        backgroundView.setImage(image);
+        backgroundView.setEffect(new GaussianBlur(20)); //
+
+        // Toggle password visibility
         visiblePasswordField.managedProperty().bind(showPasswordCheckBox.selectedProperty());
         visiblePasswordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty());
+
+        passwordField.managedProperty().bind(showPasswordCheckBox.selectedProperty().not());
         passwordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty().not());
 
-        // Mirror text between PasswordField and TextField
         visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
 
-        // Login button action (basic example)
-        loginButton.setOnAction(event -> handleLogin());
-
+        // Handle login
+        loginButton.setOnAction(e -> handleLogin());
     }
 
-    @FXML
     private void handleLogin() {
         String username = usernameField.getText();
-        String password = passwordField.getText();
+        String password = showPasswordCheckBox.isSelected() ? visiblePasswordField.getText() : passwordField.getText();
 
-        String role = loginCheck.checkLogin(username, password);
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert("Please fill in both fields.");
+            return;
+        }
 
-        if (role.equals("Admin")) {
-            switchScene("AdminMain.fxml", "Admin Panel");
-        } else if (role.equals("Event Coordinator")) {
-            switchScene("EventCMain.fxml", "Event Coordinator Panel");
-        } else {
-            showAlert("Login Failed", role);
+        String result = loginCheck.checkLogin(username, password);
+
+        switch (result) {
+            case "Admin" -> {
+                UserSession.setRole("Admin");
+                openAdminDashboard();
+            }
+            case "Event Coordinator" -> {
+                UserSession.setRole("Event Coordinator");
+                openEventCoordinatorDashboard();
+            }
+            case "User not found", "Wrong password", "Unknown" -> showAlert(result);
         }
     }
 
-    private void switchScene(String fxmlFile, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/" + fxmlFile));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(title);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error","Could not load the next scene.");
-        }
+    private void openAdminDashboard() {
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            new controllers.AdminDashboard().start(stage);
+            closeCurrentStage();
+        });
     }
 
-    private void showAlert(String title, String content) {
+    private void openEventCoordinatorDashboard() {
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            new EventCoordinatorDashboard().start(stage);
+            closeCurrentStage();
+        });
+    }
+
+    private void closeCurrentStage() {
+        Stage currentStage = (Stage) loginButton.getScene().getWindow();
+        currentStage.close();
+    }
+
+    private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("Login Error");
         alert.setHeaderText(null);
-        alert.setContentText(content);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }
