@@ -23,8 +23,8 @@ import java.net.URL;
 public abstract class BaseDashboard {
 
     protected StackPane contentArea;
-    protected Pane userPane, eventsPane, settingsPane;
-    protected Button userBtn, eventsBtn, settingsBtn;
+    protected Pane eventsPane, settingsPane;
+    protected Button eventsBtn, settingsBtn;
 
     protected abstract void addCustomButtons(VBox sidebar, StackPane contentArea);
 
@@ -44,7 +44,6 @@ public abstract class BaseDashboard {
         logoView.setSmooth(true);
         VBox.setMargin(logoView, new Insets(0, 0, 30, 0));
 
-        userBtn = createSidebarButton("👤", "User Management");
         eventsBtn = createSidebarButton("📅", "View Events");
         settingsBtn = createSidebarButton("🔧", "Settings");
 
@@ -52,29 +51,22 @@ public abstract class BaseDashboard {
         contentArea.setPadding(new Insets(20));
         contentArea.setStyle("-fx-background-color: white;");
 
-        userPane = createContentPane("User Management Content");
         eventsPane = createContentPane("View Events Content");
         settingsPane = new SettingsView();
 
-        contentArea.getChildren().addAll(userPane, eventsPane, settingsPane);
+        contentArea.getChildren().addAll(eventsPane, settingsPane);
 
-        userPane.setVisible(true);
-        eventsPane.setVisible(false);
+        eventsPane.setVisible(true);
         settingsPane.setVisible(false);
-
-        userBtn.setOnAction(e -> {
-            switchPane(userPane);
-            setActiveButton(userBtn, userBtn, eventsBtn, settingsBtn);
-        });
 
         eventsBtn.setOnAction(e -> {
             switchPane(eventsPane);
-            setActiveButton(eventsBtn, userBtn, eventsBtn, settingsBtn);
+            setActiveButton(eventsBtn, eventsBtn, settingsBtn);
         });
 
         settingsBtn.setOnAction(e -> {
             switchPane(settingsPane);
-            setActiveButton(settingsBtn, userBtn, eventsBtn, settingsBtn);
+            setActiveButton(settingsBtn, eventsBtn, settingsBtn);
         });
 
         Button signOutBtn = createSignOutButton();
@@ -84,12 +76,12 @@ public abstract class BaseDashboard {
 
         sidebar.getChildren().addAll(
                 logoView,
-                userBtn,
                 eventsBtn,
                 settingsBtn,
                 spacer,
                 signOutBtn
         );
+
         addCustomButtons(sidebar, contentArea);
 
         root.setLeft(sidebar);
@@ -100,7 +92,7 @@ public abstract class BaseDashboard {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        setActiveButton(userBtn, userBtn, eventsBtn, settingsBtn);
+        setActiveButton(eventsBtn, eventsBtn, settingsBtn);
     }
 
     protected Button createSidebarButton(String icon, String labelText) {

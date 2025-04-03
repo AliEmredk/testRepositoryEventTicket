@@ -108,7 +108,7 @@ public class TicketManagementController {
         } else if (!discountText.isEmpty()) {
             combinedDetails = discountText;
         } else {
-            combinedDetails = "No additional details";
+            combinedDetails = "";
         }
 
         ticketDetailsLabel.setText(combinedDetails);

@@ -20,7 +20,7 @@
                       maxWidth="350"
                       alignment="CENTER">
 
-                    <Label text="🎟 PAYMENT CONFIRMED" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" />
+                    <Label text="PAYMENT CONFIRMED" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" />
                     <Label fx:id="ticketIdLabel" text="Booking ID #0000" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-font-family: 'Courier New';" />
 
                     <!-- Centered Barcode -->
@@ -40,8 +40,7 @@
                     <Label text="Details" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
                     <Label fx:id="ticketDetailsLabel" text="Free drink, VIP access" wrapText="true" />
 
-                    <Label text="Amount" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
-                    <Label fx:id="ticketAmountLabel" text="2 Tickets" />
+                    <Label fx:id="ticketAmountLabel" text="Amount: 1" />
                 </VBox>
             </VBox>
 
