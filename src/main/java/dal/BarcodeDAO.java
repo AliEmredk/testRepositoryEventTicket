@@ -1,6 +1,9 @@
 package dal;
 
 import be.Barcode;
+import javafx.scene.image.Image;
+
+import java.io.ByteArrayInputStream;
 import java.sql.*;
 
 public class BarcodeDAO {
@@ -29,7 +32,6 @@ public class BarcodeDAO {
             stmt.setString(2, barcode.getBarcodeString());
             stmt.executeUpdate();
 
-            // Retrieve generated keys (BarcodeId)
             try (ResultSet keys = stmt.getGeneratedKeys()) {
                 if (keys.next()) {
                     int generatedId = keys.getInt(1);
@@ -60,6 +62,35 @@ public class BarcodeDAO {
                     return new Barcode(id, image, string);
                 }
             }
+        }
+        return null;
+    }
+
+    /**
+     * Loads the barcode image as a JavaFX Image using the ticket ID.
+     */
+    public Image loadBarcodeAsImage(int ticketId) {
+        try {
+            String sql = """
+                SELECT b.BarcodeImage 
+                FROM Ticket t 
+                JOIN Barcode b ON t.BarcodeId = b.BarcodeId 
+                WHERE t.TicketId = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, ticketId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                byte[] imageBytes = rs.getBytes("BarcodeImage");
+                if (imageBytes != null) {
+                    return new Image(new ByteArrayInputStream(imageBytes));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to load barcode image:");
+            e.printStackTrace();
         }
         return null;
     }
