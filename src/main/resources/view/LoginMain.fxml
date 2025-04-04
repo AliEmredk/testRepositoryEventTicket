@@ -24,12 +24,14 @@
          <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: white;"/>
 
          <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
+
          <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
          <TextField fx:id="visiblePasswordField" promptText="Password" visible="false" managed="false" maxWidth="250"/>
 
-         <CheckBox fx:id="showPasswordCheckBox" text="Show Password" textFill="white"/>
+         <Button fx:id="togglePasswordVisibility" text="👁" focusTraversable="false" style="-fx-background-color: transparent; -fx-text-fill: #A9A9A9; -fx-font-size: 26px; -fx-cursor: hand;"/>
 
          <Button fx:id="loginButton" text="Log in" maxWidth="250"/>
       </VBox>
    </StackPane>
 </HBox>
+

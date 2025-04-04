@@ -16,35 +16,39 @@ public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private TextField visiblePasswordField;
-    @FXML private CheckBox showPasswordCheckBox;
     @FXML private Button loginButton;
     @FXML private ImageView backgroundView;
 
     private final LoginCheck loginCheck = new LoginCheck();
 
+    @FXML private Button togglePasswordVisibility;
+
     @FXML
     private void initialize() {
-        // Load background image
+        // background image and blur
         Image image = new Image(getClass().getResource("/images/easvticket.jpg").toExternalForm());
         backgroundView.setImage(image);
-        backgroundView.setEffect(new GaussianBlur(20)); //
+        backgroundView.setEffect(new GaussianBlur(20));
 
-        // Toggle password visibility
-        visiblePasswordField.managedProperty().bind(showPasswordCheckBox.selectedProperty());
-        visiblePasswordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty());
-
-        passwordField.managedProperty().bind(showPasswordCheckBox.selectedProperty().not());
-        passwordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty().not());
+        // toggle eye behavior
+        visiblePasswordField.managedProperty().bind(visiblePasswordField.visibleProperty());
+        passwordField.managedProperty().bind(passwordField.visibleProperty());
 
         visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
 
-        // Handle login
+        togglePasswordVisibility.setOnAction(e -> {
+            boolean isVisible = visiblePasswordField.isVisible();
+            visiblePasswordField.setVisible(!isVisible);
+            passwordField.setVisible(isVisible);
+            togglePasswordVisibility.setText(isVisible ? "👁" : "🙈");
+        });
+
         loginButton.setOnAction(e -> handleLogin());
     }
 
     private void handleLogin() {
         String username = usernameField.getText();
-        String password = showPasswordCheckBox.isSelected() ? visiblePasswordField.getText() : passwordField.getText();
+        String password = visiblePasswordField.isVisible() ? visiblePasswordField.getText() : passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
             showAlert("Please fill in both fields.");

@@ -1,0 +1,75 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.TicketManagementController">
+    <SplitPane orientation="HORIZONTAL" dividerPositions="0.5">
+        <items>
+
+            <!-- LEFT: Ticket Preview -->
+            <VBox spacing="10" style="-fx-background-color: #fdfdfd; -fx-padding: 20; -fx-border-color: #ccc;">
+                <VBox spacing="10" style="
+                        -fx-background-color: white;
+                        -fx-padding: 20;
+                        -fx-border-color: black;
+                        -fx-border-style: dashed;
+                        -fx-border-width: 2;
+                        -fx-border-radius: 10;
+                        -fx-background-radius: 10;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.5, 0, 2);"
+                      maxWidth="350"
+                      alignment="CENTER">
+
+                    <Label text="PAYMENT CONFIRMED" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-font-family: 'Courier New';" />
+                    <Label fx:id="ticketIdLabel" text="Booking ID #0000" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-font-family: 'Courier New';" />
+
+                    <!-- Centered Barcode -->
+                    <HBox alignment="CENTER">
+                        <ImageView fx:id="qrCodeImageView" fitWidth="250" preserveRatio="true" />
+                    </HBox>
+
+                    <Label fx:id="eventTitleLabel" text="Event Name" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                    <Label fx:id="eventLocationLabel" text="By Venue Name" />
+
+                    <Label text="Date" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
+                    <Label fx:id="eventDateLabel" text="SAT 01 – SUN 02 JAN 2025" />
+
+                    <Label text="Time" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
+                    <Label fx:id="eventTimeLabel" text="10:00 PM – 4:00 AM" />
+
+                    <Label text="Details" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
+                    <Label fx:id="ticketDetailsLabel" text="Free drink, VIP access" wrapText="true" />
+
+                    <Label fx:id="ticketAmountLabel" text="Amount: 1" />
+                </VBox>
+            </VBox>
+
+            <!-- RIGHT: Ticket Editing -->
+            <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 30;">
+                <Label text="Edit Ticket" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+                <Label text="Ticket Amount" />
+                <Spinner fx:id="amountSpinner" prefWidth="100" />
+
+                <ComboBox fx:id="eventCombo" promptText="Select Event" />
+                <ComboBox fx:id="ticketTypeCombo" promptText="Ticket Type" />
+
+                <Label text="Discount Percentage" />
+                <Slider fx:id="discountSlider" min="0" max="100" value="0"
+                        showTickLabels="true" showTickMarks="true"
+                        majorTickUnit="25" minorTickCount="4" blockIncrement="5" />
+                <Label fx:id="discountValueLabel" text="0% off" />
+
+                <Label text="Details" />
+                <TextArea fx:id="detailsField" promptText="e.g. Free beer, VIP area, earplugs included..."
+                          prefRowCount="3" wrapText="true" />
+
+                <HBox spacing="10">
+                    <Button text="Update Preview" onAction="#updatePreview" />
+                    <Button text="Print Ticket" onAction="#printTicket" />
+                </HBox>
+            </VBox>
+
+        </items>
+    </SplitPane>
+</StackPane>

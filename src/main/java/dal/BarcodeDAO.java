@@ -1,6 +1,9 @@
 package dal;
 
 import be.Barcode;
+import javafx.scene.image.Image;
+
+import java.io.ByteArrayInputStream;
 import java.sql.*;
 
 public class BarcodeDAO {
@@ -29,7 +32,6 @@ public class BarcodeDAO {
             stmt.setString(2, barcode.getBarcodeString());
             stmt.executeUpdate();
 
-            // Retrieve generated keys (BarcodeId)
             try (ResultSet keys = stmt.getGeneratedKeys()) {
                 if (keys.next()) {
                     int generatedId = keys.getInt(1);
