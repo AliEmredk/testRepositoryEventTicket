@@ -1,0 +1,43 @@
+.sidebar {
+    -fx-padding: 20;
+    -fx-background-color: #464646;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-alignment: center-left;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.sidebar-button:focused {
+    -fx-background-color: #F9A825;
+    -fx-text-fill: #2196F3;
+    -fx-font-weight: bold;
+}
+
+.signout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.signout-button:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.content-area {
+    -fx-background-color: white;
+    -fx-padding: 20;
+}

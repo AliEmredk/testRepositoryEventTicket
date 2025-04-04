@@ -14,7 +14,7 @@ public class AdminDashboard extends BaseDashboard {
     private Pane userManagementPane;
 
     @Override
-    protected void addCustomButtons(VBox sidebar, StackPane contentArea) {
+    protected void addCustomButtons(VBox customButtons, StackPane contentArea) {
         // Create "User Management" sidebar button
         userManagementBtn = createSidebarButton("👥", "User Management");
 
@@ -37,8 +37,13 @@ public class AdminDashboard extends BaseDashboard {
             setActiveButton(userManagementBtn, userManagementBtn, eventsBtn, settingsBtn);
         });
 
-        // Insert the button right after the logo (at index 1)
-        sidebar.getChildren().add(1, userManagementBtn);
+        // Insert User Management above Settings if possible
+        int settingsIndex = customButtons.getChildren().indexOf(settingsBtn);
+        if (settingsIndex >= 0) {
+            customButtons.getChildren().add(settingsIndex, userManagementBtn);
+        } else {
+            customButtons.getChildren().add(userManagementBtn);
+        }
     }
 
     public static void main(String[] args) {

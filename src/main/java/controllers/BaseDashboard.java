@@ -31,141 +31,85 @@ public abstract class BaseDashboard {
     protected abstract void addCustomButtons(VBox sidebar, StackPane contentArea);
 
     public void start(Stage primaryStage) {
-        BorderPane root = new BorderPane();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dashboard.fxml"));
+            Parent root = loader.load();
 
-        VBox sidebar = new VBox();
-        sidebar.setPadding(new Insets(20));
-        sidebar.setSpacing(15);
-        sidebar.setStyle("-fx-background-color: #464646;");
-        sidebar.setPrefWidth(200);
+            VBox sidebar = (VBox) ((BorderPane) root).getLeft();
+            contentArea = (StackPane) ((BorderPane) root).getCenter();
 
-        Image logoImage = new Image(getClass().getResourceAsStream("/images/easvlogo.png"));
-        ImageView logoView = new ImageView(logoImage);
-        logoView.setFitWidth(150);
-        logoView.setPreserveRatio(true);
-        logoView.setSmooth(true);
-        VBox.setMargin(logoView, new Insets(0, 0, 30, 0));
+            ImageView logoView = (ImageView) sidebar.lookup("#logoView");
+            logoView.setImage(new Image(getClass().getResourceAsStream("/images/easvlogo.png")));
 
-        eventsBtn = createSidebarButton("📅", "View Events");
-        settingsBtn = createSidebarButton("🔧", "Settings");
+            eventsBtn = (Button) sidebar.lookup("#eventsBtn");
+            settingsBtn = (Button) sidebar.lookup("#settingsBtn");
+            Button signOutBtn = (Button) sidebar.lookup("#signOutBtn");
 
-        contentArea = new StackPane();
-        contentArea.setPadding(new Insets(20));
-        contentArea.setStyle("-fx-background-color: white;");
+            eventsPane = new EventsView(UserSession.getRole());
+            settingsPane = new SettingsView();
 
-        eventsPane = new EventsView(UserSession.getRole());
-        settingsPane = new SettingsView();
+            contentArea.getChildren().addAll(eventsPane, settingsPane);
 
-        contentArea.getChildren().addAll(eventsPane, settingsPane);
+            eventsPane.setVisible(true);
+            settingsPane.setVisible(false);
 
-        eventsPane.setVisible(true);
-        settingsPane.setVisible(false);
+            eventsBtn.setOnAction(e -> {
+                switchPane(eventsPane);
+                setActiveButton(eventsBtn, eventsBtn, settingsBtn);
+            });
 
-        eventsBtn.setOnAction(e -> {
-            switchPane(eventsPane);
+            settingsBtn.setOnAction(e -> {
+                switchPane(settingsPane);
+                setActiveButton(settingsBtn, eventsBtn, settingsBtn);
+            });
+
+            signOutBtn.setOnAction(e -> {
+                try {
+                    FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/LoginMain.fxml"));
+                    Parent loginRoot = loginLoader.load();
+                    Scene loginScene = new Scene(loginRoot, 700, 500);
+
+                    URL cssUrl = getClass().getResource("/view/loginstyle");
+                    if (cssUrl != null) loginScene.getStylesheets().add(cssUrl.toExternalForm());
+
+                    Stage loginStage = new Stage();
+                    loginStage.setTitle("Glassmorphic Login UI");
+                    loginStage.setScene(loginScene);
+                    loginStage.show();
+
+                    Stage currentStage = (Stage) signOutBtn.getScene().getWindow();
+                    currentStage.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            Region spacer = new Region();
+            VBox.setVgrow(spacer, Priority.ALWAYS);
+
+            VBox customBtnBox = (VBox) sidebar.lookup("#customButtons");
+            addCustomButtons(customBtnBox, contentArea);
+
+            Scene scene = new Scene(root, 950, 600);
+            scene.getStylesheets().add(getClass().getResource("/view/dashboard.css").toExternalForm());
+
+            primaryStage.setTitle("Dashboard");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
             setActiveButton(eventsBtn, eventsBtn, settingsBtn);
-        });
-
-        settingsBtn.setOnAction(e -> {
-            switchPane(settingsPane);
-            setActiveButton(settingsBtn, eventsBtn, settingsBtn);
-        });
-
-        Button signOutBtn = createSignOutButton();
-
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-
-        sidebar.getChildren().addAll(
-                logoView,
-                eventsBtn,
-                settingsBtn,
-                spacer,
-                signOutBtn
-        );
-
-        addCustomButtons(sidebar, contentArea);
-
-        root.setLeft(sidebar);
-        root.setCenter(contentArea);
-
-        Scene scene = new Scene(root, 950, 600);
-        primaryStage.setTitle("Dashboard");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        setActiveButton(eventsBtn, eventsBtn, settingsBtn);
-    }
-
-    protected Button createSidebarButton(String icon, String labelText) {
-        Button btn = new Button(icon + "  " + labelText);
-        btn.setPrefWidth(180);
-        btn.setAlignment(Pos.CENTER_LEFT);
-        btn.setFont(Font.font("Arial", 14));
-        btn.setTextFill(Color.WHITE);
-        btn.setBackground(Background.EMPTY);
-
-        btn.setStyle("""
-            -fx-background-color: transparent;
-            -fx-text-fill: white;
-            -fx-font-size: 14px;
-            -fx-padding: 10 20 10 20;
-            -fx-alignment: center-left;
-            -fx-background-radius: 10;
-            -fx-cursor: hand;
-        """);
-
-        btn.setOnMouseEntered(e -> {
-            btn.setScaleX(1.05);
-            btn.setScaleY(1.05);
-            if (!btn.getStyleClass().contains("active")) {
-                btn.setStyle("""
-                    -fx-background-color: rgba(255,255,255,0.1);
-                    -fx-text-fill: white;
-                    -fx-padding: 10 20 10 20;
-                    -fx-background-radius: 10;
-                    -fx-cursor: hand;
-                """);
-            }
-        });
-
-        btn.setOnMouseExited(e -> {
-            btn.setScaleX(1.0);
-            btn.setScaleY(1.0);
-            if (!btn.getStyleClass().contains("active")) {
-                btn.setStyle("""
-                    -fx-background-color: transparent;
-                    -fx-padding: 10 20 10 20;
-                    -fx-cursor: hand;
-                    -fx-background-radius: 0 30 30 0;
-                """);
-            }
-        });
-
-        return btn;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void setActiveButton(Button activeBtn, Button... allButtons) {
         for (Button btn : allButtons) {
             btn.getStyleClass().remove("active");
             btn.setTextFill(Color.WHITE);
-            btn.setStyle("""
-                -fx-background-color: transparent;
-                -fx-padding: 10 20 10 20;
-                -fx-cursor: hand;
-                -fx-background-radius: 0 30 30 0;
-            """);
         }
-
         activeBtn.setTextFill(Color.web("#3A4B5C"));
-        activeBtn.setStyle("""
-            -fx-background-color: #F9A825;
-            -fx-text-fill: #2196F3;
-            -fx-padding: 10 20 10 20;
-            -fx-background-radius: 15;
-            -fx-font-weight: bold;
-            -fx-cursor: hand;
-        """);
+        activeBtn.getStyleClass().add("active");
     }
 
     protected void switchPane(Pane paneToShow) {
@@ -191,62 +135,14 @@ public abstract class BaseDashboard {
         return pane;
     }
 
-    private Button createSignOutButton() {
-        Button signOutBtn = new Button("🚪 Sign Out");
-        signOutBtn.setPrefWidth(180);
-        signOutBtn.setAlignment(Pos.CENTER_LEFT);
-        signOutBtn.setFont(Font.font("Arial", 14));
-        signOutBtn.setTextFill(Color.WHITE);
-        signOutBtn.setBackground(Background.EMPTY);
-
-        signOutBtn.setStyle("""
-            -fx-background-color: transparent;
-            -fx-padding: 10 20 10 20;
-            -fx-cursor: hand;
-            -fx-background-radius: 10;
-            -fx-text-fill: white;
-        """);
-
-        signOutBtn.setOnMouseEntered(e -> signOutBtn.setStyle("""
-            -fx-background-color: rgba(255,255,255,0.1);
-            -fx-padding: 10 20 10 20;
-            -fx-cursor: hand;
-            -fx-background-radius: 10;
-            -fx-text-fill: white;
-        """));
-
-        signOutBtn.setOnMouseExited(e -> signOutBtn.setStyle("""
-            -fx-background-color: transparent;
-            -fx-padding: 10 20 10 20;
-            -fx-cursor: hand;
-            -fx-background-radius: 10;
-            -fx-text-fill: white;
-        """));
-
-        signOutBtn.setOnAction(e -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginMain.fxml"));
-                Parent loginRoot = loader.load();
-
-                Scene loginScene = new Scene(loginRoot, 700, 500);
-
-                URL cssUrl = getClass().getResource("/view/loginstyle");
-                if (cssUrl != null) {
-                    loginScene.getStylesheets().add(cssUrl.toExternalForm());
-                }
-
-                Stage loginStage = new Stage();
-                loginStage.setTitle("Glassmorphic Login UI");
-                loginStage.setScene(loginScene);
-                loginStage.show();
-
-                Stage currentStage = (Stage) signOutBtn.getScene().getWindow();
-                currentStage.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-
-        return signOutBtn;
+    protected Button createSidebarButton(String icon, String labelText) {
+        Button btn = new Button(icon + "  " + labelText);
+        btn.setPrefWidth(180);
+        btn.setAlignment(Pos.CENTER_LEFT);
+        btn.setFont(Font.font("Arial", 14));
+        btn.setTextFill(Color.WHITE);
+        btn.setBackground(Background.EMPTY);
+        btn.getStyleClass().add("sidebar-button");
+        return btn;
     }
 }
