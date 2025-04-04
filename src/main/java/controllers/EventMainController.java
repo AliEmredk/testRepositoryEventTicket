@@ -4,6 +4,8 @@ import be.Event;
 import dal.EventDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import java.time.LocalDate;
+import java.time.Month;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,24 +62,29 @@ public class EventMainController {
 
     // Handle filtering
     public void filterEvents(String filter) {
-        switch (filter) {
-            case "Free Events":
-                events.setAll(events.filtered(event -> event.getPrice() == 0));
-                break;
-            case "Paid Events":
-                events.setAll(events.filtered(event -> event.getPrice() > 0));
-                break;
-            case "Today’s Events":
-                // Example filter for today's events
-                events.setAll(events.filtered(event -> event.getDate().equals("2025-04-03")));  // Replace with the actual logic
-                break;
-            case "By Location":
-                // Filter by location if needed
-                break;
-            case "By Price":
-                // Filter by price if needed
-                break;
-        }
+        List<Event> allEvents = eventDAO.getAllEvents(); // Start from the entire list
+        LocalDate today = LocalDate.now(); // Get today's date
+        Month currentMonth = today.getMonth(); // Get what month it is today
+
+        List<Event> filteredList = allEvents.stream()
+                .filter(event -> {
+                    switch (filter) {
+                        case "Free Events":
+                            return event.getPrice() == 0;
+                        case "Paid Events":
+                            return event.getPrice() > 0;
+                        case "Today’s Events":
+                            return event.getDate().equals(today.toString()); // Match today's date
+                        case "This Month's Events":
+                            return LocalDate.parse(event.getDate()).getMonth() == currentMonth; // Match the month
+                        default:
+                            return true; // No filter applied
+
+                    }
+                })
+                .collect(Collectors.toList());
+
+        events.setAll(filteredList);
     }
 
     // Pagination: next page
