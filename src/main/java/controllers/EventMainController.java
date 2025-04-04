@@ -84,7 +84,7 @@ public class EventMainController {
                 })
                 .collect(Collectors.toList());
 
-        events.setAll(filteredList);
+        events.setAll(filteredList); // Update observable list with the filter results
     }
 
     // Pagination: next page
