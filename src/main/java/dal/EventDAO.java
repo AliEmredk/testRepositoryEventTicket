@@ -71,6 +71,35 @@ public class EventDAO {
         }
     }
 
+    public void updateEvent(Event event) {
+
+        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+
+        try(Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, event.getLocation());
+            stmt.setString(2, event.getDate());
+            stmt.setString(3, event.getStartTime());
+            stmt.setString(4, event.getEndTime());
+            stmt.setString(5, event.getNote());
+            stmt.setInt(6, event.getPrice());
+            stmt.setString(7, event.getLocation_Guidance());
+            stmt.setString(8, event.getEventName());
+            stmt.setInt(9, event.getEventId());
+
+            int rowsAffected = stmt.executeUpdate();
+            if(rowsAffected > 0) {
+                logChange("Event", "UPDATE", event.getEventId(),null);
+                System.out.println("Event updated successfully");
+            } else {
+                System.out.println("No event found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteEvent(String eventName){
 
         String sql = "DELETE FROM Event WHERE EventName = ?";
