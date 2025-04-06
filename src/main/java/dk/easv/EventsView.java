@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 public class EventsView extends StackPane {
@@ -29,6 +30,7 @@ public class EventsView extends StackPane {
     private TilePane eventContainer;
     private EventDAO eventDAO = new EventDAO();
     private Event selectedEvent;
+    private Button editEventBtn, deleteEventBtn;
     private List<Event> masterEventList = new ArrayList<>();
     private EventMainController eventMainController;
 
@@ -49,7 +51,12 @@ public class EventsView extends StackPane {
         Button addEventBtn = new Button("Add Event");
         addEventBtn.setOnAction(e -> openAddEventWindow());
 
-        Button deleteEventBtn = new Button("Delete Event");
+        editEventBtn = new Button("Edit Event");
+        editEventBtn.setDisable(true);
+        editEventBtn.setOnAction(e -> openEditEventWindow());
+
+        deleteEventBtn = new Button("Delete Event");
+        deleteEventBtn.setDisable(true);
         deleteEventBtn.setOnAction(e -> openDeleteEventWindow());
 
         TextField searchField = new TextField();
@@ -68,6 +75,10 @@ public class EventsView extends StackPane {
             eventMainController.searchEvents(searchQuery);  // Delegate to the controller
             refreshEventList();  // Refresh the list to display the filtered events
         });
+        if(this.role.equals("Admin")) {
+            editEventBtn.setVisible(false);
+            editEventBtn.setManaged(false);
+        }
 
         // Handle Sorting
         ComboBox<String> sortComboBox = new ComboBox<>();
@@ -98,6 +109,7 @@ public class EventsView extends StackPane {
             eventMainController.previousPage();
             refreshEventList();
         });
+        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
 
         eventContainer = new TilePane();
         eventContainer.setHgap(10);
@@ -106,6 +118,11 @@ public class EventsView extends StackPane {
         eventContainer.setPadding(new Insets(10));
 
         refreshEventList();
+        EventDAO eventDAO = new EventDAO();
+        for (Event event : eventDAO.getAllEvents()) {
+            VBox eventCard = createEventCard(event);
+            eventContainer.getChildren().add(eventCard);
+        }
 
         ScrollPane scrollPane = new ScrollPane(eventContainer);
         scrollPane.setFitToWidth(true);
@@ -151,9 +168,10 @@ public class EventsView extends StackPane {
         }
 
         card.getChildren().addAll(nameLabel, locationLabel, dateLabel);
+
         card.setOnMouseClicked(e -> setSelectedEvent(event, card));
 
-        return card; // ✅ Return the VBox without adding it to eventContainer
+        return card;
     }
 
     private void refreshEventList() {
@@ -161,13 +179,12 @@ public class EventsView extends StackPane {
         List<Event> filteredEvents = eventMainController.getFilteredEvents();  // Get the filtered list from the controller
         for (Event event : filteredEvents) {
             eventContainer.getChildren().add(createEventCard(event));
+        /* TODO - check this!
+        for(Event event : eventDAO.getAllEvents()) {
+            VBox eventCard = createEventCard(event);
+            eventContainer.getChildren().add(eventCard);
+            */
         }
-        //masterEventList = eventDAO.getAllEvents();  // Get data from DB
-        //System.out.println("Refreshing events: " + masterEventList.size()); // Debugging line
-        //for (Event event : masterEventList) {
-        //    System.out.println("Loaded Event: " + event.getEventName()); // Debugging line
-        //VBox eventCard = createEventCard(event);
-        //    eventContainer.getChildren().add(createEventCard(event));
     }
 
     private void openAddEventWindow() {
@@ -236,7 +253,7 @@ public class EventsView extends StackPane {
             addEventsStage.close();
         });
 
-        vbox.getChildren().addAll(nameField, locationField, datePicker, startTimeField, endTimeField, noteField, priceField, new Label("Assign Coordinators:"), coordinatorListView, saveBtn);
+        vbox.getChildren().addAll(nameField, locationField, datePicker, startTimeField, endTimeField, noteField, priceField, locationGuidanceField, new Label("Assign Coordinators:"), coordinatorListView, saveBtn);
 
         Scene scene = new Scene(vbox, 400, 500);
         addEventsStage.setScene(scene);
@@ -249,6 +266,80 @@ public class EventsView extends StackPane {
             node.setStyle("-fx-background-color: #FFECB3; -fx-border-radius: 10; -fx-background-radius: 10;");
         }
         eventCard.setStyle("-fx-background-color: #FFD54F; -fx-border-radius: 10; -fx-background-radius: 10;");
+
+        editEventBtn.setDisable(false);
+        deleteEventBtn.setDisable(false);
+    }
+
+    private void openEditEventWindow() {
+        if(selectedEvent == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+
+        Stage editEventsStage = new Stage();
+        editEventsStage.initModality(Modality.APPLICATION_MODAL);
+        editEventsStage.setTitle("Edit Event");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        TextField nameField = new TextField(selectedEvent.getEventName());
+        nameField.setPromptText("Event Name");
+        TextField locationField = new TextField(selectedEvent.getLocation());
+        locationField.setPromptText("Event Location");
+        DatePicker datePicker = new DatePicker(LocalDate.parse(selectedEvent.getDate()));
+        TextField startTimeField = new TextField(selectedEvent.getStartTime());
+        startTimeField.setPromptText("Start Time");
+        TextField endTimeField = new TextField(selectedEvent.getEndTime());
+        endTimeField.setPromptText("End Time");
+        TextArea noteField = new TextArea(selectedEvent.getNote());
+        noteField.setPromptText("Notes");
+        TextField priceField = new TextField(String.valueOf(selectedEvent.getPrice()));
+        priceField.setPromptText("Price");
+        TextField locationGuidanceField = new TextField(selectedEvent.getLocation_Guidance());
+        locationGuidanceField.setPromptText("Location Guidance");
+
+        Button saveBtn = new Button("Save Changes");
+        saveBtn.setOnAction(e -> {
+            if(nameField.getText().isEmpty() || locationField.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+
+            int price;
+            try {
+                price = Integer.parseInt(priceField.getText());
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid price format!", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+
+            selectedEvent.setEventName(nameField.getText());
+            selectedEvent.setLocation(locationField.getText());
+            selectedEvent.setDate(datePicker.getValue().toString());
+            selectedEvent.setStartTime(startTimeField.getText());
+            selectedEvent.setEndTime(endTimeField.getText());
+            selectedEvent.setNote(noteField.getText());
+            selectedEvent.setPrice(price);
+            selectedEvent.setLocation_Guidance(locationGuidanceField.getText());
+
+            eventDAO.updateEvent(selectedEvent.getEventId(), selectedEvent);
+            refreshEventList();
+            editEventsStage.close();
+            editEventBtn.setDisable(true);
+            deleteEventBtn.setDisable(true);
+        });
+
+        vbox.getChildren().addAll(nameField, locationField, datePicker, startTimeField, endTimeField, noteField, priceField, locationGuidanceField, saveBtn);
+
+        Scene scene = new Scene(vbox, 400, 500);
+        editEventsStage.setScene(scene);
+        editEventsStage.show();
     }
 
     private void openDeleteEventWindow() {
@@ -269,6 +360,7 @@ public class EventsView extends StackPane {
                 eventDAO.deleteEvent(selectedEvent.getEventName());
                 refreshEventList();
             }
+            deleteEventBtn.setDisable(true);
         });
     }
 }

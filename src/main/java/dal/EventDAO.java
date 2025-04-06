@@ -102,15 +102,15 @@ public class EventDAO {
             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Event event = new Event(
-                rs.getString("Location"),
-                rs.getString("Date"),
-                rs.getString("StartTime"),
-                rs.getString("EndTime"),
-                rs.getString("Note"),
-                rs.getInt("Price"),
-                rs.getString("Location_Guidance"),
-                rs.getString("EventName"),
-                        rs.getInt("EventId")
+                    rs.getString("Location"),
+                    rs.getString("Date"),
+                    rs.getString("StartTime"),
+                    rs.getString("EndTime"),
+                    rs.getString("Note"),
+                    rs.getInt("Price"),
+                    rs.getString("Location_Guidance"),
+                    rs.getString("EventName"),
+                    rs.getInt("EventId")
                 );
                 eventList.add(event);
             }
@@ -228,7 +228,7 @@ public class EventDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-    }
+        }
     }
     //--------------------------------------------------------------------------------------------------------
     // DON'T TOUCH THESE -_-

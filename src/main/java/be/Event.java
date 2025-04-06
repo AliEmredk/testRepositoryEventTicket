@@ -94,7 +94,16 @@ public class Event {
         return EventId;
     }
 
+    public String getLocationGuidance() {
+        return Location_Guidance;
+    }
+
     public void setEventId(int eventId) {
         this.EventId = eventId;
+    }
+
+    @Override
+    public String toString(){
+        return EventName;
     }
 }
