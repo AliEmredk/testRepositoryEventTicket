@@ -109,7 +109,7 @@ public class EventsView extends StackPane {
             eventMainController.previousPage();
             refreshEventList();
         });
-        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
+        // topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
 
         eventContainer = new TilePane();
         eventContainer.setHgap(10);
