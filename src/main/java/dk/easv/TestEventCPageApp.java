@@ -1,5 +1,6 @@
 package dk.easv;
 
+import dal.UserDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -4,6 +4,7 @@ import be.Event;
 import be.User;
 import dal.EventDAO;
 import dal.UserDAO;
+import controllers.EventMainController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -19,6 +20,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,11 +30,16 @@ public class EventsView extends StackPane {
     private TilePane eventContainer;
     private EventDAO eventDAO = new EventDAO();
     private Event selectedEvent;
-    private Button editEventBtn;
-    private Button deleteEventBtn;
+    private Button editEventBtn, deleteEventBtn;
+    private List<Event> masterEventList = new ArrayList<>();
+    private EventMainController eventMainController;
 
-    public EventsView(String role) {
+    public EventsView(String role, EventMainController eventMainController) {
+        VBox vbox = new VBox();
+        vbox.getChildren().clear();
         this.role = role;
+        this.eventMainController = eventMainController;
+
 
         VBox eventsPane = new VBox(10);
         eventsPane.setPadding(new Insets(15));
@@ -61,12 +68,48 @@ public class EventsView extends StackPane {
             addEventBtn.setManaged(false);
         }
 
+        topBar.getChildren().addAll(addEventBtn, deleteEventBtn, searchField, searchBtn);
+
+        searchBtn.setOnAction(e -> {
+            String searchQuery = searchField.getText();
+            eventMainController.searchEvents(searchQuery);  // Delegate to the controller
+            refreshEventList();  // Refresh the list to display the filtered events
+        });
         if(this.role.equals("Admin")) {
             editEventBtn.setVisible(false);
             editEventBtn.setManaged(false);
         }
 
-        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
+        // Handle Sorting
+        ComboBox<String> sortComboBox = new ComboBox<>();
+        sortComboBox.getItems().addAll("Sort by Date", "Sort by Price", "Sort by Location");
+        sortComboBox.setOnAction(e -> {
+            String sortCriteria = sortComboBox.getValue();
+            eventMainController.sortEvents(sortCriteria);  // Delegate sort action to the controller
+            refreshEventList();  // Refresh list after sorting
+        });
+
+        // Handle Filtering
+        ComboBox<String> filterComboBox = new ComboBox<>();
+        filterComboBox.getItems().addAll("Free Events", "Paid Events", "Today’s Events", "By Location", "By Price");
+        filterComboBox.setOnAction(e -> {
+            String filter = filterComboBox.getValue();
+            eventMainController.filterEvents(filter);  // Delegate filter action to the controller
+            refreshEventList();  // Refresh list after filtering
+        });
+
+        // Pagination controls
+        Button btnNextPage = new Button("Next");
+        Button btnPrevPage = new Button("Previous");
+        btnNextPage.setOnAction(e -> {
+            eventMainController.nextPage();
+            refreshEventList();
+        });
+        btnPrevPage.setOnAction(e -> {
+            eventMainController.previousPage();
+            refreshEventList();
+        });
+        // topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
 
         eventContainer = new TilePane();
         eventContainer.setHgap(10);
@@ -74,6 +117,7 @@ public class EventsView extends StackPane {
         eventContainer.setPrefColumns(3);
         eventContainer.setPadding(new Insets(10));
 
+        refreshEventList();
         EventDAO eventDAO = new EventDAO();
         for (Event event : eventDAO.getAllEvents()) {
             VBox eventCard = createEventCard(event);
@@ -85,12 +129,14 @@ public class EventsView extends StackPane {
         scrollPane.setPrefHeight(600);
         scrollPane.setStyle("-fx-background: white;");
 
-        eventsPane.getChildren().addAll(topBar, scrollPane);
+        eventsPane.getChildren().addAll(topBar, sortComboBox, filterComboBox, searchField, searchBtn, scrollPane, btnNextPage, btnPrevPage);
 
         this.getChildren().add(eventsPane);
     }
 
     private VBox createEventCard(Event event) {
+        System.out.println("Creating tile for event: " + event.getEventName()); // Debugging line
+
         VBox card = new VBox();
         card.setPadding(new Insets(10));
         card.setSpacing(5);
@@ -130,9 +176,14 @@ public class EventsView extends StackPane {
 
     private void refreshEventList() {
         eventContainer.getChildren().clear();
+        List<Event> filteredEvents = eventMainController.getFilteredEvents();  // Get the filtered list from the controller
+        for (Event event : filteredEvents) {
+            eventContainer.getChildren().add(createEventCard(event));
+        /* TODO - check this!
         for(Event event : eventDAO.getAllEvents()) {
             VBox eventCard = createEventCard(event);
             eventContainer.getChildren().add(eventCard);
+            */
         }
     }
 

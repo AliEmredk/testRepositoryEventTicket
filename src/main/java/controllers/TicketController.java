@@ -13,32 +13,32 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-        public class TicketController {
-            private TicketManager ticketManager;
+public class TicketController {
+    private TicketManager ticketManager;
 
-            @FXML
-            private Label lblTicketId; // Label to display the ticket ID
+    @FXML
+    private Label lblTicketId; // Label to display the ticket ID
 
-            @FXML
-            private ImageView imgBarcode; // ImageView to display the barcode image
+    @FXML
+    private ImageView imgBarcode; // ImageView to display the barcode image
 
-            @FXML
-            public void initialize() {
-                // Initialization logic (if needed)
-            }
+    @FXML
+    public void initialize() {
+        // Initialization logic (if needed)
+    }
 
-            /**
-             * Sets the TicketManager instance.
-             *
-             * @param ticketManager the TicketManager instance to be assigned.
-             */
-            public void setTicketManager(TicketManager ticketManager) {
-                this.ticketManager = ticketManager;
-            }
+    /**
+     * Sets the TicketManager instance.
+     *
+     * @param ticketManager the TicketManager instance to be assigned.
+     */
+    public void setTicketManager(TicketManager ticketManager) {
+        this.ticketManager = ticketManager;
+    }
 
-            /**
-             * Generates a ticket and updates the UI with the ticket details.
-             */
+    /**
+     * Generates a ticket and updates the UI with the ticket details.
+     */
 //            @FXML
 //            public void generateTicket() {
 //                if (ticketManager == null) {
@@ -65,25 +65,23 @@ import java.io.IOException;
 //                }
 //            }
 
-            /**
-             * Displays the ticket window.
-             */
-            public void showTicketWindow() {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicketView.fxml"));
-                    Parent root = loader.load();
+    /**
+     * Displays the ticket window.
+     */
+    public void showTicketWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicketView.fxml"));
+            Parent root = loader.load();
 
-                    TicketController controller = loader.getController();
-                    controller.setTicketManager(ticketManager);
+            TicketController controller = loader.getController();
+            controller.setTicketManager(ticketManager);
 
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(root));
-                    stage.setTitle("Ticket Window");
-                    stage.show();
-                } catch (IOException e) {
-                    System.out.println("Error loading Ticket window: " + e.getMessage());
-                }
-            }
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ticket Window");
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("Error loading Ticket window: " + e.getMessage());
         }
-
-
+    }
+}

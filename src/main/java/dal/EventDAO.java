@@ -14,7 +14,7 @@ public class EventDAO {
         String sql = "INSERT INTO Event (Location, Date, StartTime, EndTime, Note, Price, Location_Guidance, EventName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, event.getLocation());
             stmt.setString(2, event.getDate());
@@ -71,6 +71,35 @@ public class EventDAO {
         }
     }
 
+    public void updateEvent(Event event) {
+
+        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+
+        try(Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, event.getLocation());
+            stmt.setString(2, event.getDate());
+            stmt.setString(3, event.getStartTime());
+            stmt.setString(4, event.getEndTime());
+            stmt.setString(5, event.getNote());
+            stmt.setInt(6, event.getPrice());
+            stmt.setString(7, event.getLocation_Guidance());
+            stmt.setString(8, event.getEventName());
+            stmt.setInt(9, event.getEventId());
+
+            int rowsAffected = stmt.executeUpdate();
+            if(rowsAffected > 0) {
+                logChange("Event", "UPDATE", event.getEventId(),null);
+                System.out.println("Event updated successfully");
+            } else {
+                System.out.println("No event found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteEvent(String eventName){
 
         String sql = "DELETE FROM Event WHERE EventName = ?";
@@ -98,19 +127,19 @@ public class EventDAO {
         String sql = "SELECT * FROM Event";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Event event = new Event(
-                        rs.getInt("EventId"),
-                        rs.getString("Location"),
-                        rs.getString("Date"),
-                        rs.getString("StartTime"),
-                        rs.getString("EndTime"),
-                        rs.getString("Note"),
-                        rs.getInt("Price"),
-                        rs.getString("Location_Guidance"),
-                        rs.getString("EventName")
+                    rs.getString("Location"),
+                    rs.getString("Date"),
+                    rs.getString("StartTime"),
+                    rs.getString("EndTime"),
+                    rs.getString("Note"),
+                    rs.getInt("Price"),
+                    rs.getString("Location_Guidance"),
+                    rs.getString("EventName"),
+                    rs.getInt("EventId")
                 );
                 eventList.add(event);
             }
@@ -142,7 +171,7 @@ public class EventDAO {
         String sql = "INSERT INTO EventUser (EventId, UserId) VALUES (?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -166,7 +195,7 @@ public class EventDAO {
         String sql = "DELETE FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -190,7 +219,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM Event WHERE EventId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             return stmt.executeQuery().next(); //If the rows exits, returns true
@@ -205,7 +234,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM LoginInfo WHERE UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, userId);
             return stmt.executeQuery().next(); //returns if the row exists
@@ -220,7 +249,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1,eventId);
             stmt.setInt(2,userId);
@@ -240,7 +269,7 @@ public class EventDAO {
         String sql = "INSERT INTO ChangeLog (TableName, ActionType, EventId, UserId) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, tableName);
             stmt.setString(2, actionType);
@@ -267,8 +296,8 @@ public class EventDAO {
         String sql = "SELECT * FROM ChangeLog ORDER BY ChangeTimestamp DESC";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
 
             System.out.println("=== Change History ===");
             while (rs.next()) {

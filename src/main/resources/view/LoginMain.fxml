@@ -4,14 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <HBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.LoginController">
 
    <!-- Left side: Background image -->
    <StackPane prefWidth="300" prefHeight="500">
-      <ImageView fx:id="backgroundView" fitWidth="300" fitHeight="500" preserveRatio="false"/>
+      <ImageView fx:id="backgroundView" fitWidth="300" fitHeight="500"/>
    </StackPane>
 
    <!-- Right side: Login form -->
@@ -21,7 +20,7 @@
             <Insets top="30" right="30" bottom="30" left="30"/>
          </padding>
 
-         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: white;"/>
+         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: #63666A;"/>
 
          <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
 

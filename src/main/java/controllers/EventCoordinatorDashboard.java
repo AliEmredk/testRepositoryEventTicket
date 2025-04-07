@@ -11,7 +11,7 @@ public class EventCoordinatorDashboard extends BaseDashboard {
     private Pane ticketPane;
 
     @Override
-    protected void addCustomButtons(VBox sidebar, StackPane contentArea) {
+    protected void addCustomButtons(VBox customButtons, StackPane contentArea) {
         ticketBtn = createSidebarButton("🎫", "Ticket Management");
         TicketManagementController ticketController = new TicketManagementController();
         ticketPane = ticketController.loadTicketManagerView();
@@ -21,10 +21,16 @@ public class EventCoordinatorDashboard extends BaseDashboard {
 
         ticketBtn.setOnAction(e -> {
             switchPane(ticketPane);
-            setActiveButton(ticketBtn, eventsBtn, ticketBtn, settingsBtn);
+            setActiveButton(ticketBtn, eventsBtn, settingsBtn, ticketBtn);
         });
 
-        int insertAfterEventsBtn = sidebar.getChildren().indexOf(eventsBtn) + 1;
-        sidebar.getChildren().add(insertAfterEventsBtn, ticketBtn);
+        // Add the button before settingsBtn visually
+        int settingsIndex = customButtons.getChildren().indexOf(settingsBtn);
+        if (settingsIndex >= 0) {
+            customButtons.getChildren().add(settingsIndex, ticketBtn);
+        } else {
+            customButtons.getChildren().add(ticketBtn);
+        }
     }
 }
+
