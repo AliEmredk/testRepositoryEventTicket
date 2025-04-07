@@ -21,7 +21,7 @@
             <Insets top="30" right="30" bottom="30" left="30"/>
          </padding>
 
-         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: white;"/>
+         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: #63666A;"/>
 
          <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
 
