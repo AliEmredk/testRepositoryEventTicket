@@ -10,11 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import controllers.EventCoordinatorDashboard;
 import controllers.AdminDashboard;
 
 public class LoginController {
+    @FXML public VBox loginContainer;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private TextField visiblePasswordField;
