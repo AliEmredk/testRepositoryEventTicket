@@ -1,14 +1,22 @@
 package dk.easv;
 
+import bll.UserSession;
 import dal.UserDAO;
 import be.User;
+import java.net.URL;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class SettingsView extends StackPane {
 
@@ -78,11 +86,40 @@ public class SettingsView extends StackPane {
 
             user.setPassword(newPassword);
             dao.updatePassword(user);
-            showAlert(Alert.AlertType.INFORMATION, "Password updated successfully.");
 
+            // Clear the fields first
             currentPass.clear();
             newPass.clear();
             confirmPass.clear();
+
+            //Now show the success message
+            showAlert(Alert.AlertType.INFORMATION, "Password updated successfully. You will be logged out of the application.");
+
+            //App logs user out and goes back to the login screen
+            try {
+                UserSession.clearSession();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginMain.fxml"));
+                Parent loginRoot = loader.load();
+
+                Scene loginScene = new Scene(loginRoot, 700, 500);
+                URL cssUrl = getClass().getResource("/view/loginstyle.css");
+                if (cssUrl != null) {
+                    loginScene.getStylesheets().add(cssUrl.toExternalForm());
+                }
+
+                Stage loginStage = new Stage();
+                loginStage.setTitle("Login");
+                loginStage.setScene(loginScene);
+                loginStage.show();
+
+                // Close current stage
+                Stage currentStage = (Stage) saveBtn.getScene().getWindow();
+                currentStage.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Something went wrong logging out.");
+            }
         });
 
         container.getChildren().addAll(title, usernameField, currentPass, newPass, confirmPass, saveBtn);
