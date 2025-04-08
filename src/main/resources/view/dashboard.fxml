@@ -7,17 +7,19 @@
     <left>
         <VBox fx:id="sidebar" spacing="15" alignment="TOP_CENTER" prefWidth="200" styleClass="sidebar">
             <ImageView fx:id="logoView" fitWidth="150" preserveRatio="true" />
-            <Button fx:id="eventsBtn" text="📅  View Events" styleClass="sidebar-button" />
 
-            <!-- All dynamic buttons go here, including Settings -->
-            <VBox fx:id="customButtons">
-                <Button fx:id="settingsBtn" text="🔧  Settings" styleClass="sidebar-button" />
+            <!-- All sidebar buttons go here -->
+            <VBox fx:id="customButtons" spacing="10">
+                <Button fx:id="eventsBtn" text="📅 View Events" styleClass="sidebar-button" />
+                <Button fx:id="settingsBtn" text="🔧 Settings" styleClass="sidebar-button" />
             </VBox>
 
             <Region VBox.vgrow="ALWAYS" />
+
             <Button fx:id="signOutBtn" text="🚪 Sign Out" styleClass="signout-button" />
         </VBox>
     </left>
+
     <center>
         <StackPane fx:id="contentArea" styleClass="content-area" />
     </center>
