@@ -32,7 +32,7 @@ public class BarCodeGenerator {
 
         return baos.toByteArray();
     }
-
+ 
     // method to create a unique code in UUID
     private static String generateUniqueString() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();

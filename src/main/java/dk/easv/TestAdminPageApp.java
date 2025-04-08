@@ -27,14 +27,14 @@ public class TestAdminPageApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        TicketDAO ticketDAO = new TicketDAO();
-        Ticket myTicket = new Ticket(0,"Normal Ticket", 34,"44ffef",5,"Don't Know", "Sakarya","Today","Tomorrow","Have fun!", "Come plz", 10, "Emre", "Uzunoglu","emre@gjail.com");
-        int ticketId = ticketDAO.saveTicket(myTicket);
+//        TicketDAO ticketDAO = new TicketDAO();
+//        Ticket myTicket = new Ticket(0,"Normal Ticket", 34,"44ffef",5,"Don't Know", "Sakarya","Today","Tomorrow","Have fun!", "Come plz", 10, "Emre", "Uzunoglu","emre@gjail.com");
+//        int ticketId = ticketDAO.saveTicket(myTicket);
 
-        if (ticketId != -1) {
-            ticketDAO.saveBarcode(ticketId, barcodeNumber);
-        } else {
-            System.out.println("Failed to save ticket");
-        }
+//        if (ticketId != -1) {
+//            ticketDAO.saveBarcode(ticketId, barcodeNumber);
+//        } else {
+//            System.out.println("Failed to save ticket");
+//        }
     }
 }
