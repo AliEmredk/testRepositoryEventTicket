@@ -73,11 +73,11 @@ public abstract class BaseDashboard {
                     Parent loginRoot = loginLoader.load();
                     Scene loginScene = new Scene(loginRoot, 700, 500);
 
-                    URL cssUrl = getClass().getResource("/view/loginstyle");
+                    URL cssUrl = getClass().getResource("/view/loginstyle.css");
                     if (cssUrl != null) loginScene.getStylesheets().add(cssUrl.toExternalForm());
 
                     Stage loginStage = new Stage();
-                    loginStage.setTitle("Glassmorphic Login UI");
+                    loginStage.setTitle("Login");
                     loginStage.setScene(loginScene);
                     loginStage.show();
 
@@ -192,13 +192,16 @@ public abstract class BaseDashboard {
 
                 Scene loginScene = new Scene(loginRoot, 700, 500);
 
-                URL cssUrl = getClass().getResource("/view/loginstyle");
+                URL cssUrl = getClass().getResource("/view/loginstyle.css");
                 if (cssUrl != null) {
+                    System.out.println("CSS loaded: " + cssUrl);
                     loginScene.getStylesheets().add(cssUrl.toExternalForm());
+                } else {
+                    System.out.println("⚠ CSS file not found at /view/loginstyle.css");
                 }
 
                 Stage loginStage = new Stage();
-                loginStage.setTitle("Glassmorphic Login UI");
+                loginStage.setTitle("");
                 loginStage.setScene(loginScene);
                 loginStage.show();
 

@@ -14,7 +14,7 @@ public class UserDAO {
     private final DBAccess dbAccess = new DBAccess();
 
     public void addUser(User user) {
-        String sql = "INSERT INTO LoginInfo (Username, Password, Role) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -22,6 +22,7 @@ public class UserDAO {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getRole());
+            stmt.setString(4, user.getProfileImagePath());
 
             stmt.executeUpdate();
             System.out.println("User added successfully");
@@ -41,9 +42,12 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new User(rs.getString("Username"),
+                return new User(
+                        rs.getString("Username"),
                         rs.getString("Password"),
-                        rs.getString("Role"));
+                        rs.getString("Role"),
+                        rs.getString("ProfileImagePath")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,7 +55,6 @@ public class UserDAO {
         return null;
     }
 
-    // Retrieve all users
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM LoginInfo";
@@ -61,7 +64,12 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                userList.add(new User(rs.getString("Username"), rs.getString("Password"), rs.getString("Role")));
+                userList.add(new User(
+                        rs.getString("Username"),
+                        rs.getString("Password"),
+                        rs.getString("Role"),
+                        rs.getString("ProfileImagePath")
+                ));
             }
 
         } catch (SQLException e) {
@@ -85,7 +93,6 @@ public class UserDAO {
         }
     }
 
-    // List all the event coordinators
     public List<User> getAllEventCoordinators() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM LoginInfo WHERE Role = 'Event Coordinator'";
@@ -95,14 +102,18 @@ public class UserDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                userList.add(new User(rs.getString("Username"), rs.getString("Password"), rs.getString("Role")));
+                userList.add(new User(
+                        rs.getString("Username"),
+                        rs.getString("Password"),
+                        rs.getString("Role"),
+                        rs.getString("ProfileImagePath")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return userList;
     }
-
 
     public void updatePassword(User user) {
         String sql = "UPDATE LoginInfo SET Password = ? WHERE Username = ?";
@@ -120,4 +131,42 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+
+    public void updateProfileImage(User user) {
+        String sql = "UPDATE LoginInfo SET ProfileImagePath = ? WHERE Username = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getProfileImagePath());
+            stmt.setString(2, user.getUsername());
+
+            stmt.executeUpdate();
+            System.out.println("Profile image updated for user: " + user.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUser(User updatedUser, String originalUsername) {
+        String sql = "UPDATE LoginInfo SET Username = ?, Password = ?, Role = ?, ProfileImagePath = ? WHERE Username = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, updatedUser.getUsername());
+            stmt.setString(2, updatedUser.getPassword());
+            stmt.setString(3, updatedUser.getRole());
+            stmt.setString(4, updatedUser.getProfileImagePath());
+            stmt.setString(5, originalUsername);
+
+            stmt.executeUpdate();
+            System.out.println("User updated in database: " + originalUsername + " → " + updatedUser.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+

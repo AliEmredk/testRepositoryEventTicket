@@ -1,40 +1,124 @@
 package controllers;
 
 import be.User;
+import dal.UserDAO;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.net.URL;
 
 public class UserManagementController {
 
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> roleFilter;
-    @FXML private TableView<User> userTable;
-    @FXML private TableColumn<User, Integer> idColumn;
-    @FXML private TableColumn<User, String> nameColumn;
-    @FXML private TableColumn<User, String> roleColumn;
-    @FXML private TableColumn<User, Void> actionsColumn;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> roleFilter;
+    @FXML
+    private TableView<User> userTable;
+    @FXML
+    private TableColumn<User, String> profileColumn;
+    @FXML
+    private TableColumn<User, String> nameColumn;
+    @FXML
+    private TableColumn<User, String> roleColumn;
+    @FXML
+    private TableColumn<User, Void> actionsColumn;
 
-    private ObservableList<User> masterUserList = FXCollections.observableArrayList();
+    private final ObservableList<User> masterUserList = FXCollections.observableArrayList();
+    private final UserDAO userDAO = new UserDAO();
+    private final String DEFAULT_AVATAR_PATH = "/images/profileImageTest.png";
+
+    private static UserManagementController instance;
+
+    public UserManagementController() {
+        instance = this;
+    }
+
+    public static void refreshIfOpen() {
+        if (instance != null) {
+            instance.refreshUserList();
+        }
+    }
 
     @FXML
     public void initialize() {
-        idColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getUser_Id()).asObject());
-        nameColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getUsername()));
-        roleColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getRole()));
+        setupProfileColumn();
 
-        masterUserList.addAll(
-                new User(1, "Eve Wilder", "pass", "Admin"),
-                new User(2, "Zayne Frost", "frosty", "Event Coordinator")
-        );
+        profileColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getProfileImagePath()));
+        nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
+        roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getRole()));
 
-        userTable.setItems(masterUserList);
+        roleFilter.getItems().clear();
+        roleFilter.getItems().addAll("All Roles", "Admin", "Event Coordinator");
+        roleFilter.setValue("All Roles");
+
+        refreshUserList();
+
         roleFilter.setOnAction(e -> applyFilters());
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
 
         addActionButtons();
+    }
+
+    private void setupProfileColumn() {
+        profileColumn.setCellFactory(col -> new TableCell<>() {
+            private final ImageView imageView = new ImageView();
+            private final StackPane centeredBox = new StackPane(imageView);
+
+            {
+                imageView.setFitWidth(32);
+                imageView.setFitHeight(32);
+                centeredBox.setPrefSize(50, 40);
+            }
+
+            @Override
+            protected void updateItem(String path, boolean empty) {
+                super.updateItem(path, empty);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Image img;
+                try {
+                    File file = (path == null) ? null : new File(path.replace("\\", "/"));
+
+                    if (file == null || !file.exists()) {
+                        URL imageUrl = getClass().getResource(DEFAULT_AVATAR_PATH);
+                        if (imageUrl != null) {
+                            img = new Image(imageUrl.toExternalForm(), 32, 32, true, true);
+                        } else {
+                            setGraphic(null);
+                            return;
+                        }
+                    } else {
+                        img = new Image("file:" + file.getAbsolutePath(), 32, 32, true, true);
+                    }
+
+                    imageView.setImage(img);
+                    imageView.setClip(new Circle(16, 16, 16));
+                    setGraphic(centeredBox);
+
+                } catch (Exception e) {
+                    setGraphic(null);
+                }
+            }
+        });
     }
 
     private void applyFilters() {
@@ -45,7 +129,7 @@ public class UserManagementController {
 
         for (User user : masterUserList) {
             boolean matchesSearch = user.getUsername().toLowerCase().contains(search);
-            boolean matchesRole = selectedRole == null || selectedRole.equals("All Roles") || user.getRole().equals(selectedRole);
+            boolean matchesRole = selectedRole.equals("All Roles") || user.getRole().equalsIgnoreCase(selectedRole);
 
             if (matchesSearch && matchesRole) {
                 filtered.add(user);
@@ -53,6 +137,7 @@ public class UserManagementController {
         }
 
         userTable.setItems(filtered);
+        addActionButtons();
     }
 
     private void addActionButtons() {
@@ -63,13 +148,13 @@ public class UserManagementController {
             {
                 editBtn.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
-                    System.out.println("Edit user: " + user.getUsername());
+                    openEditUserWindow(user);
                 });
 
                 deleteBtn.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
-                    System.out.println("Delete user: " + user.getUsername());
                     masterUserList.remove(user);
+                    userDAO.deleteUser(user.getUsername());
                     applyFilters();
                 });
             }
@@ -80,15 +165,125 @@ public class UserManagementController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox hbox = new HBox(10, editBtn, deleteBtn);
-                    setGraphic(hbox);
+                    setGraphic(new HBox(10, editBtn, deleteBtn));
                 }
             }
         });
     }
 
+    public void refreshUserList() {
+        masterUserList.setAll(userDAO.getAllUsers());
+        applyFilters();
+        userTable.refresh();
+    }
+
     @FXML
     private void handleAddUser() {
-        System.out.println("Add User Clicked");
+        openAddUserWindow();
+    }
+
+    private void openAddUserWindow() {
+        Stage addUserStage = new Stage();
+        addUserStage.initModality(Modality.APPLICATION_MODAL);
+        addUserStage.setTitle("Add User");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Username");
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+
+        ComboBox<String> roleBox = new ComboBox<>();
+        roleBox.getItems().addAll("Admin", "Event Coordinator");
+        roleBox.setPromptText("Select Role");
+
+        Button saveBtn = new Button("Save");
+        saveBtn.setOnAction(e -> {
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText().trim();
+            String role = roleBox.getValue();
+
+            if (username.isEmpty() || password.isEmpty() || role == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+
+            User newUser = new User(username, password, role);
+            userDAO.addUser(newUser);
+            refreshUserList();
+            addUserStage.close();
+        });
+
+        vbox.getChildren().addAll(new Label("Username:"), usernameField,
+                new Label("Password:"), passwordField,
+                new Label("Role:"), roleBox,
+                saveBtn);
+
+        Scene scene = new Scene(vbox, 300, 250);
+        addUserStage.setScene(scene);
+        addUserStage.show();
+    }
+
+    private void openEditUserWindow(User user) {
+        Stage editStage = new Stage();
+        editStage.initModality(Modality.APPLICATION_MODAL);
+        editStage.setTitle("Edit User: " + user.getUsername());
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        String originalUsername = user.getUsername(); // Store before editing
+
+        TextField usernameField = new TextField(user.getUsername());
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setText(user.getPassword());
+        passwordField.setEditable(false);
+
+        TextField passwordTextField = new TextField(user.getPassword());
+        passwordTextField.setManaged(false);
+        passwordTextField.setVisible(false);
+
+        StackPane passwordStack = new StackPane(passwordField, passwordTextField);
+        passwordStack.setMaxWidth(Double.MAX_VALUE);
+
+        CheckBox showPassword = new CheckBox("Show Password");
+        showPassword.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            passwordField.setVisible(!isSelected);
+            passwordField.setManaged(!isSelected);
+            passwordTextField.setVisible(isSelected);
+            passwordTextField.setManaged(isSelected);
+        });
+
+        Button saveBtn = new Button("Save Changes");
+        saveBtn.setOnAction(e -> {
+            String newUsername = usernameField.getText().trim();
+            String password = showPassword.isSelected() ? passwordTextField.getText().trim() : passwordField.getText().trim();
+
+            if (!newUsername.isEmpty() && password != null) {
+                user.setUsername(newUsername);
+                user.setPassword(password); // Optional: update only if you allow it
+                userDAO.updateUser(user, originalUsername);
+                refreshUserList();
+                editStage.close();
+            }
+        });
+
+        vbox.getChildren().addAll(
+                new Label("Edit Username:"), usernameField,
+                new Label("Password:"), passwordStack,
+                showPassword,
+                saveBtn
+        );
+
+        Scene scene = new Scene(vbox, 300, 250);
+        editStage.setScene(scene);
+        editStage.show();
     }
 }

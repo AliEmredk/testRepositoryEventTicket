@@ -16,7 +16,7 @@ public class AdminDashboard extends BaseDashboard {
     @Override
     protected void addCustomButtons(VBox customButtons, StackPane contentArea) {
         // Create "User Management" sidebar button
-        userManagementBtn = createSidebarButton("👥", "User Management");
+        userManagementBtn = createSidebarButton("👥", "User");
 
         // Load the actual FXML-based user management view
         try {

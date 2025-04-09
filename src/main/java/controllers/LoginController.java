@@ -1,5 +1,3 @@
-
-
 package controllers;
 
 import bll.LoginCheck;
@@ -12,47 +10,56 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import controllers.EventCoordinatorDashboard;
-import controllers.AdminDashboard;
 
 public class LoginController {
+
     @FXML public VBox loginContainer;
+
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private TextField visiblePasswordField;
+    @FXML private Button togglePasswordVisibility;
     @FXML private Button loginButton;
     @FXML private ImageView backgroundView;
 
     private final LoginCheck loginCheck = new LoginCheck();
-
-    @FXML private Button togglePasswordVisibility;
+    private boolean isPasswordVisible = false;
 
     @FXML
     private void initialize() {
-        // background image and blur
+        // Background image and blur
         Image image = new Image(getClass().getResource("/images/easvticket.jpg").toExternalForm());
         backgroundView.setImage(image);
-        backgroundView.setEffect(new GaussianBlur(20));
+        backgroundView.setEffect(new GaussianBlur(10));
 
-        // toggle eye behavior
-        visiblePasswordField.managedProperty().bind(visiblePasswordField.visibleProperty());
+        // Initial visibility: show password field (dots), hide text field
+        isPasswordVisible = false;
+        passwordField.setVisible(true);
+        visiblePasswordField.setVisible(false);
+
         passwordField.managedProperty().bind(passwordField.visibleProperty());
+        visiblePasswordField.managedProperty().bind(visiblePasswordField.visibleProperty());
 
+        // Sync text
         visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
 
+        // Toggle visibility
         togglePasswordVisibility.setOnAction(e -> {
-            boolean isVisible = visiblePasswordField.isVisible();
-            visiblePasswordField.setVisible(!isVisible);
-            passwordField.setVisible(isVisible);
-            togglePasswordVisibility.setText(isVisible ? "👁" : "🙈");
+            isPasswordVisible = !isPasswordVisible;
+            visiblePasswordField.setVisible(isPasswordVisible);
+            passwordField.setVisible(!isPasswordVisible);
+            togglePasswordVisibility.setText(isPasswordVisible ? "🙈" : "👁");
         });
 
+        // Login button
         loginButton.setOnAction(e -> handleLogin());
     }
 
     private void handleLogin() {
         String username = usernameField.getText();
-        String password = visiblePasswordField.isVisible() ? visiblePasswordField.getText() : passwordField.getText();
+        String password = isPasswordVisible
+                ? visiblePasswordField.getText()
+                : passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
             showAlert("Please fill in both fields.");
@@ -70,14 +77,14 @@ public class LoginController {
                 UserSession.setRole("Event Coordinator");
                 openEventCoordinatorDashboard();
             }
-            case "User not found", "Wrong password", "Unknown" -> showAlert(result);
+            case "Wrong username", "Wrong password", "Unknown" -> showAlert(result);
         }
     }
 
     private void openAdminDashboard() {
         Platform.runLater(() -> {
             Stage stage = new Stage();
-            new controllers.AdminDashboard().start(stage);
+            new AdminDashboard().start(stage);
             closeCurrentStage();
         });
     }
