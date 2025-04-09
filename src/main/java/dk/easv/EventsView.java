@@ -91,7 +91,7 @@ public class EventsView extends StackPane {
 
         // Handle Filtering
         ComboBox<String> filterComboBox = new ComboBox<>();
-        filterComboBox.getItems().addAll("Free Events", "Paid Events", "Today’s Events", "By Location", "By Price");
+        filterComboBox.getItems().addAll("Free Events", "Paid Events", "Today’s Events");
         filterComboBox.setOnAction(e -> {
             String filter = filterComboBox.getValue();
             eventMainController.filterEvents(filter);  // Delegate filter action to the controller
