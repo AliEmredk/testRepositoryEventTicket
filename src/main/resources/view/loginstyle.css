@@ -24,7 +24,7 @@
 /* -------------------------- */
 /* ✅ TEXT FIELDS             */
 /* -------------------------- */
-.text-field, .password-field {7
+.text-field, .password-field {
     -fx-background-color: rgba(255, 255, 255, 0.15);
     -fx-background-radius: 25;
     -fx-border-radius: 25;
@@ -74,5 +74,4 @@
     -fx-cursor: hand;
     -fx-alignment: center;
     -fx-border-color: transparent;
-}
 }
