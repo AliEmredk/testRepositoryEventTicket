@@ -15,22 +15,56 @@
 
    <!-- Right side: Login form -->
    <StackPane prefWidth="400" prefHeight="500">
-      <VBox fx:id="loginContainer" alignment="CENTER" spacing="15">
+      <VBox fx:id="loginContainer" alignment="CENTER" spacing="20">
          <padding>
             <Insets top="30" right="30" bottom="30" left="30"/>
          </padding>
 
-         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: #63666A;"/>
+         <!-- Welcome text -->
+         <Label text="Welcome" style="-fx-font-size: 28px; -fx-text-fill: #b0b0b0;" />
 
-         <TextField fx:id="usernameField" promptText="Username" maxWidth="250"/>
+         <!-- Username Field centered and nudged -->
+         <HBox alignment="CENTER" prefWidth="300">
+            <HBox spacing="0" alignment="CENTER_LEFT" translateX="10">
+               <StackPane alignment="CENTER_LEFT" prefWidth="220">
+                  <TextField fx:id="usernameField"
+                             promptText="Username"
+                             prefWidth="220"/>
+               </StackPane>
+               <Region prefWidth="40"/>
+            </HBox>
+         </HBox>
 
-         <PasswordField fx:id="passwordField" promptText="Password" maxWidth="250"/>
-         <TextField fx:id="visiblePasswordField" promptText="Password" visible="false" managed="false" maxWidth="250"/>
+         <!-- Password Field + Toggle centered and nudged -->
+         <HBox alignment="CENTER" prefWidth="300">
+            <HBox spacing="0" alignment="CENTER_LEFT" translateX="10">
+               <StackPane alignment="CENTER_LEFT" prefWidth="220">
+                  <PasswordField fx:id="passwordField"
+                                 promptText="Password"
+                                 prefWidth="220"/>
+                  <TextField fx:id="visiblePasswordField"
+                             promptText="Password"
+                             visible="false" managed="false"
+                             prefWidth="220"/>
+               </StackPane>
+               <Button fx:id="togglePasswordVisibility"
+                       text="👁"
+                       focusTraversable="false"
+                       styleClass="toggle-eye"
+                       prefWidth="40" prefHeight="40"/>
+            </HBox>
+         </HBox>
 
-         <Button fx:id="togglePasswordVisibility" text="👁" focusTraversable="false" style="-fx-background-color: transparent; -fx-text-fill: #A9A9A9; -fx-font-size: 26px; -fx-cursor: hand;"/>
+         <!-- Spacer -->
+         <Region prefHeight="10"/>
 
-         <Button fx:id="loginButton" text="Log in" maxWidth="250"/>
+         <!-- Login Button (already centered) -->
+         <Button fx:id="loginButton"
+                 text="Log in"
+                 prefWidth="160"
+                 minWidth="160"
+                 maxWidth="160"
+                 prefHeight="40"/>
       </VBox>
    </StackPane>
 </HBox>
-

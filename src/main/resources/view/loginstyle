@@ -1,33 +1,78 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.label {
+    -fx-text-fill: #FFB300; /* warm orange-yellow */
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* -------------------------- */
+/* ✅ CONTAINER (Glass)       */
+/* -------------------------- */
 #loginContainer {
-    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-color: rgba(255, 255, 255, 0.10);
     -fx-background-radius: 20px;
-    -fx-border-color: rgba(255, 255, 255, 0.3);
-    -fx-border-width: 2px;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 20px;
     -fx-padding: 30px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 18, 0.3, 0, 4);
 }
 
-.text-field, .password-field {
-    -fx-pref-width: 250px;
-    -fx-font-size: 16px;
-    -fx-background-radius: 25px;
-    -fx-padding: 10px;
-    -fx-border-color: rgba(255, 255, 255, 0.5);
-    -fx-border-width: 2px;
+/* -------------------------- */
+/* ✅ TEXT FIELDS             */
+/* -------------------------- */
+.text-field, .password-field {7
     -fx-background-color: rgba(255, 255, 255, 0.15);
-    -fx-text-fill: #63666A;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: #d3d3d3; /* light grey */
+    -fx-border-width: 2;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
 }
 
+/* Blue glow on focus */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #1E90FF;
+    -fx-effect: dropshadow(three-pass-box, #1E90FF, 10, 0.3, 0, 0);
+}
+
+/* -------------------------- */
+/* ✅ LOGIN BUTTON            */
+/* -------------------------- */
 #loginButton {
     -fx-background-color: #1E90FF;
-    -fx-text-fill: #63666A;
+    -fx-text-fill: #FFB300;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-background-radius: 25px;
     -fx-pref-width: 250px;
     -fx-pref-height: 50px;
-    -fx-border-color: rgba(255, 255, 255, 0.3);
-    -fx-border-width: 2px;
+    -fx-border-color: transparent;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 3);
+    -fx-effect: none;
+}
+
+#loginButton:hover {
+    -fx-background-color: #FFB300;
+    -fx-text-fill: #1E90FF;
+    -fx-effect: dropshadow(three-pass-box, #FFB300, 10, 0.3, 0, 0);
+}
+
+/* -------------------------- */
+/* ✅ PASSWORD TOGGLE ICON    */
+/* -------------------------- */
+.toggle-eye {
+    -fx-background-color: transparent;
+    -fx-text-fill: #A9A9A9;
+    -fx-font-size: 22px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-border-color: transparent;
+}
 }

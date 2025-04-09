@@ -12,7 +12,6 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/view/LoginMain.fxml"));
         Scene scene = new Scene(root, 700, 500);
         scene.getStylesheets().add(getClass().getResource("/view/loginstyle").toExternalForm());
-        primaryStage.setTitle("EASV Ticket Management System Login");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

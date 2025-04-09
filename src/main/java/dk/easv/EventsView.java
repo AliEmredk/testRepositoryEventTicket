@@ -11,10 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -47,38 +44,18 @@ public class EventsView extends StackPane {
 
         HBox topBar = new HBox(10);
         topBar.setAlignment(Pos.CENTER_LEFT);
+        topBar.setPadding(new Insets(0,0,10,0));
 
-        Button addEventBtn = new Button("Add Event");
+        Button addEventBtn = new Button("Add");
         addEventBtn.setOnAction(e -> openAddEventWindow());
 
-        editEventBtn = new Button("Edit Event");
+        editEventBtn = new Button("Edit");
         editEventBtn.setDisable(true);
         editEventBtn.setOnAction(e -> openEditEventWindow());
 
-        deleteEventBtn = new Button("Delete Event");
+        deleteEventBtn = new Button("Delete");
         deleteEventBtn.setDisable(true);
         deleteEventBtn.setOnAction(e -> openDeleteEventWindow());
-
-        TextField searchField = new TextField();
-        searchField.setPromptText("Search events...");
-        Button searchBtn = new Button("\uD83D\uDD0E"); //Magnifying Glass Emoji/Icon
-
-        if(this.role.equals("Admin")) {
-            addEventBtn.setVisible(false);
-            addEventBtn.setManaged(false);
-        }
-
-        topBar.getChildren().addAll(addEventBtn, deleteEventBtn, searchField, searchBtn);
-
-        searchBtn.setOnAction(e -> {
-            String searchQuery = searchField.getText();
-            eventMainController.searchEvents(searchQuery);  // Delegate to the controller
-            refreshEventList();  // Refresh the list to display the filtered events
-        });
-        if(this.role.equals("Admin")) {
-            editEventBtn.setVisible(false);
-            editEventBtn.setManaged(false);
-        }
 
         // Handle Sorting
         ComboBox<String> sortComboBox = new ComboBox<>();
@@ -98,23 +75,44 @@ public class EventsView extends StackPane {
             refreshEventList();  // Refresh list after filtering
         });
 
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search events...");
+        Button searchBtn = new Button("\uD83D\uDD0E"); //Magnifying Glass Emoji/Icon
+
+        if(this.role.equals("Admin")) {
+            addEventBtn.setVisible(false);
+            addEventBtn.setManaged(false);
+        }
+
+        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, sortComboBox, filterComboBox, searchField, searchBtn);
+
+        searchBtn.setOnAction(e -> {
+            String searchQuery = searchField.getText();
+            eventMainController.searchEvents(searchQuery);  // Delegate to the controller
+            refreshEventList();  // Refresh the list to display the filtered events
+        });
+        if(this.role.equals("Admin")) {
+            editEventBtn.setVisible(false);
+            editEventBtn.setManaged(false);
+        }
+
         // Pagination controls
-        Button btnNextPage = new Button("Next");
-        Button btnPrevPage = new Button("Previous");
-        btnNextPage.setOnAction(e -> {
-            eventMainController.nextPage();
-            refreshEventList();
-        });
-        btnPrevPage.setOnAction(e -> {
-            eventMainController.previousPage();
-            refreshEventList();
-        });
+//        Button btnNextPage = new Button("Next");
+//        Button btnPrevPage = new Button("Previous");
+//        btnNextPage.setOnAction(e -> {
+//            eventMainController.nextPage();
+//            refreshEventList();
+//        });
+//        btnPrevPage.setOnAction(e -> {
+//            eventMainController.previousPage();
+//            refreshEventList();
+//        });
         // topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
 
         eventContainer = new TilePane();
         eventContainer.setHgap(10);
         eventContainer.setVgap(10);
-        eventContainer.setPrefColumns(3);
+        eventContainer.setPrefColumns(2);
         eventContainer.setPadding(new Insets(10));
 
         refreshEventList();
@@ -127,9 +125,13 @@ public class EventsView extends StackPane {
         ScrollPane scrollPane = new ScrollPane(eventContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(600);
+
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
         scrollPane.setStyle("-fx-background: white;");
 
-        eventsPane.getChildren().addAll(topBar, sortComboBox, filterComboBox, searchField, searchBtn, scrollPane, btnNextPage, btnPrevPage);
+        eventsPane.getChildren().addAll(topBar, scrollPane);
 
         this.getChildren().add(eventsPane);
     }
@@ -141,6 +143,9 @@ public class EventsView extends StackPane {
         card.setPadding(new Insets(10));
         card.setSpacing(5);
         card.setAlignment(Pos.CENTER);
+        card.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        card.setMaxWidth(Double.MAX_VALUE);
+        VBox.setVgrow(card, Priority.ALWAYS);
         card.setStyle("""
                 -fx-background-color: #FFECB3;
                 -fx-border-radius: 10;
@@ -301,6 +306,8 @@ public class EventsView extends StackPane {
         priceField.setPromptText("Price");
         TextField locationGuidanceField = new TextField(selectedEvent.getLocation_Guidance());
         locationGuidanceField.setPromptText("Location Guidance");
+        ListView<User> coordinatorListView = new ListView<>();
+
 
         Button saveBtn = new Button("Save Changes");
         saveBtn.setOnAction(e -> {
