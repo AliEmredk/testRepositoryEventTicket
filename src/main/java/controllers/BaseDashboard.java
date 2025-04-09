@@ -77,7 +77,7 @@ public abstract class BaseDashboard {
                     if (cssUrl != null) loginScene.getStylesheets().add(cssUrl.toExternalForm());
 
                     Stage loginStage = new Stage();
-                    loginStage.setTitle("Login");
+                    loginStage.setTitle("");
                     loginStage.setScene(loginScene);
                     loginStage.show();
 
