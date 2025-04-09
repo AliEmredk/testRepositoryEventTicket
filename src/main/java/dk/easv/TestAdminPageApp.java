@@ -1,8 +1,10 @@
 package dk.easv;
 
+import be.CoordinatorAssignment;
 import be.Ticket;
 import bll.BarCodeGenerator;
 import bll.TicketManager;
+import dal.CoordinatorEventDAO;
 import dal.TicketDAO;
 import dal.UserDAO;
 import javafx.application.Application;
@@ -10,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class TestAdminPageApp extends Application {
 
@@ -36,5 +40,26 @@ public class TestAdminPageApp extends Application {
 //        } else {
 //            System.out.println("Failed to save ticket");
 //        }
+
+
+//        CoordinatorEventDAO ce = new CoordinatorEventDAO();
+//        ce.assignCoordinatorToEvent(6,3);
+//        ce.assignCoordinatorToEvent(7,3);
+//        List<String> deneme = ce.getAllAssignedCoordinatorUsernames();
+//        List<CoordinatorAssignment> assignments = ce.getAllCoordinatorAssignments();
+//        for (CoordinatorAssignment s : assignments) {
+//            System.out.println(s);
+//        }
+
+        CoordinatorEventDAO ce = new CoordinatorEventDAO();
+//        int userId = ce.getUserIdByUsername("EC2");
+//        ce.assignCoordinatorToEvent("Erla", 14);
+
+//        int event = ce.getEventIdByEventName("EUFA FINAL LIGE");
+//        System.out.println(event);
+
+        ce.assignCoordinatorToEventByNames("EC4", "Poker Night");
+
+
     }
 }
