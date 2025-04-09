@@ -77,7 +77,7 @@ public abstract class BaseDashboard {
                     if (cssUrl != null) loginScene.getStylesheets().add(cssUrl.toExternalForm());
 
                     Stage loginStage = new Stage();
-                    loginStage.setTitle("Glassmorphic Login UI");
+                    loginStage.setTitle("");
                     loginStage.setScene(loginScene);
                     loginStage.show();
 
@@ -198,7 +198,7 @@ public abstract class BaseDashboard {
                 }
 
                 Stage loginStage = new Stage();
-                loginStage.setTitle("Glassmorphic Login UI");
+                loginStage.setTitle("");
                 loginStage.setScene(loginScene);
                 loginStage.show();
 
