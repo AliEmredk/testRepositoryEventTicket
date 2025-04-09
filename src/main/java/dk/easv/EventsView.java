@@ -381,7 +381,7 @@ public class EventsView extends StackPane {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button closeBtn = new Button("❌");
-        closeBtn.setStyle("-fx-background-color: transparent; -fx-font-size: 14;");
+        closeBtn.setStyle("-fx-background-color: #FF6F61; -fx-font-size: 14;");
         closeBtn.setOnAction(e -> mainLayout.setRight(null)); //Removes sidebar
 
         header.getChildren().addAll(title, spacer, closeBtn);
