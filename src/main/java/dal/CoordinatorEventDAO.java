@@ -303,4 +303,36 @@ public class CoordinatorEventDAO {
             e.printStackTrace();
         }
     }
+
+    //If you logged as event coordinator use this method to assign event coordinators.
+    // You should use the event coordinator you logged as for assigningUsername parameter
+    public void assignCoordinatorToOwnEvents(String assigningUsername, String targetUsername, String eventName) {
+        int assigningUserId = getUserIdByUsername(assigningUsername);
+        int targetUserId = getUserIdByUsername(targetUsername);
+        int eventId = getEventIdByEventName(eventName);
+
+        if (!isCoordinatorAlreadyAssigned(assigningUserId, eventId)) {
+            System.out.println(assigningUsername + " is not assigned to event: " + eventName + ". Cannot assign others' events.");
+            return;
+        }
+
+        if(isCoordinatorAlreadyAssigned(targetUserId, eventId)) {
+            System.out.println(targetUsername + " is already assigned to event: " + eventName);
+            return;
+        }
+
+        String sql = "INSERT INTO CoordinatorEvent (UserId, EventId) VALUES (?, ?)";
+
+        try (Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, targetUserId);
+            stmt.setInt(2, eventId);
+            stmt.executeUpdate();
+
+            System.out.println("Assigned " + targetUsername + " to event: " + eventName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
