@@ -8,7 +8,7 @@
 
             <!-- LEFT: Ticket Preview -->
             <VBox spacing="10" style="-fx-background-color: #fdfdfd; -fx-padding: 20; -fx-border-color: #ccc;">
-                <VBox spacing="10" style="
+                <VBox fx:id="ticketPreviewBox" spacing="10" style="
                         -fx-background-color: white;
                         -fx-padding: 20;
                         -fx-border-color: black;
