@@ -29,7 +29,7 @@
 
         <TableView fx:id="userTable" prefHeight="400">
             <columns>
-                <TableColumn fx:id="idColumn" text="#" prefWidth="50"/>
+                <TableColumn fx:id="profileColumn" text="Avatar" prefWidth="80"/>
                 <TableColumn fx:id="nameColumn" text="Username" prefWidth="150"/>
                 <TableColumn fx:id="roleColumn" text="Role" prefWidth="130"/>
                 <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="130"/>
