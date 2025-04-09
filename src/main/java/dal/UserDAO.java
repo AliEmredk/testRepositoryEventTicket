@@ -13,22 +13,34 @@ public class UserDAO {
 
     private final DBAccess dbAccess = new DBAccess();
 
-    public void addUser(User user) {
-        String sql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
+    public boolean addUser(User user) {
+        String checkSql = "SELECT COUNT(*) FROM LoginInfo WHERE Username = ?";
+        String insertSql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = dbAccess.DBConnection()) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, user.getUsername());
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.out.println("Username already exists");
+                    return false;
+                }
+            }
 
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getRole());
-            stmt.setString(4, user.getProfileImagePath());
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                insertStmt.setString(1, user.getUsername());
+                insertStmt.setString(2, user.getPassword());
+                insertStmt.setString(3, user.getRole());
+                insertStmt.setString(4, user.getProfileImagePath());
 
-            stmt.executeUpdate();
-            System.out.println("User added successfully");
+                insertStmt.executeUpdate();
+                System.out.println("User added successfully");
+                return true;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -149,23 +161,36 @@ public class UserDAO {
         }
     }
 
-    public void updateUser(User updatedUser, String originalUsername) {
-        String sql = "UPDATE LoginInfo SET Username = ?, Password = ?, Role = ?, ProfileImagePath = ? WHERE Username = ?";
+    public boolean updateUser(User updatedUser, String originalUsername) {
+        String checkSql = "SELECT COUNT(*) FROM LoginInfo WHERE Username = ? AND Username != ?";
+        String updateSql = "UPDATE LoginInfo SET Username = ?, Password = ?, Role = ?, ProfileImagePath = ? WHERE Username = ?";
 
-        try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = dbAccess.DBConnection()) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, updatedUser.getUsername());
+                checkStmt.setString(2, originalUsername);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.out.println("Username already exists");
+                    return false;
+                }
+            }
 
-            stmt.setString(1, updatedUser.getUsername());
-            stmt.setString(2, updatedUser.getPassword());
-            stmt.setString(3, updatedUser.getRole());
-            stmt.setString(4, updatedUser.getProfileImagePath());
-            stmt.setString(5, originalUsername);
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                updateStmt.setString(1, updatedUser.getUsername());
+                updateStmt.setString(2, updatedUser.getPassword());
+                updateStmt.setString(3, updatedUser.getRole());
+                updateStmt.setString(4, updatedUser.getProfileImagePath());
+                updateStmt.setString(5, originalUsername);
 
-            stmt.executeUpdate();
-            System.out.println("User updated in database: " + originalUsername + " → " + updatedUser.getUsername());
+                updateStmt.executeUpdate();
+                System.out.println("User updated in database: " + originalUsername + " → " + updatedUser.getUsername());
+                return true;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
