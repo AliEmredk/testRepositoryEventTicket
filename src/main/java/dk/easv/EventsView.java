@@ -116,11 +116,12 @@ public class EventsView extends StackPane {
         eventContainer.setPadding(new Insets(10));
 
         refreshEventList();
-        EventDAO eventDAO = new EventDAO();
-        for (Event event : eventDAO.getAllEvents()) {
-            VBox eventCard = createEventCard(event);
-            eventContainer.getChildren().add(eventCard);
-        }
+        //This part duplicates the Events in the Event list, so it's commented out for now
+//        EventDAO eventDAO = new EventDAO();
+//        for (Event event : eventDAO.getAllEvents()) {
+//            VBox eventCard = createEventCard(event);
+//            eventContainer.getChildren().add(eventCard);
+//        }
 
         ScrollPane scrollPane = new ScrollPane(eventContainer);
         scrollPane.setFitToWidth(true);
