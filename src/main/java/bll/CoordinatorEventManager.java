@@ -9,4 +9,8 @@ public class CoordinatorEventManager {
     public void assignCoordinatorToEventByNames(String coordinatorName, String eventName) {
         coordinatorEventDAO.assignCoordinatorToEventByNames(coordinatorName, eventName);
     }
+
+    public void assignCoordinatorToEventById(int userId, int eventId) {
+        coordinatorEventDAO.assignCoordinatorToEventById(userId, eventId);
+    }
 }

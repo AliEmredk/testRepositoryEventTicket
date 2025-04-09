@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CoordinatorEventDAO {
     private final DBAccess dbAccess = new DBAccess();
 
-    public void assignCoordinatorToEvent(int userId, int eventId) {
+    public void assignCoordinatorToEventById(int userId, int eventId) {
         String sql = "INSERT INTO CoordinatorEvent (UserId, EventId) VALUES (?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
