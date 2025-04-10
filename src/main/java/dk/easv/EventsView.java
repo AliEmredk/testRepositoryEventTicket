@@ -180,6 +180,7 @@ public class EventsView extends StackPane {
     }
 
     private void refreshEventList() {
+        eventMainController.loadEvents();
         eventContainer.getChildren().clear();
         List<Event> filteredEvents = eventMainController.getFilteredEvents();  // Get the filtered list from the controller
         for (Event event : filteredEvents) {
@@ -226,9 +227,17 @@ public class EventsView extends StackPane {
 
         UserDAO userDAO = new UserDAO();
         List<User> coordinators = userDAO.getAllEventCoordinators();
-        ListView<User> coordinatorListView = new ListView<>();
         ObservableList<User> coordinatorObservableList = FXCollections.observableArrayList(coordinators);
+        ListView<User> coordinatorListView = new ListView<>();
         coordinatorListView.setItems(coordinatorObservableList);
+        coordinatorListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        //List<Integer> assignedCoordinatorIds = eventDAO.getCoordinatorIdsForEvent(selectedEvent.getEventId());
+//        for(User user : coordinators) {
+//            if(assignedCoordinatorIds.contains(user.getUser_Id())) {
+//                coordinatorListView.getSelectionModel().select(user);
+//            }
+//        }
 
         Button saveBtn = new Button("Save");
         saveBtn.setOnAction(event -> {
@@ -252,6 +261,7 @@ public class EventsView extends StackPane {
             eventDAO.createEvent(newEvent);
             refreshEventList();
 
+            //eventDAO.clearCoordinatorsForEvent(selectedEvent.getEventId());
             for(User selectedUser : coordinatorListView.getSelectionModel().getSelectedItems()) {
                 eventDAO.assignCoordinatorToEvent(newEvent.getEventId(), selectedUser.getUser_Id());
             }
@@ -364,7 +374,8 @@ public class EventsView extends StackPane {
         confirmAlert.showAndWait().ifPresent(response -> {
             if(response == ButtonType.OK) {
                 EventDAO eventDAO = new EventDAO();
-                eventDAO.deleteEvent(selectedEvent.getEventName());
+                eventDAO.deleteEvent(selectedEvent.getEventId());
+
                 refreshEventList();
             }
             deleteEventBtn.setDisable(true);
