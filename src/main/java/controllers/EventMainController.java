@@ -51,6 +51,7 @@ public class EventMainController {
                 .collect(Collectors.toList());
         events.clear();
         events.addAll(filteredEvents);
+        currentPage = 0;
     }
 
     // Handle sorting

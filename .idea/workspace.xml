@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Small changes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/CoordinatorEventDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/CoordinatorEventDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +48,7 @@
     "Application.TestAdminPageApp.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "emre2",
+    "git-widget-placeholder": "jakub",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master",
@@ -63,7 +61,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.TestAdminPageApp">
+  <component name="RunManager" selected="Application.App">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dk.easv.App" />
       <module name="EASV_Ticket" />
@@ -92,8 +90,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TestAdminPageApp" />
         <item itemvalue="Application.App" />
+        <item itemvalue="Application.TestAdminPageApp" />
       </list>
     </recent_temporary>
   </component>
@@ -210,6 +208,7 @@
     <MESSAGE value="created CoordinatorEventDAO, CoordinatorEventManager I created every kind of method to assign event coordinators to the events. I suggest you to do this using the assignCoordinatorToEventByNames or if you'd like to you are able to assign them by just using ids&#10;I used joint for tables&#10;Added a method to CoordinatorEventManager" />
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created necessary methods to assign event coordinators to the events" />
+    <MESSAGE value="Small changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Small changes." />
   </component>
 </project>
