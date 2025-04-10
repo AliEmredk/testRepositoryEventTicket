@@ -21,8 +21,8 @@ public class EventManagement {
         eventDAO.updateEvent(eventId, updatedEvent);
     }
 
-    public void deleteEvent(String eventName) {
-        eventDAO.deleteEvent(eventName);
+    public void deleteEvent(int eventId) {
+        eventDAO.deleteEvent(eventId);
     }
 
     public void assignCoordinatorToEvent(int eventId, int userId) {
