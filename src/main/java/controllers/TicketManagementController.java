@@ -32,11 +32,11 @@ public class TicketManagementController {
     @FXML
     private ComboBox<Event> eventCombo;
     @FXML
-    private TextField discountField;
-    @FXML
     private Spinner<Integer> amountSpinner;
     @FXML
     private TextArea detailsField;
+    @FXML
+    private TextField emailField;
 
     @FXML
     private Label ticketIdLabel;
@@ -155,7 +155,17 @@ public class TicketManagementController {
 
     @FXML
     private void printTicket() {
+        if (!isValidEmail(emailField.getText())) {
+            showAlert("Invalid Email", "Please enter a valid email address before printing.");
+            return;
+        }
+
         printNode(ticketPreviewBox);
+    }
+
+    private boolean isValidEmail(String email) {
+        if (email == null || email.isEmpty()) return false;
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
     }
 
     private void printNode(Node node) {

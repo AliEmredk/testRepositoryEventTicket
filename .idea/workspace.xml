@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Small changes.">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Small changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +60,11 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "advanced.settings",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="Application.App">
@@ -193,7 +199,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744209596018</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Small changes">
+      <option name="closed" value="true" />
+      <created>1744272931497</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744272931497</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,6 +223,7 @@
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
     <MESSAGE value="Small changes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Small changes." />
+    <MESSAGE value="Small changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small changes" />
   </component>
 </project>
