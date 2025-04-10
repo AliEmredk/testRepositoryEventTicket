@@ -17,15 +17,15 @@
 
             <!-- Sidebar buttons including Sign Out -->
             <VBox fx:id="customButtons" spacing="10" alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
-                <Button fx:id="eventsBtn" text="📅 Events" styleClass="sidebar-button"/>
-                <Button fx:id="settingsBtn" text="🔧 Settings" styleClass="sidebar-button"/>
+                <Button fx:id="eventsBtn" text="📅 Events" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button fx:id="settingsBtn" text="🔧 Settings" styleClass="sidebar-button" maxWidth="Infinity"/>
 
                 <!-- Spacer to push sign-out down -->
                 <Region VBox.vgrow="ALWAYS"/>
 
                 <Button fx:id="signOutBtn"
                         text="🚪 Sign Out"
-                        styleClass="sidebar-button"/>
+                        styleClass="sidebar-button" maxWidth="Infinity"/>
             </VBox>
 
         </VBox>

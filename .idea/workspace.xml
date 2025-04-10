@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Update UserManagement with Status and Button updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/be/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/UserSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/UserSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/UserManagement.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/UserManagement.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/dashboard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/dashboard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744209596018</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Update UserManagement with Status and Button updates">
+      <option name="closed" value="true" />
+      <created>1744312879012</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744312879012</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,6 +223,7 @@
     <MESSAGE value="created CoordinatorEventDAO, CoordinatorEventManager I created every kind of method to assign event coordinators to the events. I suggest you to do this using the assignCoordinatorToEventByNames or if you'd like to you are able to assign them by just using ids&#10;I used joint for tables&#10;Added a method to CoordinatorEventManager" />
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created necessary methods to assign event coordinators to the events" />
+    <MESSAGE value="Update UserManagement with Status and Button updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update UserManagement with Status and Button updates" />
   </component>
 </project>
