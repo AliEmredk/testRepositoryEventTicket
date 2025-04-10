@@ -144,23 +144,6 @@ public class UserDAO {
         }
     }
 
-    public void updateProfileImage(User user) {
-        String sql = "UPDATE LoginInfo SET ProfileImagePath = ? WHERE Username = ?";
-
-        try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, user.getProfileImagePath());
-            stmt.setString(2, user.getUsername());
-
-            stmt.executeUpdate();
-            System.out.println("Profile image updated for user: " + user.getUsername());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public boolean updateUser(User updatedUser, String originalUsername) {
         String checkSql = "SELECT COUNT(*) FROM LoginInfo WHERE Username = ? AND Username != ?";
         String updateSql = "UPDATE LoginInfo SET Username = ?, Password = ?, Role = ?, ProfileImagePath = ? WHERE Username = ?";
