@@ -1,6 +1,7 @@
 package controllers;
 
 import be.User;
+import bll.UserManagement;
 import dal.UserDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -42,6 +43,7 @@ public class UserManagementController {
     private final ObservableList<User> masterUserList = FXCollections.observableArrayList();
     private final UserDAO userDAO = new UserDAO();
     private final String DEFAULT_AVATAR_PATH = "/images/profileImageTest.png";
+    private final UserManagement userManagement = new UserManagement();
 
     private static UserManagementController instance;
 
@@ -221,6 +223,8 @@ public class UserManagementController {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Username already exists", ButtonType.OK);
                 alert.showAndWait();
             }
+
+
         });
 
         vbox.getChildren().addAll(new Label("Username:"), usernameField,
@@ -273,14 +277,15 @@ public class UserManagementController {
             if (!newUsername.isEmpty() && password != null) {
                 user.setUsername(newUsername);
                 user.setPassword(password); // Optional: update only if you allow it
-                boolean success = userDAO.updateUser(user, originalUsername);
-                if (success) {
+                boolean success = userManagement.isUsernameAlreadyUsed(user.getUsername());
+                if (!success) {
                     refreshUserList();
                     editStage.close();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Username already exists", ButtonType.OK);
                     alert.showAndWait();
                 }
+
             }
         });
 
