@@ -1,6 +1,9 @@
 package bll;
 
+import be.CoordinatorAssignment;
 import dal.CoordinatorEventDAO;
+
+import java.util.List;
 
 public class CoordinatorEventManager {
 
@@ -17,4 +20,9 @@ public class CoordinatorEventManager {
     public void assignCoordinatorToOwnEvents(String assigningUsername, String targetUsername, String eventName) {
         coordinatorEventDAO.assignCoordinatorToOwnEvents(assigningUsername, targetUsername, eventName);
     }
+
+    public List<CoordinatorAssignment> getAllCoordinatorAssignments() {
+        return coordinatorEventDAO.getAllCoordinatorAssignments();
+    }
+
 }
