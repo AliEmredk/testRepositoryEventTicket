@@ -1,5 +1,6 @@
 package dk.easv;
 
+import bll.UserManagement;
 import bll.UserSession;
 import dal.UserDAO;
 import be.User;
@@ -8,6 +9,8 @@ import controllers.UserManagementController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -37,8 +40,30 @@ public class SettingsView extends StackPane {
         title.setTextFill(Color.web("#2A0B06"));
 
         TextField usernameField = new TextField();
-        usernameField.setPromptText("Username");
-        styleTextField(usernameField);
+        User currentUser = UserSession.getLoggedInUser();
+
+        if (currentUser != null) {
+            usernameField.setText(currentUser.getUsername());
+        }
+
+        usernameField.setEditable(false);
+        usernameField.setFocusTraversable(false);
+        usernameField.setMouseTransparent(true);
+
+        usernameField.setStyle("""
+    -fx-background-color: #f0f0f0;
+                        -fx-text-fill: #555;
+                        -fx-border-color: #ccc;
+                        -fx-border-radius: 10;
+                        -fx-background-radius: 10;
+                        -fx-font-size: 14px;
+                        -fx-padding: 10px;
+                        -fx-opacity: 1;
+                        -fx-text-inner-color: #888;
+""");
+
+        usernameField.setStyle(usernameField.getStyle() + "-fx-text-inner-color: #888;");
+
 
         PasswordField currentPass = new PasswordField();
         currentPass.setPromptText("Current Password");
@@ -71,25 +96,45 @@ public class SettingsView extends StackPane {
 
             File selectedFile = fileChooser.showOpenDialog(this.getScene().getWindow());
             if (selectedFile != null) {
-                String username = usernameField.getText().trim();
-                if (username.isEmpty()) {
-                    showAlert(Alert.AlertType.ERROR, "Please enter your username first.");
-                    return;
-                }
-
-                User currentUser = dao.getUserByUsername(username);
                 if (currentUser == null) {
-                    showAlert(Alert.AlertType.ERROR, "User not found.");
+                    showAlert(Alert.AlertType.ERROR, "No user is currently logged in.");
                     return;
                 }
 
-                String imagePath = selectedFile.getAbsolutePath();
-                currentUser.setProfileImagePath(imagePath);
-                dao.updateProfileImage(currentUser);
-                showAlert(Alert.AlertType.INFORMATION, "Profile icon updated successfully.");
+                String username = currentUser.getUsername();
 
-                // 🔁 Trigger UI refresh in User Management
-                UserManagementController.refreshIfOpen();
+                try {
+                    File destFolder = new File("profilePictures");
+                    if (!destFolder.exists()) destFolder.mkdirs();
+
+                    String oldPath = currentUser.getProfileImagePath();
+                    if (oldPath != null && oldPath.startsWith("profilePictures/")) {
+                        File oldFile = new File(oldPath);
+                        if (oldFile.exists()) {
+                            oldFile.delete();
+                            System.out.println("Deleted old profile picture: " + oldFile.getAbsolutePath());
+                        }
+                    }
+
+                    String cleanedFileName = selectedFile.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
+                    String newFileName = username + "_" + cleanedFileName;
+                    File destFile = new File(destFolder, newFileName);
+
+                    Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                    Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                    String relativePath = "profilePictures/" + newFileName;
+                    currentUser.setProfileImagePath(relativePath);
+                    System.out.println("Saving path to DB: " + relativePath);
+                    dao.updateUser(currentUser, username);
+
+                    showAlert(Alert.AlertType.INFORMATION, "Profile picture updated successfully");
+                    UserManagementController.refreshIfOpen();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Failed to save profile picture.");
+                }
             }
         });
 

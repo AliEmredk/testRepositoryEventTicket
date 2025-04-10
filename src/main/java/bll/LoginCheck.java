@@ -13,8 +13,8 @@ public class LoginCheck {
     public String checkLogin(String username, String password) {
         User user = loginDAO.getUserByUserName(username);
 
-        if (user == null) {
-            return "User not found";
+        if (user == null || !user.getUsername().equals(username)) {
+            return "Wrong username";
         }
 
         if (!user.getPassword().equals(password)) {
@@ -22,11 +22,12 @@ public class LoginCheck {
         }
 
         String role = user.getRole();
-        if (String.valueOf(role).equals("Admin")) {
+        if (role.equals("Admin")) {
             return "Admin";
-        } else if (String.valueOf(role).equals("Event Coordinator")) {
+        } else if (role.equals("Event Coordinator")) {
             return "Event Coordinator";
         }
+
         return "Unknown";
     }
 }
