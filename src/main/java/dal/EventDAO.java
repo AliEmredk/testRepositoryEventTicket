@@ -100,14 +100,14 @@ public class EventDAO {
         }
     }
 
-    public void deleteEvent(String eventName){
+    public void deleteEvent(int eventId){
 
-        String sql = "DELETE FROM Event WHERE EventName = ?";
+        String sql = "DELETE FROM Event WHERE EventId = ?";
 
         try(Connection conn = dbAccess.DBConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1,eventName);
+            stmt.setInt(1,eventId);
             int rowsAffected = stmt.executeUpdate();
 
 
