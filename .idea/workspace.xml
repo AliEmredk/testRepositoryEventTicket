@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Small changes">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744272931497</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database.">
+      <option name="closed" value="true" />
+      <created>1744275996473</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744275996473</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,6 +231,7 @@
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
     <MESSAGE value="Small changes." />
     <MESSAGE value="Small changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Small changes" />
+    <MESSAGE value="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database." />
+    <option name="LAST_COMMIT_MESSAGE" value="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database." />
   </component>
 </project>
