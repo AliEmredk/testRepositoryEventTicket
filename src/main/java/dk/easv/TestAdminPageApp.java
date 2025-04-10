@@ -4,6 +4,7 @@ import be.Ticket;
 import bll.BarCodeGenerator;
 import bll.CoordinatorEventManager;
 import bll.TicketManager;
+import bll.UserManagement;
 import dal.TicketDAO;
 import dal.UserDAO;
 import javafx.application.Application;
@@ -29,6 +30,8 @@ public class TestAdminPageApp extends Application {
     public static void main(String[] args) {
         launch(args);
         CoordinatorEventManager cem = new CoordinatorEventManager();
-        cem.assignCoordinatorToOwnEvents("EC4","EC3","Poker Night");
+//        cem.assignCoordinatorToOwnEvents("EC4","EC3","Poker Night");
+        UserManagement um = new UserManagement();
+        um.createEventCoordinator("Erla","555");
     }
 }

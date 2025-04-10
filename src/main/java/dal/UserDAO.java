@@ -14,6 +14,12 @@ public class UserDAO {
     private final DBAccess dbAccess = new DBAccess();
 
     public void addUser(User user) {
+
+        if(isUsernameAlreadyUsed(user.getUsername())) {
+            System.out.println("Username already used!");
+            return;
+        }
+
         String sql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
@@ -30,6 +36,24 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isUsernameAlreadyUsed(String username) {
+        String sql = "SELECT * FROM LoginInfo WHERE Username = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1,username);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public User getUserByUsername(String username) {

@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="I created a method to assign event coordinators as event coordinators but only the events they are already assigned">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/CoordinatorEventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/CoordinatorEventDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/CoordinatorEventDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -130,6 +129,7 @@
       <workItem from="1744122969015" duration="2271000" />
       <workItem from="1744184686342" duration="11447000" />
       <workItem from="1744209026794" duration="607000" />
+      <workItem from="1744269099117" duration="2248000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -195,7 +195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744209596018</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="I created a method to assign event coordinators as event coordinators but only the events they are already assigned">
+      <option name="closed" value="true" />
+      <created>1744212278390</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744212278390</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
