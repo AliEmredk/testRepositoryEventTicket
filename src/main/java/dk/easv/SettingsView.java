@@ -3,29 +3,36 @@ package dk.easv;
 import bll.UserSession;
 import dal.UserDAO;
 import be.User;
+import controllers.UserManagementController;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class SettingsView extends StackPane {
+
+    private final UserDAO dao = new UserDAO();
 
     public SettingsView() {
         VBox container = new VBox(15);
         container.setPadding(new Insets(40));
         container.setAlignment(Pos.TOP_LEFT);
 
-        Label title = new Label("Change Password");
+        Label title = new Label("Account Settings");
         title.setFont(Font.font("Arial", 24));
         title.setTextFill(Color.web("#2A0B06"));
 
@@ -45,7 +52,48 @@ public class SettingsView extends StackPane {
         confirmPass.setPromptText("Confirm New Password");
         stylePasswordField(confirmPass);
 
-        Button saveBtn = new Button("Save Changes");
+        Button uploadIconBtn = new Button("Change Profile Icon");
+        uploadIconBtn.setStyle("""
+            -fx-background-color: #4CAF50;
+            -fx-text-fill: white;
+            -fx-font-size: 14px;
+            -fx-padding: 10 20;
+            -fx-background-radius: 20;
+            -fx-cursor: hand;
+        """);
+
+        uploadIconBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Profile Picture");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+            );
+
+            File selectedFile = fileChooser.showOpenDialog(this.getScene().getWindow());
+            if (selectedFile != null) {
+                String username = usernameField.getText().trim();
+                if (username.isEmpty()) {
+                    showAlert(Alert.AlertType.ERROR, "Please enter your username first.");
+                    return;
+                }
+
+                User currentUser = dao.getUserByUsername(username);
+                if (currentUser == null) {
+                    showAlert(Alert.AlertType.ERROR, "User not found.");
+                    return;
+                }
+
+                String imagePath = selectedFile.getAbsolutePath();
+                currentUser.setProfileImagePath(imagePath);
+                dao.updateProfileImage(currentUser);
+                showAlert(Alert.AlertType.INFORMATION, "Profile icon updated successfully.");
+
+                // 🔁 Trigger UI refresh in User Management
+                UserManagementController.refreshIfOpen();
+            }
+        });
+
+        Button saveBtn = new Button("Save Password");
         saveBtn.setStyle("""
             -fx-background-color: #2196F3;
             -fx-text-fill: white;
@@ -66,7 +114,6 @@ public class SettingsView extends StackPane {
                 return;
             }
 
-            UserDAO dao = new UserDAO();
             User user = dao.getUserByUsername(username);
 
             if (user == null) {
@@ -87,15 +134,12 @@ public class SettingsView extends StackPane {
             user.setPassword(newPassword);
             dao.updatePassword(user);
 
-            // Clear the fields first
             currentPass.clear();
             newPass.clear();
             confirmPass.clear();
 
-            //Now show the success message
             showAlert(Alert.AlertType.INFORMATION, "Password updated successfully. You will be logged out of the application.");
 
-            //App logs user out and goes back to the login screen
             try {
                 UserSession.clearSession();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginMain.fxml"));
@@ -112,7 +156,6 @@ public class SettingsView extends StackPane {
                 loginStage.setScene(loginScene);
                 loginStage.show();
 
-                // Close current stage
                 Stage currentStage = (Stage) saveBtn.getScene().getWindow();
                 currentStage.close();
 
@@ -122,7 +165,15 @@ public class SettingsView extends StackPane {
             }
         });
 
-        container.getChildren().addAll(title, usernameField, currentPass, newPass, confirmPass, saveBtn);
+        container.getChildren().addAll(
+                title,
+                usernameField,
+                currentPass,
+                newPass,
+                confirmPass,
+                uploadIconBtn,
+                saveBtn
+        );
         this.getChildren().add(container);
         this.setStyle("-fx-background-color: white;");
     }
@@ -151,7 +202,7 @@ public class SettingsView extends StackPane {
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
-        alert.setTitle("Password Update");
+        alert.setTitle("Settings");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

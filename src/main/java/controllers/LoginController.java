@@ -77,7 +77,7 @@ public class LoginController {
                 UserSession.setRole("Event Coordinator");
                 openEventCoordinatorDashboard();
             }
-            case "User not found", "Wrong password", "Unknown" -> showAlert(result);
+            case "Wrong username", "Wrong password", "Unknown" -> showAlert(result);
         }
     }
 

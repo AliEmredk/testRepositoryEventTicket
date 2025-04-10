@@ -4,14 +4,22 @@ import be.Event;
 import dal.EventDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class EventMainController {
 
+    
     private EventDAO eventDAO = new EventDAO();
     private ObservableList<Event> events = FXCollections.observableArrayList();
     private int currentPage = 0;
@@ -115,4 +123,6 @@ public class EventMainController {
     public ObservableList<Event> getAllEvents() {
         return events;
     }
+
+
 }

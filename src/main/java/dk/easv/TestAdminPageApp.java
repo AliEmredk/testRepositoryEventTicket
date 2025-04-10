@@ -1,5 +1,10 @@
 package dk.easv;
 
+import be.Ticket;
+import bll.BarCodeGenerator;
+import bll.CoordinatorEventManager;
+import bll.TicketManager;
+import dal.TicketDAO;
 import dal.UserDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +25,10 @@ public class TestAdminPageApp extends Application {
 
     UserDAO userDAO = new UserDAO();
 
+
     public static void main(String[] args) {
         launch(args);
+        CoordinatorEventManager cem = new CoordinatorEventManager();
+        cem.assignCoordinatorToOwnEvents("EC4","EC3","Poker Night");
     }
 }
