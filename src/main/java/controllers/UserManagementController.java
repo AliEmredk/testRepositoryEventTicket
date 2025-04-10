@@ -213,10 +213,14 @@ public class UserManagementController {
                 return;
             }
 
-            User newUser = new User(username, password, role);
-            userDAO.addUser(newUser);
-            refreshUserList();
-            addUserStage.close();
+            boolean success = userDAO.addUser(new User(username, password, role));
+            if (success) {
+                refreshUserList();
+                addUserStage.close();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Username already exists", ButtonType.OK);
+                alert.showAndWait();
+            }
         });
 
         vbox.getChildren().addAll(new Label("Username:"), usernameField,
@@ -269,9 +273,14 @@ public class UserManagementController {
             if (!newUsername.isEmpty() && password != null) {
                 user.setUsername(newUsername);
                 user.setPassword(password); // Optional: update only if you allow it
-                userDAO.updateUser(user, originalUsername);
-                refreshUserList();
-                editStage.close();
+                boolean success = userDAO.updateUser(user, originalUsername);
+                if (success) {
+                    refreshUserList();
+                    editStage.close();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Username already exists", ButtonType.OK);
+                    alert.showAndWait();
+                }
             }
         });
 
