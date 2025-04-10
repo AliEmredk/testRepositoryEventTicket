@@ -22,8 +22,6 @@ public class EventMainController {
     
     private EventDAO eventDAO = new EventDAO();
     private ObservableList<Event> events = FXCollections.observableArrayList();
-    private int currentPage = 0;
-    private final int itemsPerPage = 5;
 
     // Constructor to initialize events
     public EventMainController() {
@@ -35,13 +33,6 @@ public class EventMainController {
         List<Event> allEvents = eventDAO.getAllEvents();
         events.clear();
         events.addAll(allEvents);
-    }
-
-    // Get the events displayed on the current page
-    public ObservableList<Event> getEventsForCurrentPage() {
-        int startIndex = currentPage * itemsPerPage;
-        int endIndex = Math.min(startIndex + itemsPerPage, events.size());
-        return FXCollections.observableArrayList(events.subList(startIndex, endIndex));
     }
 
     // Handle searching
@@ -95,28 +86,9 @@ public class EventMainController {
         events.setAll(filteredList); // Update observable list with the filter results
     }
 
-    // Pagination: next page
-    public void nextPage() {
-        if ((currentPage + 1) * itemsPerPage < events.size()) {
-            currentPage++;
-        }
-    }
-
-    // Pagination: previous page
-    public void previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-        }
-    }
-
     // Get filtered events
     public ObservableList<Event> getFilteredEvents() {
-        return getEventsForCurrentPage();
-    }
-
-    // Get the total number of pages
-    public int getTotalPages() {
-        return (int) Math.ceil((double) events.size() / itemsPerPage);
+        return events;
     }
 
     // Get all events for testing purposes

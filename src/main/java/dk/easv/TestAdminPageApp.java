@@ -34,4 +34,6 @@ public class TestAdminPageApp extends Application {
         UserManagement um = new UserManagement();
         um.createEventCoordinator("Erla","555");
     }
+
+
 }

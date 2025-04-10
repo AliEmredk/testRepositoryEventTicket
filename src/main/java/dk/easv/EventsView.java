@@ -60,16 +60,20 @@ public class EventsView extends StackPane {
 
         // Handle Sorting
         ComboBox<String> sortComboBox = new ComboBox<>();
-        sortComboBox.getItems().addAll("Sort by Date", "Sort by Price", "Sort by Location");
+        sortComboBox.getItems().addAll("None", "Sort by Date", "Sort by Price", "Sort by Location");
         sortComboBox.setOnAction(e -> {
             String sortCriteria = sortComboBox.getValue();
-            eventMainController.sortEvents(sortCriteria);  // Delegate sort action to the controller
-            refreshEventList();  // Refresh list after sorting
+            if (sortCriteria.equals("None")) {
+                eventMainController.loadEvents(); // Reset sort by reloading full list
+            } else {
+                eventMainController.sortEvents(sortCriteria);
+            }
+            refreshEventList();
         });
 
         // Handle Filtering
         ComboBox<String> filterComboBox = new ComboBox<>();
-        filterComboBox.getItems().addAll("Free Events", "Paid Events", "Today’s Events");
+        filterComboBox.getItems().addAll("None", "Free Events", "Paid Events", "Today’s Events", "This Month’s Events");
         filterComboBox.setOnAction(e -> {
             String filter = filterComboBox.getValue();
             eventMainController.filterEvents(filter);  // Delegate filter action to the controller

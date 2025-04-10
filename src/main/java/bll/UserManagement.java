@@ -34,4 +34,8 @@ public class UserManagement {
     public List<User> getAllEventCoordinators() {
         return userDAO.getAllEventCoordinators();
     }
+
+    public boolean isUsernameAlreadyUsed(String username) {
+        return userDAO.isUsernameAlreadyUsed(username);
+    }
 }
