@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59c4c180-ba4f-4352-90a4-23ee4836aebc" name="Changes" comment="Checks if username already exists, if it does it gives a warning that it's already in use">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/UserSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/UserSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/SettingsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/SettingsView.java" afterDir="false" />
-    </list>
+    <list default="true" id="59c4c180-ba4f-4352-90a4-23ee4836aebc" name="Changes" comment="Made login user sensitive and made it so that it saves profile pictures. Also automatically puts in the username in the settings." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -190,7 +184,7 @@
       <workItem from="1744190899941" duration="10655000" />
       <workItem from="1744218061078" duration="3418000" />
       <workItem from="1744265600829" duration="1330000" />
-      <workItem from="1744269062763" duration="1613000" />
+      <workItem from="1744269062763" duration="2207000" />
     </task>
     <task id="LOCAL-00001" summary="I've added code, so that we can create a ticket based on event and customer. It also creates a unique barcode for every ticket we make.&#10;I've added the Barcode, BarcodeController and BarcodeDAO classes. I've also added a TicketTest class, so that we can test the function.&#10;I've modified the BarCodeGenerator, Ticket, TicketController, TicketDAO and the TicketManager classes.">
       <option name="closed" value="true" />
@@ -264,7 +258,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744224450854</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Made login user sensitive and made it so that it saves profile pictures. Also automatically puts in the username in the settings.">
+      <option name="closed" value="true" />
+      <created>1744271261934</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744271261934</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,6 +292,7 @@
     <MESSAGE value="Added case sensitive login" />
     <MESSAGE value="Checks if username already exists, if it does it gives a warning that it's already in use" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created necessary methods to assign event coordinators to the events" />
+    <MESSAGE value="Made login user sensitive and made it so that it saves profile pictures. Also automatically puts in the username in the settings." />
+    <option name="LAST_COMMIT_MESSAGE" value="Made login user sensitive and made it so that it saves profile pictures. Also automatically puts in the username in the settings." />
   </component>
 </project>
