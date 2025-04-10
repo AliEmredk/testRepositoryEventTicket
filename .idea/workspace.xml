@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/UserManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/UserManagement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/be/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,11 +46,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.App.executor": "Run",
+    "Application.App.executor": "Debug",
     "Application.TestAdminPageApp.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "emre2",
+    "git-widget-placeholder": "jakub",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master",
@@ -62,6 +61,11 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "advanced.settings",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="Application.App">

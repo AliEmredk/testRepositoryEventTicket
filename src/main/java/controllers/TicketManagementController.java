@@ -1,21 +1,32 @@
 package controllers;
 
+import be.Customer;
 import bll.BarCodeGenerator;
 import be.Barcode;
 import be.Event;
+import dal.CustomerDAO;
 import dal.EventDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -56,6 +67,8 @@ public class TicketManagementController {
     private ImageView qrCodeImageView;
     @FXML
     private VBox ticketPreviewBox;
+    @FXML
+    private Button addCustomerButton;
 
     private final EventDAO eventDAO = new EventDAO();
 
@@ -71,11 +84,61 @@ public class TicketManagementController {
             int discount = newVal.intValue();
             discountValueLabel.setText(discount + "% off");
         });
+        addCustomerButton.setOnAction(event -> openAddCustomerWindow());
     }
 
     private void loadEvents() {
         List<Event> events = eventDAO.getAllEvents();
         eventCombo.setItems(FXCollections.observableArrayList(events));
+    }
+
+    private void openAddCustomerWindow() {
+        Stage addCustomerStage = new Stage();
+        addCustomerStage.initModality(Modality.APPLICATION_MODAL);
+        addCustomerStage.setTitle("Add Customer");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        // Customer Details Fields
+        TextField firstNameField = new TextField();
+        firstNameField.setPromptText("First Name");
+
+        TextField lastNameField = new TextField();
+        lastNameField.setPromptText("Last Name");
+
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
+
+        Button saveBtn = new Button("Save");
+        saveBtn.setOnAction(event -> {
+            if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || emailField.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+
+            // Create the new customer
+            Customer newCustomer = new Customer(firstNameField.getText(), lastNameField.getText(), emailField.getText());
+
+            // Use CustomerDAO to save the customer to the database
+            CustomerDAO customerDAO = new CustomerDAO();
+            customerDAO.addCustomer(newCustomer);
+
+            // Show success message
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Customer added successfully with ID: " + newCustomer.getCustomerId(), ButtonType.OK);
+            successAlert.showAndWait();
+
+            // Close the window after saving
+            addCustomerStage.close();
+        });
+
+        vbox.getChildren().addAll(firstNameField, lastNameField, emailField, saveBtn);
+
+        Scene scene = new Scene(vbox, 400, 200);
+        addCustomerStage.setScene(scene);
+        addCustomerStage.show();
     }
 
     @FXML

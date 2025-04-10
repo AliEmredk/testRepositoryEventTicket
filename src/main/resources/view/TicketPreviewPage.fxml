@@ -64,11 +64,9 @@
                 <TextArea fx:id="detailsField" promptText="e.g. Free beer, VIP area, earplugs included..."
                           prefRowCount="3" wrapText="true" />
 
-                <Label text="Email Address" />
-                <TextField fx:id="emailField" promptText="Enter customer's email address" />
-
                 <HBox spacing="10">
                     <Button text="Update Preview" onAction="#updatePreview" />
+                    <Button fx:id="addCustomerButton" text="Add Customer"/>
                     <Button text="Print Ticket" onAction="#printTicket" />
                 </HBox>
             </VBox>
