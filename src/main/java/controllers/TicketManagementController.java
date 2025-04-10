@@ -54,6 +54,8 @@ public class TicketManagementController {
     private Label ticketDetailsLabel;
     @FXML
     private ImageView qrCodeImageView;
+    @FXML
+    private VBox ticketPreviewBox;
 
     private final EventDAO eventDAO = new EventDAO();
 
@@ -153,7 +155,7 @@ public class TicketManagementController {
 
     @FXML
     private void printTicket() {
-        printNode(qrCodeImageView);
+        printNode(ticketPreviewBox);
     }
 
     private void printNode(Node node) {

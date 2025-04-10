@@ -32,8 +32,9 @@ public class EventsView extends StackPane {
     private EventMainController eventMainController;
 
     public EventsView(String role, EventMainController eventMainController) {
-        VBox vbox = new VBox();
-        vbox.getChildren().clear();
+//        VBox vbox = new VBox();
+//        vbox.getChildren().clear();
+        BorderPane mainLayout = new BorderPane();
         this.role = role;
         this.eventMainController = eventMainController;
 
@@ -96,19 +97,6 @@ public class EventsView extends StackPane {
             editEventBtn.setManaged(false);
         }
 
-        // Pagination controls
-//        Button btnNextPage = new Button("Next");
-//        Button btnPrevPage = new Button("Previous");
-//        btnNextPage.setOnAction(e -> {
-//            eventMainController.nextPage();
-//            refreshEventList();
-//        });
-//        btnPrevPage.setOnAction(e -> {
-//            eventMainController.previousPage();
-//            refreshEventList();
-//        });
-        // topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, searchField, searchBtn);
-
         eventContainer = new TilePane();
         eventContainer.setHgap(10);
         eventContainer.setVgap(10);
@@ -133,8 +121,8 @@ public class EventsView extends StackPane {
         scrollPane.setStyle("-fx-background: white;");
 
         eventsPane.getChildren().addAll(topBar, scrollPane);
-
-        this.getChildren().add(eventsPane);
+        mainLayout.setCenter(eventsPane);
+        this.getChildren().add(mainLayout);
     }
 
     private VBox createEventCard(Event event) {
@@ -175,7 +163,14 @@ public class EventsView extends StackPane {
 
         card.getChildren().addAll(nameLabel, locationLabel, dateLabel);
 
-        card.setOnMouseClicked(e -> setSelectedEvent(event, card));
+        card.setOnMouseClicked(e -> {
+            if(e.getClickCount() == 2) {
+                BorderPane mainLayout = (BorderPane) this.getChildren().get(0);
+                showEventDetailsSideBar(event, mainLayout);
+            } else {
+                setSelectedEvent(event, card);
+            }
+        });
 
         return card;
     }
@@ -370,5 +365,40 @@ public class EventsView extends StackPane {
             }
             deleteEventBtn.setDisable(true);
         });
+    }
+
+    private void showEventDetailsSideBar(Event event, BorderPane mainLayout) {
+        VBox sideBar = new VBox(10);
+        sideBar.setPadding(new Insets(15));
+        sideBar.setStyle("-fx-background-color: #FFF8E1;");
+        sideBar.setPrefWidth(300);
+
+        HBox header = new HBox();
+        Label title = new Label("Event Details");
+        title.setFont(new Font("Arial", 18));
+        title.setStyle("-fx-font-weight: bold;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button closeBtn = new Button("❌");
+        closeBtn.setStyle("-fx-background-color: #FF6F61; -fx-font-size: 14;");
+        closeBtn.setOnAction(e -> mainLayout.setRight(null)); //Removes sidebar
+
+        header.getChildren().addAll(title, spacer, closeBtn);
+
+        Label name = new Label("Name: " + event.getEventName());
+        Label location = new Label("Location: " + event.getLocation());
+        Label date = new Label("Date: " + event.getDate());
+        Label time = new Label("Time: " + event.getStartTime() + " - " + event.getEndTime());
+        Label price = new Label("Price: " + event.getPrice() + " DKK");
+        Label notes = new Label("Notes: " + event.getNote());
+        Label guidance = new Label("Location Guidance: " + event.getLocation_Guidance());
+
+        for (Label lbl : List.of(location, date, time, price, notes, guidance)) {
+            lbl.setFont(new Font("Arial", 13));
+        }
+
+        sideBar.getChildren().addAll(header, name, location, date, time, price, notes, guidance);
+        mainLayout.setRight(sideBar);
     }
 }
