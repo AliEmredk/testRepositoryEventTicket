@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database.">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/EventMainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bll/UserManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/UserManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/TestAdminPageApp.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +35,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/AliEmredk/testRepositoryEventTicket.git&quot;,
-    &quot;accountId&quot;: &quot;b1018f64-c7a8-4f87-b54f-276c792a6b32&quot;
+    &quot;accountId&quot;: &quot;b7b93748-8f5e-412f-a8a0-d0a3c41ad131&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -48,7 +51,7 @@
     "Application.TestAdminPageApp.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "jakub",
+    "git-widget-placeholder": "emre2",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master",
@@ -59,11 +62,6 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "advanced.settings",
     "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlserver"
-    ]
   }
 }]]></component>
   <component name="RunManager" selected="Application.App">
@@ -103,8 +101,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.39" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.39" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
       </set>
     </attachedChunks>
   </component>
@@ -133,6 +131,7 @@
       <workItem from="1744122969015" duration="2271000" />
       <workItem from="1744184686342" duration="11447000" />
       <workItem from="1744209026794" duration="607000" />
+      <workItem from="1744270253180" duration="127000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -198,23 +197,7 @@
       <option name="project" value="LOCAL" />
       <updated>1744209596018</updated>
     </task>
-    <task id="LOCAL-00009" summary="Small changes">
-      <option name="closed" value="true" />
-      <created>1744272931497</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1744272931497</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database.">
-      <option name="closed" value="true" />
-      <created>1744275996473</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1744275996473</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,9 +212,6 @@
     <MESSAGE value="created CoordinatorEventDAO, CoordinatorEventManager I created every kind of method to assign event coordinators to the events. I suggest you to do this using the assignCoordinatorToEventByNames or if you'd like to you are able to assign them by just using ids&#10;I used joint for tables&#10;Added a method to CoordinatorEventManager" />
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <MESSAGE value="Small changes." />
-    <MESSAGE value="Small changes" />
-    <MESSAGE value="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database." />
-    <option name="LAST_COMMIT_MESSAGE" value="Customer email verification, needs to be updated into a new pop up with their name and surname to link into the database." />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
 </project>

@@ -1,7 +1,9 @@
 package controllers;
 
+import be.User;
 import bll.LoginCheck;
 import bll.UserSession;
+import dal.UserDAO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -70,13 +72,21 @@ public class LoginController {
 
         switch (result) {
             case "Admin" -> {
-                UserSession.setRole("Admin");
+                User user = new UserDAO().getUserByUsername(username);
+                UserSession.setLoggedInUser(user);
+                UserSession.setRole(user.getRole());
+
                 openAdminDashboard();
             }
+
             case "Event Coordinator" -> {
-                UserSession.setRole("Event Coordinator");
+                User user = new UserDAO().getUserByUsername(username);
+                UserSession.setLoggedInUser(user);
+                UserSession.setRole(user.getRole());
+
                 openEventCoordinatorDashboard();
             }
+
             case "Wrong username", "Wrong password", "Unknown" -> showAlert(result);
         }
     }
