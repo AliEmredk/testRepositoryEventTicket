@@ -2,6 +2,7 @@ package dk.easv;
 
 import be.Event;
 import be.User;
+import dal.CoordinatorEventDAO;
 import dal.EventDAO;
 import dal.UserDAO;
 import controllers.EventMainController;
@@ -241,13 +242,17 @@ public class EventsView extends StackPane {
 
         Button saveBtn = new Button("Save");
         saveBtn.setOnAction(event -> {
+
+            String eventName = nameField.getText().trim();
+            String location = locationField.getText().trim();
+
             if(nameField.getText().isEmpty() || locationField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
                 alert.showAndWait();
                 return;
             }
 
-            int price = 0;
+            int price;
             try {
                 price = Integer.parseInt(priceField.getText());
             } catch (NumberFormatException ex) {
@@ -259,12 +264,15 @@ public class EventsView extends StackPane {
                     endTimeField.getText(), noteField.getText(), price, locationGuidanceField.getText(), nameField.getText(), 0);
 
             eventDAO.createEvent(newEvent);
-            refreshEventList();
+            CoordinatorEventDAO coordinatorEventDAO = new CoordinatorEventDAO();
 
             //eventDAO.clearCoordinatorsForEvent(selectedEvent.getEventId());
             for(User selectedUser : coordinatorListView.getSelectionModel().getSelectedItems()) {
-                eventDAO.assignCoordinatorToEvent(newEvent.getEventId(), selectedUser.getUser_Id());
+                String username = selectedUser.getUsername();
+                coordinatorEventDAO.assignCoordinatorToEventByNames(username, eventName);
             }
+
+            refreshEventList();
             addEventsStage.close();
         });
 
