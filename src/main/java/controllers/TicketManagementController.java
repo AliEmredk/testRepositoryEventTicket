@@ -69,12 +69,18 @@ public class TicketManagementController {
     private VBox ticketPreviewBox;
     @FXML
     private Button addCustomerButton;
+    @FXML
+    private ComboBox<Customer> customerComboBox;
 
     private final EventDAO eventDAO = new EventDAO();
+
+    private final CustomerDAO customerDAO = new CustomerDAO();
+
 
     @FXML
     public void initialize() {
         loadEvents();
+        loadCustomers();
         ticketTypeCombo.setItems(FXCollections.observableArrayList("VIP", "Standard", "Backstage"));
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
@@ -90,6 +96,11 @@ public class TicketManagementController {
     private void loadEvents() {
         List<Event> events = eventDAO.getAllEvents();
         eventCombo.setItems(FXCollections.observableArrayList(events));
+    }
+
+    private void loadCustomers() {
+        List<Customer> customers = customerDAO.getAllCustomers();
+        customerComboBox.setItems(FXCollections.observableArrayList(customers));
     }
 
     private void openAddCustomerWindow() {
@@ -108,23 +119,30 @@ public class TicketManagementController {
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Last Name");
 
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email");
+        TextField emailInputField = new TextField();
+        emailInputField.setPromptText("Email");
 
         Button saveBtn = new Button("Save");
         saveBtn.setOnAction(event -> {
-            if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || emailField.getText().isEmpty()) {
+            String firstName = firstNameField.getText().trim();
+            String lastName = lastNameField.getText().trim();
+            String email = emailInputField.getText().trim();
+
+            if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
                 alert.showAndWait();
                 return;
             }
 
-            // Create the new customer
-            Customer newCustomer = new Customer(firstNameField.getText(), lastNameField.getText(), emailField.getText());
+            if (!isValidEmail(email)) {
+                showAlert("Invalid Email", "Please enter a valid email address.");
+                return;
+            }
 
-            // Use CustomerDAO to save the customer to the database
-            CustomerDAO customerDAO = new CustomerDAO();
+            // Create the new customer
+            Customer newCustomer = new Customer(firstName, lastName, email);
             customerDAO.addCustomer(newCustomer);
+            loadCustomers();
 
             // Show success message
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Customer added successfully with ID: " + newCustomer.getCustomerId(), ButtonType.OK);
@@ -134,7 +152,7 @@ public class TicketManagementController {
             addCustomerStage.close();
         });
 
-        vbox.getChildren().addAll(firstNameField, lastNameField, emailField, saveBtn);
+        vbox.getChildren().addAll(firstNameField, lastNameField, emailInputField, saveBtn);
 
         Scene scene = new Scene(vbox, 400, 200);
         addCustomerStage.setScene(scene);
@@ -218,11 +236,6 @@ public class TicketManagementController {
 
     @FXML
     private void printTicket() {
-        if (!isValidEmail(emailField.getText())) {
-            showAlert("Invalid Email", "Please enter a valid email address before printing.");
-            return;
-        }
-
         printNode(ticketPreviewBox);
     }
 

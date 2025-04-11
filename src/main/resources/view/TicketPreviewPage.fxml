@@ -65,10 +65,15 @@
                           prefRowCount="3" wrapText="true" />
 
                 <HBox spacing="10">
+                    <ComboBox promptText="Select Customer" fx:id="customerComboBox"/>
+                    <Button fx:id="addCustomerButton" text="Add New"/>
+                </HBox>
+
+                <HBox spacing="10">
                     <Button text="Update Preview" onAction="#updatePreview" />
-                    <Button fx:id="addCustomerButton" text="Add Customer"/>
                     <Button text="Print Ticket" onAction="#printTicket" />
                 </HBox>
+
             </VBox>
 
         </items>
