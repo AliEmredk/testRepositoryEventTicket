@@ -68,7 +68,7 @@ public class UserDAO {
     }
 
     public User getUserByUsername(String username) {
-        String sql = "SELECT UserId, Username, Password, Role, ProfileImagePath FROM LoginInfo WHERE Username = ?";
+        String sql = "SELECT UserId, Username, Password, Role, ProfileImagePath, ProfileImage FROM LoginInfo WHERE Username = ?";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
