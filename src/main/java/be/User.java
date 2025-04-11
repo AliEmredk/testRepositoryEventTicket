@@ -80,6 +80,8 @@ public class User {
 
     public void setProfileImage(byte[] profileImage) {this.ProfileImage = profileImage;}
 
+    public void setUser_Id(int User_Id) { this.User_Id = User_Id; }
+
     @Override
     public String toString() {
         return Username;
