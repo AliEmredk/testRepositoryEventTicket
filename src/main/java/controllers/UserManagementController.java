@@ -1,6 +1,8 @@
 package controllers;
 
+import be.CoordinatorAssignment;
 import be.User;
+import bll.CoordinatorEventManager;
 import bll.UserManagement;
 import dal.UserDAO;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,6 +24,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserManagementController {
 
@@ -39,6 +44,8 @@ public class UserManagementController {
     private TableColumn<User, String> roleColumn;
     @FXML
     private TableColumn<User, Void> actionsColumn;
+    @FXML
+    private TableColumn<User, String> statusColumn;
 
     private final ObservableList<User> masterUserList = FXCollections.observableArrayList();
     private final UserDAO userDAO = new UserDAO();
@@ -64,6 +71,28 @@ public class UserManagementController {
         profileColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getProfileImagePath()));
         nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
         roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getRole()));
+        statusColumn.setCellValueFactory(cell -> cell.getValue().statusProperty());
+
+        // Add styling for status column
+        statusColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(status);
+                    if (status.startsWith("Ongoing")) {
+                        setStyle("-fx-text-fill: orange;");
+                    } else if (status.equals("Available")) {
+                        setStyle("-fx-text-fill: green;");
+                    } else {
+                        setStyle("-fx-text-fill: grey;");
+                    }
+                }
+            }
+        });
 
         roleFilter.getItems().clear();
         roleFilter.getItems().addAll("All Roles", "Admin", "Event Coordinator");
@@ -144,10 +173,15 @@ public class UserManagementController {
 
     private void addActionButtons() {
         actionsColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button editBtn = new Button("✏️");
+            private final Button editBtn = new Button("✏");
             private final Button deleteBtn = new Button("🗑");
+            private final HBox actionBox = new HBox(10, editBtn, deleteBtn);
 
             {
+                actionBox.setAlignment(Pos.CENTER); // <-- Center the buttons
+                actionBox.setPrefWidth(100);         // Optional: tweak spacing
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY); // Clean up layout
+
                 editBtn.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
                     openEditUserWindow(user);
@@ -164,20 +198,37 @@ public class UserManagementController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(new HBox(10, editBtn, deleteBtn));
-                }
+                setGraphic(empty ? null : actionBox);
             }
         });
     }
 
     public void refreshUserList() {
         masterUserList.setAll(userDAO.getAllUsers());
+
+        // Update user statuses here
+        CoordinatorEventManager eventManager = new CoordinatorEventManager();
+        List<CoordinatorAssignment> assignments = eventManager.getAllCoordinatorAssignments();
+
+        // Map: Username → EventName
+        Map<String, String> userToEvent = new HashMap<>();
+        for (CoordinatorAssignment a : assignments) {
+            userToEvent.put(a.getUsername(), a.getEventName());
+        }
+
+        for (User user : masterUserList) {
+            String event = userToEvent.get(user.getUsername());
+            if (event != null) {
+                user.setStatus("Ongoing: " + event);
+            } else {
+                user.setStatus("Available");
+            }
+        }
+
         applyFilters();
         userTable.refresh();
     }
+
 
     @FXML
     private void handleAddUser() {

@@ -1,5 +1,8 @@
 package be;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class User {
 
     private int User_Id;
@@ -73,5 +76,19 @@ public class User {
     @Override
     public String toString() {
         return Username;
+    }
+
+    private final StringProperty status = new SimpleStringProperty("Available");  // Default value
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    public void setStatus(String status) {
+        this.status.set(status);
+    }
+
+    public StringProperty statusProperty() {
+        return status;
     }
 }

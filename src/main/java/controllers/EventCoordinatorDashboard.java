@@ -1,9 +1,12 @@
 package controllers;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.io.IOException;
 
 public class EventCoordinatorDashboard extends BaseDashboard {
 
@@ -13,24 +16,31 @@ public class EventCoordinatorDashboard extends BaseDashboard {
     @Override
     protected void addCustomButtons(VBox customButtons, StackPane contentArea) {
         ticketBtn = createSidebarButton("🎫", "Ticket");
-        TicketManagementController ticketController = new TicketManagementController();
-        ticketPane = ticketController.loadTicketManagerView();
 
-        contentArea.getChildren().add(ticketPane);
-        ticketPane.setVisible(false);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicketPreviewPage.fxml"));
+            ticketPane = loader.load();
+            TicketManagementController ticketController = loader.getController();
 
-        ticketBtn.setOnAction(e -> {
-            switchPane(ticketPane);
-            setActiveButton(ticketBtn, eventsBtn, settingsBtn, ticketBtn);
-        });
+            contentArea.getChildren().add(ticketPane);
+            ticketPane.setVisible(false);
 
-        // Add the button before settingsBtn visually
-        int settingsIndex = customButtons.getChildren().indexOf(settingsBtn);
-        if (settingsIndex >= 0) {
-            customButtons.getChildren().add(settingsIndex, ticketBtn);
-        } else {
-            customButtons.getChildren().add(ticketBtn);
+            ticketBtn.setOnAction(e -> {
+                switchPane(ticketPane);
+                setActiveButton(ticketBtn, eventsBtn, settingsBtn, ticketBtn);
+            });
+
+            // Add the button before settingsBtn visually
+            int settingsIndex = customButtons.getChildren().indexOf(settingsBtn);
+            if (settingsIndex >= 0) {
+                customButtons.getChildren().add(settingsIndex, ticketBtn);
+            } else {
+                customButtons.getChildren().add(ticketBtn);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load TicketPreviewPage.fxml");
         }
     }
 }
-
