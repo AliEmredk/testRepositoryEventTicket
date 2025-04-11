@@ -1,6 +1,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+
+
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.TicketManagementController">
     <SplitPane orientation="HORIZONTAL" dividerPositions="0.5">
@@ -38,38 +42,78 @@
                     <Label fx:id="eventTimeLabel" text="10:00 PM – 4:00 AM" />
 
                     <Label text="Details" style="-fx-font-weight: bold; -fx-text-fill: #999;" />
-                    <Label fx:id="ticketDetailsLabel" text="Free drink, VIP access" wrapText="true" />
+                    <Label fx:id="ticketDetailsLabel" text="Special Perks Included" wrapText="true" />
 
                     <Label fx:id="ticketAmountLabel" text="Amount: 1" />
                 </VBox>
             </VBox>
 
-            <!-- RIGHT: Ticket Editing -->
-            <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 30;">
-                <Label text="Edit Ticket" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <!-- RIGHT: Ticket Editing Scrollable -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
+                <content>
+                    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 30;">
+                        <Label text="Edit Ticket" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-                <Label text="Ticket Amount" />
-                <Spinner fx:id="amountSpinner" prefWidth="100" />
+                        <Label text="Ticket Amount" />
+                        <Spinner fx:id="amountSpinner" prefWidth="100" />
 
-                <ComboBox fx:id="eventCombo" promptText="Select Event" />
-                <ComboBox fx:id="ticketTypeCombo" promptText="Ticket Type" />
+                        <ComboBox fx:id="eventCombo" promptText="Select Event" />
+                        <ComboBox fx:id="ticketTypeCombo" promptText="Ticket Type" />
 
-                <Label text="Discount Percentage" />
-                <Slider fx:id="discountSlider" min="0" max="100" value="0"
-                        showTickLabels="true" showTickMarks="true"
-                        majorTickUnit="25" minorTickCount="4" blockIncrement="5" />
-                <Label fx:id="discountValueLabel" text="0% off" />
+                        <!-- Discount Container -->
+                        <VBox fx:id="discountBox">
+                            <Label text="Discount Percentage" fx:id="discountLabel" />
+                            <Slider fx:id="discountSlider" min="0" max="100" value="0"
+                                    showTickLabels="true" showTickMarks="true"
+                                    majorTickUnit="25" minorTickCount="4" blockIncrement="5" />
+                            <Label fx:id="discountValueLabel" text="0% off" />
+                        </VBox>
 
-                <Label text="Details" />
-                <TextArea fx:id="detailsField" promptText="e.g. Free beer, VIP area, earplugs included..."
-                          prefRowCount="3" wrapText="true" />
+                        <Label text="Details" />
+                        <TextArea fx:id="detailsField" promptText="e.g. One-time voucher, bonus game entry..."
+                                  prefRowCount="5" wrapText="true" />
 
-                <HBox spacing="10">
-                    <Button text="Update Preview" onAction="#updatePreview" />
-                    <Button text="Print Ticket" onAction="#printTicket" />
-                </HBox>
-            </VBox>
+                        <!-- VIP Ticket Options -->
+                        <VBox fx:id="vipOptionsBox" spacing="10" visible="false" managed="false">
+                            <Label text="VIP Perks" style="-fx-font-weight: bold;" />
+                            <CheckBox fx:id="snackCheck" text="🍿 Free Snack Voucher" />
+                            <CheckBox fx:id="skipLineCheck" text="⏩ Skip the Line" />
+                            <CheckBox fx:id="meetGuestCheck" text="🎤 Meet the Guest" />
+                            <CheckBox fx:id="foodIncludedCheck" text="🍽 Food Included" />
+                        </VBox>
 
+                        <!-- Special Ticket Options -->
+                        <VBox fx:id="specialOptionsBox" spacing="10" visible="false" managed="false">
+                            <Label text="Special Ticket Perks" style="-fx-font-weight: bold;" />
+                            <CheckBox fx:id="freeDrinkCheck" text="🍹 Free Drink" />
+                            <CheckBox fx:id="freeSnackCheck" text="🍪 Free Snack" />
+                            <CheckBox fx:id="halfOffItemCheck" text="🤑 50% Off" />
+                            <CheckBox fx:id="bogoCheck" text="🎟 Buy 1 Get 1 Free" />
+                            <CheckBox fx:id="bonusActivityCheck" text="🎲 Bonus Activity" />
+                            <CheckBox fx:id="oneTimeCouponCheck" text="🎫 One-Time Use Coupon" />
+                            <CheckBox fx:id="raffleEntryCheck" text="🎁 Raffle Entry" />
+                            <CheckBox fx:id="exclusiveMerchCheck" text="👕 Free Merchandise" />
+
+                            <Label text="Valid For:" style="-fx-font-weight: bold;" />
+                            <RadioButton fx:id="allEventsRadio" text="All Events" />
+                            <RadioButton fx:id="selectedEventRadio" text="Only Selected Event" />
+                        </VBox>
+
+                        <!-- Email only visible when not special -->
+                        <VBox fx:id="emailContainer">
+                            <Label text="Email Address" />
+                            <TextField fx:id="emailField" promptText="Enter customer's email address" />
+                            <TextField fx:id="firstNameField" promptText="Enter customer's first name" />
+                            <TextField fx:id="lastNameField" promptText="Enter customer's first name" />
+                        </VBox>
+
+                        <HBox spacing="10">
+                            <Button text="Update Preview" onAction="#updatePreview" />
+                            <Button text="Print Ticket" onAction="#generateAndPrintTickets" />
+                        </HBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
         </items>
     </SplitPane>
 </StackPane>

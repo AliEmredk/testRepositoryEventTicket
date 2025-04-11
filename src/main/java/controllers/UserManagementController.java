@@ -1,6 +1,8 @@
 package controllers;
 
+import be.CoordinatorAssignment;
 import be.User;
+import bll.CoordinatorEventManager;
 import bll.UserManagement;
 import dal.UserDAO;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,9 +21,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserManagementController {
 
@@ -32,13 +39,15 @@ public class UserManagementController {
     @FXML
     private TableView<User> userTable;
     @FXML
-    private TableColumn<User, String> profileColumn;
+    private TableColumn<User, User> profileColumn;
     @FXML
     private TableColumn<User, String> nameColumn;
     @FXML
     private TableColumn<User, String> roleColumn;
     @FXML
     private TableColumn<User, Void> actionsColumn;
+    @FXML
+    private TableColumn<User, String> statusColumn;
 
     private final ObservableList<User> masterUserList = FXCollections.observableArrayList();
     private final UserDAO userDAO = new UserDAO();
@@ -61,9 +70,31 @@ public class UserManagementController {
     public void initialize() {
         setupProfileColumn();
 
-        profileColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getProfileImagePath()));
+        profileColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue()));
         nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
         roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getRole()));
+        statusColumn.setCellValueFactory(cell -> cell.getValue().statusProperty());
+
+        // Add styling for status column
+        statusColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(status);
+                    if (status.startsWith("Ongoing")) {
+                        setStyle("-fx-text-fill: orange;");
+                    } else if (status.equals("Available")) {
+                        setStyle("-fx-text-fill: green;");
+                    } else {
+                        setStyle("-fx-text-fill: grey;");
+                    }
+                }
+            }
+        });
 
         roleFilter.getItems().clear();
         roleFilter.getItems().addAll("All Roles", "Admin", "Event Coordinator");
@@ -89,27 +120,21 @@ public class UserManagementController {
             }
 
             @Override
-            protected void updateItem(String path, boolean empty) {
-                super.updateItem(path, empty);
-                if (empty) {
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
                     setGraphic(null);
                     return;
                 }
 
                 Image img;
-                try {
-                    File file = (path == null) ? null : new File(path.replace("\\", "/"));
 
-                    if (file == null || !file.exists()) {
-                        URL imageUrl = getClass().getResource(DEFAULT_AVATAR_PATH);
-                        if (imageUrl != null) {
-                            img = new Image(imageUrl.toExternalForm(), 32, 32, true, true);
-                        } else {
-                            setGraphic(null);
-                            return;
-                        }
+                try {
+                    if (user.getProfileImage() != null) {
+                        img = new Image(new ByteArrayInputStream(user.getProfileImage()), 32, 32, true, true);
                     } else {
-                        img = new Image("file:" + file.getAbsolutePath(), 32, 32, true, true);
+                        URL imageUrl = getClass().getResource(DEFAULT_AVATAR_PATH);
+                        img = new Image(imageUrl.toExternalForm(), 32, 32, true, true);
                     }
 
                     imageView.setImage(img);
@@ -117,6 +142,7 @@ public class UserManagementController {
                     setGraphic(centeredBox);
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     setGraphic(null);
                 }
             }
@@ -144,10 +170,15 @@ public class UserManagementController {
 
     private void addActionButtons() {
         actionsColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button editBtn = new Button("✏️");
+            private final Button editBtn = new Button("✏");
             private final Button deleteBtn = new Button("🗑");
+            private final HBox actionBox = new HBox(10, editBtn, deleteBtn);
 
             {
+                actionBox.setAlignment(Pos.CENTER); // <-- Center the buttons
+                actionBox.setPrefWidth(100);         // Optional: tweak spacing
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY); // Clean up layout
+
                 editBtn.setOnAction(e -> {
                     User user = getTableView().getItems().get(getIndex());
                     openEditUserWindow(user);
@@ -164,20 +195,37 @@ public class UserManagementController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(new HBox(10, editBtn, deleteBtn));
-                }
+                setGraphic(empty ? null : actionBox);
             }
         });
     }
 
     public void refreshUserList() {
         masterUserList.setAll(userDAO.getAllUsers());
+
+        // Update user statuses here
+        CoordinatorEventManager eventManager = new CoordinatorEventManager();
+        List<CoordinatorAssignment> assignments = eventManager.getAllCoordinatorAssignments();
+
+        // Map: Username → EventName
+        Map<String, String> userToEvent = new HashMap<>();
+        for (CoordinatorAssignment a : assignments) {
+            userToEvent.put(a.getUsername(), a.getEventName());
+        }
+
+        for (User user : masterUserList) {
+            String event = userToEvent.get(user.getUsername());
+            if (event != null) {
+                user.setStatus("Ongoing: " + event);
+            } else {
+                user.setStatus("Available");
+            }
+        }
+
         applyFilters();
         userTable.refresh();
     }
+
 
     @FXML
     private void handleAddUser() {
