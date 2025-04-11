@@ -2,10 +2,7 @@ package dal;
 
 import be.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class UserDAO {
         String sql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
 
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
@@ -31,6 +28,17 @@ public class UserDAO {
             stmt.setString(4, user.getProfileImagePath());
 
             stmt.executeUpdate();
+
+            try(ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    user.setUser_Id(id);
+                    System.out.println("Assigned UserId " + id);
+                } else {
+                    throw new SQLException();
+                }
+            }
+
             System.out.println("User added successfully");
             return true;
 
@@ -60,7 +68,7 @@ public class UserDAO {
     }
 
     public User getUserByUsername(String username) {
-        String sql = "SELECT * FROM LoginInfo WHERE Username = ?";
+        String sql = "SELECT UserId, Username, Password, Role, ProfileImagePath FROM LoginInfo WHERE Username = ?";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

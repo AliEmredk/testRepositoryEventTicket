@@ -71,33 +71,34 @@ public class EventDAO {
         }
     }
 
-    public void updateEvent(Event event) {
-
-        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+    public List<Event> getEventsForUser(int userId) {
+        List<Event> events = new ArrayList<>();
+        String sql = "SELECT e.* FROM Event e JOIN EventUser eu ON e.EventId = eu.EventId WHERE eu.UserId = ?";
 
         try(Connection conn = dbAccess.DBConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, event.getLocation());
-            stmt.setString(2, event.getDate());
-            stmt.setString(3, event.getStartTime());
-            stmt.setString(4, event.getEndTime());
-            stmt.setString(5, event.getNote());
-            stmt.setInt(6, event.getPrice());
-            stmt.setString(7, event.getLocation_Guidance());
-            stmt.setString(8, event.getEventName());
-            stmt.setInt(9, event.getEventId());
+            stmt.setInt(1,userId);
+            ResultSet rs = stmt.executeQuery();
 
-            int rowsAffected = stmt.executeUpdate();
-            if(rowsAffected > 0) {
-                logChange("Event", "UPDATE", event.getEventId(),null);
-                System.out.println("Event updated successfully");
-            } else {
-                System.out.println("No event found");
+            while(rs.next()) {
+                Event event = new Event(
+                        rs.getString("Location"),
+                        rs.getString("Date"),
+                        rs.getString("StartTime"),
+                        rs.getString("EndTime"),
+                        rs.getString("Note"),
+                        rs.getInt("Price"),
+                        rs.getString("Location_Guidance"),
+                        rs.getString("EventName"),
+                        rs.getInt("EventId")
+                );
+                events.add(event);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return events;
     }
 
     public void deleteEvent(int eventId){

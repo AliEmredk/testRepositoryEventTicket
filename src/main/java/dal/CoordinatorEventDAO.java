@@ -1,6 +1,7 @@
 package dal;
 
 import be.CoordinatorAssignment;
+import be.Event;
 
 import javax.xml.transform.Result;
 import java.sql.Connection;
@@ -331,6 +332,70 @@ public class CoordinatorEventDAO {
             stmt.executeUpdate();
 
             System.out.println("Assigned " + targetUsername + " to event: " + eventName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Event> getEventsByCoordinatorId(int userId) {
+        List<Event> events = new ArrayList<>();
+
+        String sql = "SELECT e.* FROM Event e JOIN CoordinatorEvent ce ON e.EventId = ce.EventId WHERE ce.UserId = ?";
+
+        try(Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1,userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Event event = new Event(
+                            rs.getString("Location"),
+                            rs.getString("Date"),
+                            rs.getString("StartTime"),
+                            rs.getString("EndTime"),
+                            rs.getString("Note"),
+                            rs.getInt("Price"),
+                            rs.getString("Location_Guidance"),
+                            rs.getString("EventName"),
+                            rs.getInt("EventId")
+                    );
+                    events.add(event);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+    public List<Integer> getCoordinatorIdsForEvent(int eventId) {
+        List<Integer> coordinatorIds = new ArrayList<>();
+        String sql = "SELECT UserId FROM CoordinatorEvent WHERE EventId = ?";
+
+        try(Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, eventId);
+            try(ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    coordinatorIds.add(rs.getInt("UserId"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return coordinatorIds;
+    }
+
+    public void clearCoordinatorsForEvent(int eventId) {
+        String sql = "DELETE FROM CoordinatorEvent WHERE EventId = ?";
+
+        try(Connection conn = dbAccess.DBConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, eventId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,8 @@
 package controllers;
 
 import be.Event;
+import be.User;
+import dal.CoordinatorEventDAO;
 import dal.EventDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +15,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -22,17 +25,40 @@ public class EventMainController {
     
     private EventDAO eventDAO = new EventDAO();
     private ObservableList<Event> events = FXCollections.observableArrayList();
+    private int currentUserId;
+    private String currentUserRole;
+    private User loggedInUser;
+
+    public void setCurrentUser(int userId, String role) {
+        this.currentUserId = userId;
+        this.currentUserRole = role;
+        loadEvents();
+    }
 
     // Constructor to initialize events
-    public EventMainController() {
-        loadEvents();
+    public EventMainController(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
     }
 
     // Load all events from the database
     public void loadEvents() {
-        List<Event> allEvents = eventDAO.getAllEvents();
-        events.clear();
-        events.addAll(allEvents);
+        if(loggedInUser == null) {
+            System.out.println("⚠ User is null");
+            return;
+        }
+
+        List<Event> events;
+        if("Admin".equals(loggedInUser.getRole())) {
+            events = eventDAO.getAllEvents();
+        } else if ("Event Coordinator".equals(loggedInUser.getRole())) {
+            CoordinatorEventDAO coordinatorEventDAO = new CoordinatorEventDAO();
+            events = coordinatorEventDAO.getEventsByCoordinatorId(loggedInUser.getUser_Id());
+        } else {
+            events = new ArrayList<>();
+        }
+
+        System.out.println("Loading " + events.size() + " events for " + loggedInUser.getRole());
+        this.events.setAll(events);
     }
 
     // Handle searching

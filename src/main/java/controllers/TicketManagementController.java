@@ -1,8 +1,12 @@
 package controllers;
 
-import be.*;
 import bll.BarCodeGenerator;
-import dal.*;
+import be.Barcode;
+import be.Event;
+import be.TicketType;
+import dal.DBAccess;
+import dal.EventDAO;
+import dal.TicketTypeDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
@@ -27,8 +31,6 @@ public class TicketManagementController {
     @FXML private Spinner<Integer> amountSpinner;
     @FXML private TextArea detailsField;
     @FXML private TextField emailField;
-    @FXML private TextField firstNameField;
-    @FXML private TextField lastNameField;
 
     @FXML private Label ticketIdLabel;
     @FXML private Label eventTitleLabel;
@@ -64,7 +66,6 @@ public class TicketManagementController {
     private ToggleGroup specialScopeToggle = new ToggleGroup();
 
     private final EventDAO eventDAO = new EventDAO();
-    private final CustomerDAO customerDAO = new CustomerDAO();
     private Connection connection;
     private TicketTypeDAO ticketTypeDAO;
 
@@ -235,63 +236,12 @@ public class TicketManagementController {
     }
 
     @FXML
-    private void generateAndPrintTickets() {
-        Event selectedEvent = eventCombo.getValue();
-        String email = emailField.getText().trim();
-        String firstName = firstNameField.getText().trim();
-        String lastName = lastNameField.getText().trim();
-        int discount = (int) discountSlider.getValue();
-        String details = detailsField.getText().trim();
-        int amount = amountSpinner.getValue();
-
-        Customer customer = customerDAO.getOrCreateCustomerByEmail(email, firstName, lastName);
-        if (customer == null) {
-            showAlert("Error", "Could not get or create customer.");
-        }
-
-        if (selectedEvent == null || email.isEmpty()) {
-            showAlert("Missing Info", "Please select an event and enter a valid email address.");
-        }
-
+    private void printTicket() {
         if (!emailField.isDisabled() && !isValidEmail(emailField.getText())) {
             showAlert("Invalid Email", "Please enter a valid email address.");
             return;
         }
-
-        try {
-            int customerId = customer.getCustomerId();
-
-            BarcodeDAO barcodeDAO = new BarcodeDAO(connection);
-            TicketDAO ticketDAO = new TicketDAO(connection);
-
-            for (int i = 0; i < amount; i++) {
-                String ticketId = generateTicketId();
-
-                byte[] barcodeBytes = BarCodeGenerator.generateBarcode(ticketId);
-                Barcode barcode = new Barcode(0, barcodeBytes, ticketId);
-                int barcodeId = barcodeDAO.saveBarcode(barcode);
-
-                if (barcodeId == -1) {
-                    System.out.println("Barcode Error");
-                    continue;
-                }
-
-                Ticket ticket = new Ticket();
-                ticket.setBarcodeId(barcodeId);
-                ticket.setCustomerId(customerId);
-                ticket.setEventId(selectedEvent.getEventId());
-                ticket.setDiscount(discount);
-                ticket.setDetails(details);
-                ticket.setTicketType(ticketTypeCombo.getValue());
-
-                ticketDAO.saveTicket(ticket);
-            }
-            showAlert("Success", amount + " Tickets generated and saved");
-            printNode(ticketPreviewBox);
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Error", "Could not generate tickets.");
-        }
+        printNode(ticketPreviewBox);
     }
 
     private void printNode(Node node) {
