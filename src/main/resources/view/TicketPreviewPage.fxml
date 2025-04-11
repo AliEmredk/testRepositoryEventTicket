@@ -101,15 +101,17 @@
 
                         <!-- Email only visible when not special -->
                         <VBox fx:id="emailContainer">
-                            <Label text="Email Address" />
-                            <TextField fx:id="emailField" promptText="Enter customer's email address" />
-                            <TextField fx:id="firstNameField" promptText="Enter customer's first name" />
-                            <TextField fx:id="lastNameField" promptText="Enter customer's first name" />
+                            <ComboBox fx:id="customerComboBox" promptText="Select Customer" />
+                            <Button fx:id="addCustomerButton" text="Add Customer" />
+<!--                            <Label text="Email Address" />-->
+<!--                            <TextField fx:id="emailField" promptText="Enter customer's email address" />-->
+<!--                            <TextField fx:id="firstNameField" promptText="Enter customer's first name" />-->
+<!--                            <TextField fx:id="lastNameField" promptText="Enter customer's first name" />-->
                         </VBox>
 
                         <HBox spacing="10">
                             <Button text="Update Preview" onAction="#updatePreview" />
-                            <Button text="Print Ticket" onAction="#generateAndPrintTickets" />
+                            <Button text="Print Ticket" onAction="#printTicket" />
                         </HBox>
                     </VBox>
                 </content>
