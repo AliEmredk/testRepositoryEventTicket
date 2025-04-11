@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Fixed  except details.">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f5856297-9f6d-4c76-b1c5-29324ed20eef.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f5856297-9f6d-4c76-b1c5-29324ed20eef.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/be/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/Ticket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bll/TicketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/TicketManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/TicketTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/be/TicketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/be/TicketTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +25,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="testRepositoryEventTicket/main" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -40,6 +50,9 @@
     &quot;accountId&quot;: &quot;b7b93748-8f5e-412f-a8a0-d0a3c41ad131&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -47,25 +60,26 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestAdminPageApp.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;jakub&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.App.executor": "Run",
+    "Application.TestAdminPageApp.executor": "Run",
+    "JUnit.TicketTest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "jakub",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "advanced.settings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.App">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dk.easv.App" />
@@ -93,9 +107,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TicketTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="EASV_Ticket" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="be.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="be" />
+      <option name="MAIN_CLASS_NAME" value="be.TicketTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.App" />
+        <item itemvalue="JUnit.TicketTest" />
         <item itemvalue="Application.TestAdminPageApp" />
       </list>
     </recent_temporary>
@@ -135,7 +165,7 @@
       <workItem from="1744209026794" duration="607000" />
       <workItem from="1744270253180" duration="127000" />
       <workItem from="1744353717894" duration="314000" />
-      <workItem from="1744354115373" duration="394000" />
+      <workItem from="1744354115373" duration="11124000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -209,7 +239,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744312879012</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Workspace and unversioned files. Hope it doesn't break anything.">
+      <option name="closed" value="true" />
+      <created>1744355107165</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744355107165</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -236,6 +274,8 @@
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
     <MESSAGE value="Update UserManagement with Status and Button updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update UserManagement with Status and Button updates" />
+    <MESSAGE value="Workspace and unversioned files. Hope it doesn't break anything." />
+    <MESSAGE value="Fixed  except details." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed  except details." />
   </component>
 </project>

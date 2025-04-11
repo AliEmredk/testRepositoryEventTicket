@@ -1,11 +1,8 @@
 package controllers;
 
-import be.Customer;
+import be.*;
 import bll.BarCodeGenerator;
-import be.Barcode;
-import be.Event;
-import dal.CustomerDAO;
-import dal.EventDAO;
+import dal.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +28,7 @@ import javafx.stage.Modality;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.sql.Connection;
 
 public class TicketManagementController {
 
@@ -46,8 +44,6 @@ public class TicketManagementController {
     private Spinner<Integer> amountSpinner;
     @FXML
     private TextArea detailsField;
-    @FXML
-    private TextField emailField;
 
     @FXML
     private Label ticketIdLabel;
@@ -71,6 +67,8 @@ public class TicketManagementController {
     private Button addCustomerButton;
     @FXML
     private ComboBox<Customer> customerComboBox;
+    @FXML
+    private TextField emailField;
 
     private final EventDAO eventDAO = new EventDAO();
 
@@ -119,14 +117,13 @@ public class TicketManagementController {
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Last Name");
 
-        TextField emailInputField = new TextField();
-        emailInputField.setPromptText("Email");
+        emailField.setPromptText("Email");
 
         Button saveBtn = new Button("Save");
         saveBtn.setOnAction(event -> {
             String firstName = firstNameField.getText().trim();
             String lastName = lastNameField.getText().trim();
-            String email = emailInputField.getText().trim();
+            String email = emailField.getText().trim();
 
             if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
@@ -152,7 +149,7 @@ public class TicketManagementController {
             addCustomerStage.close();
         });
 
-        vbox.getChildren().addAll(firstNameField, lastNameField, emailInputField, saveBtn);
+        vbox.getChildren().addAll(firstNameField, lastNameField, emailField, saveBtn);
 
         Scene scene = new Scene(vbox, 400, 200);
         addCustomerStage.setScene(scene);
@@ -236,7 +233,59 @@ public class TicketManagementController {
 
     @FXML
     private void printTicket() {
-        printNode(ticketPreviewBox);
+        Event selectedEvent = eventCombo.getValue();
+        Customer selectedCustomer = customerComboBox.getValue();
+        String email = selectedCustomer.getEmail();
+        int discount = (int) discountSlider.getValue();
+        int amount = amountSpinner.getValue();
+
+        if (selectedEvent == null || selectedCustomer == null) {
+            showAlert("Missing Info", "Please select an event, a customer, and enter a valid email address.");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showAlert("Invalid Email", "Please enter a valid email address.");
+            return;
+        }
+        try {
+            DBAccess dbAccess = new DBAccess();
+            Connection conn = dbAccess.DBConnection();
+
+            BarcodeDAO barcodeDAO = new BarcodeDAO(conn);
+            TicketDAO ticketDAO = new TicketDAO(conn);
+
+            int customerId = selectedCustomer.getCustomerId();
+
+            String selectedTicketType = ticketTypeCombo.getValue();
+
+            for (int i = 0; i < amount; i++) {
+                String ticketId = generateTicketId();
+
+                byte[] barcodeBytes = BarCodeGenerator.generateBarcode(ticketId);
+                Barcode barcode = new Barcode(0, barcodeBytes, ticketId);
+                int barcodeId = barcodeDAO.saveBarcode(barcode);
+
+                if (barcodeId == -1) {
+                    System.out.println("Barcode Error");
+                    continue;
+                }
+
+                Ticket ticket = new Ticket();
+                ticket.setBarcodeId(barcodeId);
+                ticket.setCustomerId(customerId);
+                ticket.setEventId(selectedEvent.getEventId());
+                ticket.setDiscount(discount);
+                ticket.setTicketType(selectedTicketType);
+                ticketDAO.saveTicket(ticket);
+            }
+            showAlert("Success", amount + " Tickets generated and saved.");
+            printNode(ticketPreviewBox);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not generate tickets.");
+        }
     }
 
     private boolean isValidEmail(String email) {

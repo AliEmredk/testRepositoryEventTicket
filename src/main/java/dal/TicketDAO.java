@@ -24,6 +24,7 @@ public class TicketDAO {
                 "c.CustomerId, c.FirstName, c.LastName, c.Email, " +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
                 "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
+                "t.Discount " +
                 "FROM Ticket t " +
                 "JOIN TicketType tt ON t.TicketTypeId = tt.TicketTypeId " +
                 "JOIN Customer c ON t.CustomerId = c.CustomerId " +
@@ -57,11 +58,12 @@ public class TicketDAO {
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
                 String email = rs.getString("Email");
+                int discount = rs.getInt("Discount");
 
                 Ticket ticket = new Ticket(
-                        ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
+                        ticketId, ticketTypeName, barcodeId, barcodeImage, barcodeString,
                         eventId, eventName, location, date, startTime, endTime, eventNote,
-                        customerId, firstName, lastName, email
+                        customerId, firstName, lastName, email, discount
                 );
                 tickets.add(ticket);
             }
@@ -73,13 +75,20 @@ public class TicketDAO {
     }
 
     public boolean saveTicket(Ticket ticket) {
-        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId) VALUES (?, ?, ?, ?)";
+        int ticketTypeId = getTicketTypeId(ticket.getTicketType());
+
+        if (ticketTypeId == -1) {
+            System.out.println("Invalid Ticket Type.");
+            return false;
+        }
+        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId, Discount) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticket.getBarcodeId());
             stmt.setInt(2, ticket.getCustomerId());
-            stmt.setInt(3, ticket.getTicketType().getTicketTypeId()); // Using object
+            stmt.setInt(3, ticketTypeId);
             stmt.setInt(4, ticket.getEventId());
+            stmt.setInt(5, ticket.getDiscount());
 
             stmt.executeUpdate();
             return true;
@@ -87,6 +96,23 @@ public class TicketDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private int getTicketTypeId(String ticketTypeName) {
+        String sql = "SELECT TicketTypeId FROM TicketType WHERE Name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, ticketTypeName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("TicketTypeId");
+            } else {
+                return -1;  // Return -1 if no matching ticket type found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;  // Return -1 on error
         }
     }
 }

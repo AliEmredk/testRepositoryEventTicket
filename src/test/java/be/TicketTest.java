@@ -25,11 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
             String firstName = "Jane";
             String lastName = "Doe";
             String email = "jane.doe@example.com";
+            int discount = 20;
 
             // create Ticket object
             Ticket ticket = new Ticket(ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
                     eventId, eventName, location, eventDate, startTime, endTime, eventNote,
-                    customerId, firstName, lastName, email);
+                    customerId, firstName, lastName, email, discount);
 
             // check if getters return correct values
             assertEquals(ticketId, ticket.getTicketId());

@@ -3,7 +3,7 @@ package be;
 public class Ticket {
 
     private int ticketId;
-    private TicketType ticketType; // ✅ Updated
+    private String ticketType; // ✅ Updated
     private int barcodeId;
     private byte[] barcodeImage;
     private String barcodeString;
@@ -18,11 +18,12 @@ public class Ticket {
     private String firstName;
     private String lastName;
     private String email;
+    private int discount;
 
-    public Ticket(int ticketId, TicketType ticketType, int barcodeId, byte[] barcodeImage, String barcodeString,
+    public Ticket(int ticketId, String ticketType, int barcodeId, byte[] barcodeImage, String barcodeString,
                   int eventId, String eventName, String location, String eventDate,
                   String startTime, String endTime, String eventNote,
-                  int customerId, String firstName, String lastName, String email) {
+                  int customerId, String firstName, String lastName, String email, int discount) {
         this.ticketId = ticketId;
         this.ticketType = ticketType;
         this.barcodeId = barcodeId;
@@ -39,6 +40,7 @@ public class Ticket {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.discount = discount;
     }
 
     public Ticket() {
@@ -46,7 +48,7 @@ public class Ticket {
 
     // Getters
     public int getTicketId() { return ticketId; }
-    public TicketType getTicketType() { return ticketType; }
+    public String getTicketType() { return ticketType; }
     public int getBarcodeId() { return barcodeId; }
     public byte[] getBarcodeImage() { return barcodeImage; }
     public String getBarcodeString() { return barcodeString; }
@@ -61,10 +63,11 @@ public class Ticket {
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
+    public int getDiscount() {return discount;}
 
     // Setters
     public void setTicketId(int ticketId) { this.ticketId = ticketId; }
-    public void setTicketType(TicketType ticketType) { this.ticketType = ticketType; }
+    public void setTicketType(String ticketType) { this.ticketType = ticketType; }
     public void setBarcodeId(int barcodeId) { this.barcodeId = barcodeId; }
     public void setBarcodeImage(byte[] barcodeImage) { this.barcodeImage = barcodeImage; }
     public void setBarcodeString(String barcodeString) { this.barcodeString = barcodeString; }
@@ -79,12 +82,13 @@ public class Ticket {
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setEmail(String email) { this.email = email; }
+    public void setDiscount(int discount) {this.discount = discount;}
 
     @Override
     public String toString() {
         return "Ticket{" +
                 "ticketId=" + ticketId +
-                ", ticketType='" + (ticketType != null ? ticketType.getTicketTypeName() : "null") + '\'' +
+                ", ticketType='" + ticketType + '\'' +
                 ", barcodeId=" + barcodeId +
                 ", barcodeString='" + barcodeString + '\'' +
                 ", eventId=" + eventId +
