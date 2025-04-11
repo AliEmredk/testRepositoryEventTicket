@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -101,37 +102,16 @@ public class SettingsView extends StackPane {
                     return;
                 }
 
-                String username = currentUser.getUsername();
-
                 try {
-                    File destFolder = new File("profilePictures");
-                    if (!destFolder.exists()) destFolder.mkdirs();
+                    byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
 
-                    String oldPath = currentUser.getProfileImagePath();
-                    if (oldPath != null && oldPath.startsWith("profilePictures/")) {
-                        File oldFile = new File(oldPath);
-                        if (oldFile.exists()) {
-                            oldFile.delete();
-                            System.out.println("Deleted old profile picture: " + oldFile.getAbsolutePath());
-                        }
-                    }
+                    dao.updateProfileImage(currentUser.getUser_Id(), imageBytes);
+                    currentUser.setProfileImage(imageBytes);
 
-                    String cleanedFileName = selectedFile.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
-                    String newFileName = username + "_" + cleanedFileName;
-                    File destFile = new File(destFolder, newFileName);
-
-                    Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                    Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                    String relativePath = "profilePictures/" + newFileName;
-                    currentUser.setProfileImagePath(relativePath);
-                    System.out.println("Saving path to DB: " + relativePath);
-                    dao.updateUser(currentUser, username);
-
-                    showAlert(Alert.AlertType.INFORMATION, "Profile picture updated successfully");
+                    showAlert(Alert.AlertType.INFORMATION, "Profile picture updated!");
                     UserManagementController.refreshIfOpen();
-                } catch (IOException ex) {
+
+                } catch (IOException | SQLException ex) {
                     ex.printStackTrace();
                     showAlert(Alert.AlertType.ERROR, "Failed to save profile picture.");
                 }

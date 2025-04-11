@@ -1,96 +1,113 @@
 package controllers;
 
-import be.Customer;
 import bll.BarCodeGenerator;
 import be.Barcode;
 import be.Event;
-import dal.CustomerDAO;
+import be.TicketType;
+import dal.DBAccess;
 import dal.EventDAO;
+import dal.TicketTypeDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.geometry.Insets;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
-import javafx.stage.Stage;
-import javafx.stage.Modality;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 public class TicketManagementController {
 
-    @FXML
-    private Slider discountSlider;
-    @FXML
-    private Label discountValueLabel;
-    @FXML
-    private ComboBox<String> ticketTypeCombo;
-    @FXML
-    private ComboBox<Event> eventCombo;
-    @FXML
-    private Spinner<Integer> amountSpinner;
-    @FXML
-    private TextArea detailsField;
-    @FXML
-    private TextField emailField;
+    @FXML private Slider discountSlider;
+    @FXML private Label discountValueLabel;
+    @FXML private VBox discountBox;
+    @FXML private ComboBox<TicketType> ticketTypeCombo;
+    @FXML private ComboBox<Event> eventCombo;
+    @FXML private Spinner<Integer> amountSpinner;
+    @FXML private TextArea detailsField;
+    @FXML private TextField emailField;
 
-    @FXML
-    private Label ticketIdLabel;
-    @FXML
-    private Label eventTitleLabel;
-    @FXML
-    private Label eventDateLabel;
-    @FXML
-    private Label eventTimeLabel;
-    @FXML
-    private Label eventLocationLabel;
-    @FXML
-    private Label ticketAmountLabel;
-    @FXML
-    private Label ticketDetailsLabel;
-    @FXML
-    private ImageView qrCodeImageView;
-    @FXML
-    private VBox ticketPreviewBox;
-    @FXML
-    private Button addCustomerButton;
-    @FXML
-    private ComboBox<Customer> customerComboBox;
+    @FXML private Label ticketIdLabel;
+    @FXML private Label eventTitleLabel;
+    @FXML private Label eventDateLabel;
+    @FXML private Label eventTimeLabel;
+    @FXML private Label eventLocationLabel;
+    @FXML private Label ticketAmountLabel;
+    @FXML private Label ticketDetailsLabel;
+    @FXML private ImageView qrCodeImageView;
+    @FXML private VBox ticketPreviewBox;
+    @FXML private VBox vipOptionsBox;
+    @FXML private VBox specialOptionsBox;
+    @FXML private RadioButton allEventsRadio;
+    @FXML private RadioButton selectedEventRadio;
+    @FXML private VBox emailContainer;
+
+    // VIP Perks
+    @FXML private CheckBox snackCheck;
+    @FXML private CheckBox skipLineCheck;
+    @FXML private CheckBox meetGuestCheck;
+    @FXML private CheckBox foodIncludedCheck;
+
+    // Special Perks
+    @FXML private CheckBox freeDrinkCheck;
+    @FXML private CheckBox freeSnackCheck;
+    @FXML private CheckBox halfOffItemCheck;
+    @FXML private CheckBox bogoCheck;
+    @FXML private CheckBox bonusActivityCheck;
+    @FXML private CheckBox oneTimeCouponCheck;
+    @FXML private CheckBox raffleEntryCheck;
+    @FXML private CheckBox exclusiveMerchCheck;
+
+    private ToggleGroup specialScopeToggle = new ToggleGroup();
 
     private final EventDAO eventDAO = new EventDAO();
+    private Connection connection;
+    private TicketTypeDAO ticketTypeDAO;
 
-    private final CustomerDAO customerDAO = new CustomerDAO();
+    private final Map<CheckBox, String> specialDescriptions = new LinkedHashMap<>();
 
+    public TicketManagementController() {
+        try {
+            this.connection = new DBAccess().DBConnection();
+            this.ticketTypeDAO = new TicketTypeDAO(connection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void initialize() {
         loadEvents();
-        loadCustomers();
-        ticketTypeCombo.setItems(FXCollections.observableArrayList("VIP", "Standard", "Backstage"));
+        loadTicketTypes();
+        allEventsRadio.setToggleGroup(specialScopeToggle);
+        selectedEventRadio.setToggleGroup(specialScopeToggle);
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
         amountSpinner.setValueFactory(valueFactory);
 
         discountSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            int discount = newVal.intValue();
-            discountValueLabel.setText(discount + "% off");
+            discountValueLabel.setText(newVal.intValue() + "% off");
         });
-        addCustomerButton.setOnAction(event -> openAddCustomerWindow());
+
+        ticketTypeCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                updateUIForTicketType(newVal.getTicketTypeName());
+            }
+        });
+
+        specialDescriptions.put(freeDrinkCheck, "🥤 Free Drink — Includes one soft drink or beer");
+        specialDescriptions.put(freeSnackCheck, "🍪 Free Snack — Get a snack item at the event");
+        specialDescriptions.put(halfOffItemCheck, "🤑 50% Off — Valid for any one item at food booth");
+        specialDescriptions.put(bogoCheck, "🎟 Buy 1 Get 1 Free — Use at any eligible stand");
+        specialDescriptions.put(bonusActivityCheck, "🎲 Bonus Activity — Join a side activity or mini-game");
+        specialDescriptions.put(oneTimeCouponCheck, "🎫 One-Time Use Coupon — Redeemable once for any perk");
+        specialDescriptions.put(raffleEntryCheck, "🎁 Raffle Entry — Automatically enters you in the prize draw");
+        specialDescriptions.put(exclusiveMerchCheck, "🧢 Free Merchandise — Get club stickers or pins");
     }
 
     private void loadEvents() {
@@ -98,164 +115,153 @@ public class TicketManagementController {
         eventCombo.setItems(FXCollections.observableArrayList(events));
     }
 
-    private void loadCustomers() {
-        List<Customer> customers = customerDAO.getAllCustomers();
-        customerComboBox.setItems(FXCollections.observableArrayList(customers));
+    private void loadTicketTypes() {
+        try {
+            List<TicketType> ticketTypes = ticketTypeDAO.getAllTicketTypes();
+            ticketTypeCombo.setItems(FXCollections.observableArrayList(ticketTypes));
+
+            ticketTypeCombo.setCellFactory(list -> new ListCell<>() {
+                @Override
+                protected void updateItem(TicketType item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText((item == null || empty) ? null : item.getTicketTypeName());
+                }
+            });
+
+            ticketTypeCombo.setButtonCell(new ListCell<>() {
+                @Override
+                protected void updateItem(TicketType item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText((item == null || empty) ? null : item.getTicketTypeName());
+                }
+            });
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Could not load ticket types.");
+        }
     }
 
-    private void openAddCustomerWindow() {
-        Stage addCustomerStage = new Stage();
-        addCustomerStage.initModality(Modality.APPLICATION_MODAL);
-        addCustomerStage.setTitle("Add Customer");
+    private void updateUIForTicketType(String type) {
+        boolean isVIP = "VIP".equalsIgnoreCase(type);
+        boolean isSpecial = "Special Ticket".equalsIgnoreCase(type);
 
-        VBox vbox = new VBox(10);
-        vbox.setPadding(new Insets(15));
-        vbox.setAlignment(Pos.CENTER_LEFT);
+        vipOptionsBox.setVisible(isVIP);
+        vipOptionsBox.setManaged(isVIP);
 
-        // Customer Details Fields
-        TextField firstNameField = new TextField();
-        firstNameField.setPromptText("First Name");
+        specialOptionsBox.setVisible(isSpecial);
+        specialOptionsBox.setManaged(isSpecial);
 
-        TextField lastNameField = new TextField();
-        lastNameField.setPromptText("Last Name");
+        emailContainer.setVisible(!isSpecial);
+        emailContainer.setManaged(!isSpecial);
 
-        TextField emailInputField = new TextField();
-        emailInputField.setPromptText("Email");
-
-        Button saveBtn = new Button("Save");
-        saveBtn.setOnAction(event -> {
-            String firstName = firstNameField.getText().trim();
-            String lastName = lastNameField.getText().trim();
-            String email = emailInputField.getText().trim();
-
-            if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
-                alert.showAndWait();
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showAlert("Invalid Email", "Please enter a valid email address.");
-                return;
-            }
-
-            // Create the new customer
-            Customer newCustomer = new Customer(firstName, lastName, email);
-            customerDAO.addCustomer(newCustomer);
-            loadCustomers();
-
-            // Show success message
-            Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Customer added successfully with ID: " + newCustomer.getCustomerId(), ButtonType.OK);
-            successAlert.showAndWait();
-
-            // Close the window after saving
-            addCustomerStage.close();
-        });
-
-        vbox.getChildren().addAll(firstNameField, lastNameField, emailInputField, saveBtn);
-
-        Scene scene = new Scene(vbox, 400, 200);
-        addCustomerStage.setScene(scene);
-        addCustomerStage.show();
+        discountBox.setVisible(!isSpecial);
+        discountBox.setManaged(!isSpecial);
     }
 
     @FXML
     private void updatePreview() {
         Event selectedEvent = eventCombo.getValue();
-        if (selectedEvent == null) {
-            showAlert("No Event Selected", "Please select an event to preview.");
+        TicketType selectedType = ticketTypeCombo.getValue();
+
+        if (selectedEvent == null || selectedType == null) {
+            showAlert("Missing Data", "Please select both an event and a ticket type.");
             return;
         }
 
-        // Generate new ticket ID and assign
         String ticketId = generateTicketId();
         ticketIdLabel.setText("Ticket ID: " + ticketId);
 
-        // Update ticket preview fields
         eventTitleLabel.setText(selectedEvent.getEventName());
         eventDateLabel.setText(selectedEvent.getDate());
         eventTimeLabel.setText(selectedEvent.getStartTime() + " – " + selectedEvent.getEndTime());
         eventLocationLabel.setText(selectedEvent.getLocation());
         ticketAmountLabel.setText("Amount: " + amountSpinner.getValue());
 
-        // Combine discount + custom details
-        int discount = (int) discountSlider.getValue();
-        String extraDetails = detailsField.getText().trim();
-        String discountText = (discount > 0) ? (discount + "% discount applied") : "";
-        String combinedDetails;
+        String finalDetails;
 
-        if (!extraDetails.isEmpty() && !discountText.isEmpty()) {
-            combinedDetails = discountText + " | " + extraDetails;
-        } else if (!extraDetails.isEmpty()) {
-            combinedDetails = extraDetails;
-        } else if (!discountText.isEmpty()) {
-            combinedDetails = discountText;
+        if ("Special Ticket".equalsIgnoreCase(selectedType.getTicketTypeName())) {
+            List<String> specialPerks = new ArrayList<>();
+            for (Map.Entry<CheckBox, String> entry : specialDescriptions.entrySet()) {
+                if (entry.getKey().isSelected()) {
+                    specialPerks.add(entry.getValue());
+                }
+            }
+            String manualText = detailsField.getText().trim();
+            if (!manualText.isEmpty()) {
+                specialPerks.add(manualText);
+            }
+            finalDetails = String.join("\n", specialPerks);
         } else {
-            combinedDetails = "";
+            List<String> perks = new ArrayList<>();
+            if ("VIP".equalsIgnoreCase(selectedType.getTicketTypeName())) {
+                if (snackCheck.isSelected()) perks.add("🍿 Snack");
+                if (skipLineCheck.isSelected()) perks.add("⏩ Skip Line");
+                if (meetGuestCheck.isSelected()) perks.add("🎤 Meet Guest");
+                if (foodIncludedCheck.isSelected()) perks.add("🍽 Food");
+            }
+
+            String joinedPerks = String.join(" | ", perks);
+            finalDetails = buildCombinedText(joinedPerks);
         }
 
-        ticketDetailsLabel.setText(combinedDetails);
+        ticketDetailsLabel.setText(finalDetails);
 
-        // Generate barcode
         try {
             byte[] barcodeBytes = BarCodeGenerator.generateBarcode(ticketId);
-            ByteArrayInputStream bis = new ByteArrayInputStream(barcodeBytes);
-            Image barcodeImage = new Image(bis);
+            Image barcodeImage = new Image(new ByteArrayInputStream(barcodeBytes));
             qrCodeImageView.setImage(barcodeImage);
-
-            Barcode barcode = new Barcode(0, barcodeBytes, ticketId);
-            // Optional: save to DB -> barcodeDAO.saveBarcode(barcode);
-
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Barcode Error", "Could not generate barcode.");
         }
     }
 
+    private String buildCombinedText(String perks) {
+        int discount = (int) discountSlider.getValue();
+        String extra = detailsField.getText().trim();
+        String discountText = (discount > 0) ? discount + "% discount applied" : "";
+
+        return (!perks.isEmpty() ? perks + ((extra.isEmpty() && discountText.isEmpty()) ? "" : " | ") : "") +
+                (!extra.isEmpty() && !discountText.isEmpty() ? discountText + " | " + extra :
+                        (!extra.isEmpty() ? extra : discountText));
+    }
+
     private String generateTicketId() {
         return "#TCK" + (int) (Math.random() * 100000);
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    public Pane loadTicketManagerView() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TicketPreviewPage.fxml"));
-            return loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new StackPane(new Label("Failed to load Ticket Manager view."));
-        }
+    private boolean isValidEmail(String email) {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
     }
 
     @FXML
     private void printTicket() {
+        if (!emailField.isDisabled() && !isValidEmail(emailField.getText())) {
+            showAlert("Invalid Email", "Please enter a valid email address.");
+            return;
+        }
         printNode(ticketPreviewBox);
     }
 
-    private boolean isValidEmail(String email) {
-        if (email == null || email.isEmpty()) return false;
-        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
-    }
-
     private void printNode(Node node) {
-        PrinterJob printJob = PrinterJob.createPrinterJob();
-        if (printJob != null) {
-            Window window = node.getScene().getWindow();
-            if (printJob.showPrintDialog(window)) {
-                boolean success = printJob.printPage(node);
-                if (success) {
-                    printJob.endJob();
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            if (job.showPrintDialog(node.getScene().getWindow())) {
+                if (job.printPage(node)) {
+                    job.endJob();
                 } else {
                     System.out.println("Printing failed");
                 }
             }
         }
+    }
+
+    private void showAlert(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

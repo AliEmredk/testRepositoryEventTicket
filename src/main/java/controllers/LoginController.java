@@ -101,8 +101,9 @@ public class LoginController {
 
     private void openEventCoordinatorDashboard() {
         Platform.runLater(() -> {
+            User user = UserSession.getLoggedInUser();
             Stage stage = new Stage();
-            new EventCoordinatorDashboard().start(stage);
+            new EventCoordinatorDashboard(user).start(stage);
             closeCurrentStage();
         });
     }
