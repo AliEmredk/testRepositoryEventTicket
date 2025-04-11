@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="to pull">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="I think it finally works, beside the barcode test.">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f5856297-9f6d-4c76-b1c5-29324ed20eef.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f5856297-9f6d-4c76-b1c5-29324ed20eef.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -257,15 +259,7 @@
       <option name="project" value="LOCAL" />
       <updated>1744368033329</updated>
     </task>
-    <task id="LOCAL-00013" summary="to pull">
-      <option name="closed" value="true" />
-      <created>1744370533620</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1744370533620</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,7 +289,6 @@
     <MESSAGE value="Workspace and unversioned files. Hope it doesn't break anything." />
     <MESSAGE value="Fixed  except details." />
     <MESSAGE value="I think it finally works, beside the barcode test." />
-    <MESSAGE value="to pull" />
-    <option name="LAST_COMMIT_MESSAGE" value="to pull" />
+    <option name="LAST_COMMIT_MESSAGE" value="I think it finally works, beside the barcode test." />
   </component>
 </project>
