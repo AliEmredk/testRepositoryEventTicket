@@ -11,15 +11,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.List;
+
 
 public class EventsView extends StackPane {
 
@@ -30,6 +35,22 @@ public class EventsView extends StackPane {
     private Button editEventBtn, deleteEventBtn;
     private List<Event> masterEventList = new ArrayList<>();
     private EventMainController eventMainController;
+
+    private static final String CARD_STYLE_DEFAULT = """
+        -fx-background-color: white;
+        -fx-border-color: #ccc;
+        -fx-border-width: 1;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 4);
+    """;
+
+    private static final String CARD_STYLE_SELECTED = """
+        -fx-background-color: #FFD54F;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 4);
+    """;
 
     public EventsView(String role, EventMainController eventMainController) {
 //        VBox vbox = new VBox();
@@ -47,15 +68,16 @@ public class EventsView extends StackPane {
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setPadding(new Insets(0,0,10,0));
 
-        Button addEventBtn = new Button("Add");
+        Button addEventBtn = new Button("➕");
+        addEventBtn.setTooltip(new Tooltip("Add Event"));
         addEventBtn.setOnAction(e -> openAddEventWindow());
 
-        editEventBtn = new Button("Edit");
-        editEventBtn.setDisable(true);
+        editEventBtn = new Button("✏");
+        editEventBtn.setTooltip(new Tooltip("Edit Selected Event"));
         editEventBtn.setOnAction(e -> openEditEventWindow());
 
-        deleteEventBtn = new Button("Delete");
-        deleteEventBtn.setDisable(true);
+        deleteEventBtn = new Button("🗑");
+        deleteEventBtn.setTooltip(new Tooltip("Delete Selected Event"));
         deleteEventBtn.setOnAction(e -> openDeleteEventWindow());
 
         // Handle Sorting
@@ -133,42 +155,60 @@ public class EventsView extends StackPane {
         System.out.println("Creating tile for event: " + event.getEventName()); // Debugging line
 
         VBox card = new VBox();
-        card.setPadding(new Insets(10));
-        card.setSpacing(5);
-        card.setAlignment(Pos.CENTER);
-        card.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        card.setMaxWidth(Double.MAX_VALUE);
-        VBox.setVgrow(card, Priority.ALWAYS);
+        card.setAlignment(Pos.TOP_CENTER);
         card.setStyle("""
-                -fx-background-color: #FFECB3;
-                -fx-border-radius: 10;
-                -fx-background-radius: 10;
-                -fx-padding: 10;
-                fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 3);
-                """);
+        -fx-background-color: white;
+        -fx-border-color: #ccc;
+        -fx-border-width: 1;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 4);
+    """);
+        card.setPadding(new Insets(10));
+        card.setSpacing(10);
+        card.setPrefWidth(220);
+
+        if (event.getImagePath() != null && !event.getImagePath().isEmpty()) {
+            try {
+                Image image = new Image(event.getImagePath(), true);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(200);
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                card.getChildren().add(imageView);
+            } catch (Exception e) {
+                System.err.println("⚠ Failed to load image for event: " + event.getEventName());
+                e.printStackTrace();
+            }
+        }
+
+
+        VBox labelBox = new VBox(5);
+        labelBox.setAlignment(Pos.CENTER);
+        labelBox.setStyle("-fx-padding: 10 0 0 0;");
 
         Label nameLabel = new Label(event.getEventName());
         nameLabel.setFont(new Font(16));
+
+        Label pinEmoji = new Label("📍");
+        pinEmoji.setFont(new Font(12));
 
         Label locationLabel = new Label(event.getLocation());
         locationLabel.setFont(new Font(12));
         locationLabel.setTextFill(Color.DARKGRAY);
 
+        HBox locationBox = new HBox(5, pinEmoji, locationLabel);
+        locationBox.setAlignment(Pos.CENTER);
+
         Label dateLabel = new Label(event.getDate());
         dateLabel.setFont(new Font(12));
         dateLabel.setTextFill(Color.DARKGRAY);
 
-        Button editBtn = new Button("Edit");
-
-        if(this.role.equals("Admin")) {
-            editBtn.setVisible(false);
-            editBtn.setManaged(false);
-        }
-
-        card.getChildren().addAll(nameLabel, locationLabel, dateLabel);
+        labelBox.getChildren().addAll(nameLabel, locationBox, dateLabel);
+        card.getChildren().add(labelBox);
 
         card.setOnMouseClicked(e -> {
-            if(e.getClickCount() == 2) {
+            if (e.getClickCount() == 2) {
                 BorderPane mainLayout = (BorderPane) this.getChildren().get(0);
                 showEventDetailsSideBar(event, mainLayout);
             } else {
@@ -236,6 +276,23 @@ public class EventsView extends StackPane {
 //        for(User user : coordinators) {
 //            if(assignedCoordinatorIds.contains(user.getUser_Id())) {
 //                coordinatorListView.getSelectionModel().select(user);
+        final String[] selectedEventImagePath = {null};
+
+        Button selectImageBtn = new Button("Choose Event Image");
+        Label imageLabel = new Label("No image selected");
+
+        selectImageBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Event Image");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+            );
+            File selectedFile = fileChooser.showOpenDialog(null);
+            if (selectedFile != null) {
+                imageLabel.setText(selectedFile.getName());
+                selectedEventImagePath[0] = selectedFile.toURI().toString(); // Save the file path as URI
+            }
+        });
 //            }
 //        }
 
@@ -258,7 +315,9 @@ public class EventsView extends StackPane {
             Event newEvent = new Event(locationField.getText(), datePicker.getValue().toString(), startTimeField.getText(),
                     endTimeField.getText(), noteField.getText(), price, locationGuidanceField.getText(), nameField.getText(), 0);
 
+            newEvent.setImagePath(selectedEventImagePath[0]); // Set image before saving
             eventDAO.createEvent(newEvent);
+
             refreshEventList();
 
             //eventDAO.clearCoordinatorsForEvent(selectedEvent.getEventId());
@@ -268,26 +327,38 @@ public class EventsView extends StackPane {
             addEventsStage.close();
         });
 
-        vbox.getChildren().addAll(nameField, locationField, datePicker, startTimeField, endTimeField, noteField, priceField, locationGuidanceField, new Label("Assign Coordinators:"), coordinatorListView, saveBtn);
+        vbox.getChildren().addAll(
+                nameField, locationField, datePicker, startTimeField, endTimeField,
+                noteField, priceField, locationGuidanceField,
+                selectImageBtn, imageLabel,
+                new Label("Assign Coordinators:"), coordinatorListView, saveBtn
+        );
 
         Scene scene = new Scene(vbox, 400, 500);
         addEventsStage.setScene(scene);
         addEventsStage.show();
     }
 
-    private void setSelectedEvent(Event event, VBox eventCard) {
+    private void setSelectedEvent(Event event, VBox selectedCard) {
         this.selectedEvent = event;
-        for (var node : eventContainer.getChildren()) {
-            node.setStyle("-fx-background-color: #FFECB3; -fx-border-radius: 10; -fx-background-radius: 10;");
-        }
-        eventCard.setStyle("-fx-background-color: #FFD54F; -fx-border-radius: 10; -fx-background-radius: 10;");
 
+        // Reset style for all event cards
+        for (var node : eventContainer.getChildren()) {
+            if (node instanceof VBox card) {
+                card.setStyle(CARD_STYLE_DEFAULT);
+            }
+        }
+
+        // Apply selected style to the clicked card
+        selectedCard.setStyle(CARD_STYLE_SELECTED);
+
+        // Enable edit and delete buttons
         editEventBtn.setDisable(false);
         deleteEventBtn.setDisable(false);
     }
 
     private void openEditEventWindow() {
-        if(selectedEvent == null) {
+        if (selectedEvent == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event", ButtonType.OK);
             alert.showAndWait();
             return;
@@ -303,25 +374,48 @@ public class EventsView extends StackPane {
 
         TextField nameField = new TextField(selectedEvent.getEventName());
         nameField.setPromptText("Event Name");
+
         TextField locationField = new TextField(selectedEvent.getLocation());
         locationField.setPromptText("Event Location");
+
         DatePicker datePicker = new DatePicker(LocalDate.parse(selectedEvent.getDate()));
+
         TextField startTimeField = new TextField(selectedEvent.getStartTime());
         startTimeField.setPromptText("Start Time");
+
         TextField endTimeField = new TextField(selectedEvent.getEndTime());
         endTimeField.setPromptText("End Time");
+
         TextArea noteField = new TextArea(selectedEvent.getNote());
         noteField.setPromptText("Notes");
+
         TextField priceField = new TextField(String.valueOf(selectedEvent.getPrice()));
         priceField.setPromptText("Price");
+
         TextField locationGuidanceField = new TextField(selectedEvent.getLocation_Guidance());
         locationGuidanceField.setPromptText("Location Guidance");
-        ListView<User> coordinatorListView = new ListView<>();
 
+        // 🔽 Add image selection logic here
+        final String[] selectedEventImagePath = {selectedEvent.getImagePath()};
+        Button selectImageBtn = new Button("Change Event Image");
+        Label imageLabel = new Label(selectedEvent.getImagePath() != null ? selectedEvent.getImagePath() : "No image selected");
+
+        selectImageBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Event Image");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+            );
+            File selectedFile = fileChooser.showOpenDialog(null);
+            if (selectedFile != null) {
+                imageLabel.setText(selectedFile.getName());
+                selectedEventImagePath[0] = selectedFile.toURI().toString();
+            }
+        });
 
         Button saveBtn = new Button("Save Changes");
         saveBtn.setOnAction(e -> {
-            if(nameField.getText().isEmpty() || locationField.getText().isEmpty()) {
+            if (nameField.getText().isEmpty() || locationField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please fill in all fields", ButtonType.OK);
                 alert.showAndWait();
                 return;
@@ -344,6 +438,7 @@ public class EventsView extends StackPane {
             selectedEvent.setNote(noteField.getText());
             selectedEvent.setPrice(price);
             selectedEvent.setLocation_Guidance(locationGuidanceField.getText());
+            selectedEvent.setImagePath(selectedEventImagePath[0]); // Save image path
 
             eventDAO.updateEvent(selectedEvent.getEventId(), selectedEvent);
             refreshEventList();
@@ -352,9 +447,14 @@ public class EventsView extends StackPane {
             deleteEventBtn.setDisable(true);
         });
 
-        vbox.getChildren().addAll(nameField, locationField, datePicker, startTimeField, endTimeField, noteField, priceField, locationGuidanceField, saveBtn);
+        vbox.getChildren().addAll(
+                nameField, locationField, datePicker, startTimeField, endTimeField,
+                noteField, priceField, locationGuidanceField,
+                selectImageBtn, imageLabel,
+                saveBtn
+        );
 
-        Scene scene = new Scene(vbox, 400, 500);
+        Scene scene = new Scene(vbox, 400, 550);
         editEventsStage.setScene(scene);
         editEventsStage.show();
     }
@@ -384,6 +484,19 @@ public class EventsView extends StackPane {
 
     private void showEventDetailsSideBar(Event event, BorderPane mainLayout) {
         VBox sideBar = new VBox(10);
+        if (event.getImagePath() != null && !event.getImagePath().isEmpty()) {
+            try {
+                Image image = new Image(event.getImagePath(), true);
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(260); // Adjust to fit sidebar width
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.setStyle("-fx-border-radius: 10; -fx-background-radius: 10;");
+                sideBar.getChildren().add(imageView);
+            } catch (Exception e) {
+                System.err.println("⚠ Failed to load image in detail view: " + event.getEventName());
+            }
+        }
         sideBar.setPadding(new Insets(15));
         sideBar.setStyle("-fx-background-color: #FFF8E1;");
         sideBar.setPrefWidth(300);
@@ -401,16 +514,30 @@ public class EventsView extends StackPane {
 
         header.getChildren().addAll(title, spacer, closeBtn);
 
-        Label name = new Label("Name: " + event.getEventName());
-        Label location = new Label("Location: " + event.getLocation());
-        Label date = new Label("Date: " + event.getDate());
-        Label time = new Label("Time: " + event.getStartTime() + " - " + event.getEndTime());
-        Label price = new Label("Price: " + event.getPrice() + " DKK");
-        Label notes = new Label("Notes: " + event.getNote());
-        Label guidance = new Label("Location Guidance: " + event.getLocation_Guidance());
 
-        for (Label lbl : List.of(location, date, time, price, notes, guidance)) {
+        // -- DETAIL CARD WRAPPER (this is where your code goes) --
+        VBox detailCard = new VBox(10);
+        detailCard.setPadding(new Insets(20));
+        detailCard.setStyle("""
+        -fx-background-color: white;
+        -fx-background-radius: 12;
+        -fx-border-radius: 12;
+        -fx-border-color: #ddd;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    """);
+
+        // -- DETAIL LABELS --
+        Label name = new Label("🎉 " + event.getEventName());
+        Label location = new Label("📍 " + event.getLocation());
+        Label date = new Label("📅 " + event.getDate());
+        Label time = new Label("⏰ " + event.getStartTime() + " - " + event.getEndTime());
+        Label price = new Label("💸 " + event.getPrice() + " DKK");
+        Label notes = new Label("Notes: " + String.join(" | ", event.getNote().split("\\R+")));
+        Label guidance = new Label("Guidance: " + event.getLocation_Guidance());
+
+        for (Label lbl : List.of(name, location, date, time, price, notes, guidance)) {
             lbl.setFont(new Font("Arial", 13));
+            lbl.setWrapText(true);
         }
 
         sideBar.getChildren().addAll(header, name, location, date, time, price, notes, guidance);
