@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Fixed  except details.">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="I think it finally works, beside the barcode test.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/be/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/Ticket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +73,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.App">
+  <component name="RunManager" selected="JUnit.TicketTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dk.easv.App" />
       <module name="EASV_Ticket" />
@@ -120,8 +117,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.App" />
         <item itemvalue="JUnit.TicketTest" />
+        <item itemvalue="Application.App" />
         <item itemvalue="Application.TestAdminPageApp" />
       </list>
     </recent_temporary>
@@ -161,7 +158,7 @@
       <workItem from="1744209026794" duration="607000" />
       <workItem from="1744270253180" duration="127000" />
       <workItem from="1744353717894" duration="314000" />
-      <workItem from="1744354115373" duration="12908000" />
+      <workItem from="1744354115373" duration="13733000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -251,7 +248,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744366267327</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="I think it finally works, beside the barcode test.">
+      <option name="closed" value="true" />
+      <created>1744368033329</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1744368033329</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -280,6 +285,7 @@
     <MESSAGE value="Update UserManagement with Status and Button updates" />
     <MESSAGE value="Workspace and unversioned files. Hope it doesn't break anything." />
     <MESSAGE value="Fixed  except details." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed  except details." />
+    <MESSAGE value="I think it finally works, beside the barcode test." />
+    <option name="LAST_COMMIT_MESSAGE" value="I think it finally works, beside the barcode test." />
   </component>
 </project>
