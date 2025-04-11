@@ -9,6 +9,14 @@ public class User {
     private String ProfileImagePath; // <-- New field
 
     // For loading from the database
+    public User(int User_Id, String Username, String Password, String Role, String ProfileImagePath) {
+        this.User_Id = User_Id;
+        this.Username = Username;
+        this.Password = Password;
+        this.Role = Role;
+        this.ProfileImagePath = ProfileImagePath != null ? ProfileImagePath : "/images/profileImageTest.jpg";
+    }
+
     public User(String Username, String Password, String Role, String ProfileImagePath) {
         this.Username = Username;
         this.Password = Password;
@@ -18,7 +26,7 @@ public class User {
 
     // Overloaded constructor without profile path (for backward compatibility)
     public User(int User_Id, String Username, String Password, String Role) {
-        this(Username, Password, Role, null);
+        this(User_Id, Username, Password, Role, null);
     }
 
     // For creating new users (before assigning an ID)
@@ -70,6 +78,7 @@ public class User {
         this.ProfileImagePath = profileImagePath;
     }
 
+    public void setUser_Id(int User_Id) { this.User_Id = User_Id; }
     @Override
     public String toString() {
         return Username;
