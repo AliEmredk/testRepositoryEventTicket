@@ -13,6 +13,7 @@ public class Event {
     private int Price;
     private String Location_Guidance;
     private int EventId;
+    private String imagePath;
 
     public Event(String Location, String Date, String StartTime, String EndTime, String Note, int Price, String Location_Guidance, String EventName, int EventId) {
         this.Location = Location;
@@ -105,5 +106,13 @@ public class Event {
     @Override
     public String toString(){
         return EventName;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

@@ -11,10 +11,10 @@ public class EventDAO {
     private final DBAccess dbAccess = new DBAccess();
 
     public void createEvent(Event event) {
-        String sql = "INSERT INTO Event (Location, Date, StartTime, EndTime, Note, Price, Location_Guidance, EventName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Event (Location, Date, StartTime, EndTime, Note, Price, Location_Guidance, EventName, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, event.getLocation());
             stmt.setString(2, event.getDate());
@@ -24,6 +24,7 @@ public class EventDAO {
             stmt.setInt(6,event.getPrice());
             stmt.setString(7,event.getLocation_Guidance());
             stmt.setString(8,event.getEventName());
+            stmt.setString(9,event.getImagePath());
 
             stmt.executeUpdate();
             System.out.println("Event added successfully");
@@ -31,7 +32,7 @@ public class EventDAO {
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int generatedId = generatedKeys.getInt(1);
-                    event.setEventId(generatedId);  // Set the ID in the object
+                    event.setEventId(generatedId);
                     System.out.println("Generated EventId: " + generatedId);
                 }
             }
@@ -42,7 +43,7 @@ public class EventDAO {
     }
 
     public void updateEvent(int eventId, Event updatedEvent) {
-        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ?, ImagePath = ? WHERE EventId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -55,7 +56,8 @@ public class EventDAO {
             stmt.setInt(6, updatedEvent.getPrice());
             stmt.setString(7, updatedEvent.getLocation_Guidance());
             stmt.setString(8, updatedEvent.getEventName());
-            stmt.setInt(9, eventId);
+            stmt.setString(9, updatedEvent.getImagePath());
+            stmt.setInt(10, eventId);
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -72,8 +74,7 @@ public class EventDAO {
     }
 
     public void updateEvent(Event event) {
-
-        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ? WHERE EventId = ?";
+        String sql = "UPDATE Event SET Location = ?, Date = ?, StartTime = ?, EndTime = ?, Note = ?, Price = ?, Location_Guidance = ?, EventName = ?, ImagePath = ? WHERE EventId = ?";
 
         try(Connection conn = dbAccess.DBConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -86,7 +87,8 @@ public class EventDAO {
             stmt.setInt(6, event.getPrice());
             stmt.setString(7, event.getLocation_Guidance());
             stmt.setString(8, event.getEventName());
-            stmt.setInt(9, event.getEventId());
+            stmt.setString(9, event.getImagePath());
+            stmt.setInt(10, event.getEventId());
 
             int rowsAffected = stmt.executeUpdate();
             if(rowsAffected > 0) {
@@ -127,20 +129,21 @@ public class EventDAO {
         String sql = "SELECT * FROM Event";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Event event = new Event(
-                    rs.getString("Location"),
-                    rs.getString("Date"),
-                    rs.getString("StartTime"),
-                    rs.getString("EndTime"),
-                    rs.getString("Note"),
-                    rs.getInt("Price"),
-                    rs.getString("Location_Guidance"),
-                    rs.getString("EventName"),
-                    rs.getInt("EventId")
+                        rs.getString("Location"),
+                        rs.getString("Date"),
+                        rs.getString("StartTime"),
+                        rs.getString("EndTime"),
+                        rs.getString("Note"),
+                        rs.getInt("Price"),
+                        rs.getString("Location_Guidance"),
+                        rs.getString("EventName"),
+                        rs.getInt("EventId")
                 );
+                event.setImagePath(rs.getString("ImagePath"));
                 eventList.add(event);
             }
 
@@ -152,7 +155,6 @@ public class EventDAO {
     }
 
     public void assignCoordinatorToEvent(int eventId, int userId) {
-        // to check EventId and UserId before assigning
         if (!eventExists(eventId)) {
             System.out.println("Error: EventId " + eventId + " does not exist");
             return;
@@ -171,7 +173,7 @@ public class EventDAO {
         String sql = "INSERT INTO EventUser (EventId, UserId) VALUES (?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -186,7 +188,6 @@ public class EventDAO {
     }
 
     public void removeCoordinatorFromEvent(int eventId, int userId) {
-        // check if the coordinator is assigned
         if (!isCoordinatorAssigned(eventId, userId)) {
             System.out.println("Warning: UserId " + userId + " is not assigned to EventId " + eventId);
             return;
@@ -195,7 +196,7 @@ public class EventDAO {
         String sql = "DELETE FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
             stmt.setInt(2, userId);
@@ -212,17 +213,14 @@ public class EventDAO {
         }
     }
 
-    //These three methods belong to assignCoordinatorToEvent
-    // DON'T TOUCH THESE -_- I'll get mad!!!!
-    //------------------------------------------------------------------------------------------
     private boolean eventExists(int eventId) {
         String sql = "SELECT 1 FROM Event WHERE EventId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, eventId);
-            return stmt.executeQuery().next(); //If the rows exits, returns true
+            return stmt.executeQuery().next();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -234,10 +232,10 @@ public class EventDAO {
         String sql = "SELECT 1 FROM LoginInfo WHERE UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, userId);
-            return stmt.executeQuery().next(); //returns if the row exists
+            return stmt.executeQuery().next();
 
         } catch(SQLException e) {
             e.printStackTrace();
@@ -249,7 +247,7 @@ public class EventDAO {
         String sql = "SELECT 1 FROM EventUser WHERE EventId = ? AND UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1,eventId);
             stmt.setInt(2,userId);
@@ -259,17 +257,12 @@ public class EventDAO {
             return false;
         }
     }
-    //--------------------------------------------------------------------------------------------------------
-    // DON'T TOUCH THESE -_-
 
-
-    //This method created to follow change on events. This is for ChangeLog table on the database
-    //Please don't touch this :)
     private void logChange(String tableName, String actionType, Integer eventId, Integer userId) {
         String sql = "INSERT INTO ChangeLog (TableName, ActionType, EventId, UserId) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, tableName);
             stmt.setString(2, actionType);
@@ -291,13 +284,13 @@ public class EventDAO {
             e.printStackTrace();
         }
     }
-    //to view all the changes have been done
+
     public void getAllChanges() {
         String sql = "SELECT * FROM ChangeLog ORDER BY ChangeTimestamp DESC";
 
         try (Connection conn = dbAccess.DBConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             System.out.println("=== Change History ===");
             while (rs.next()) {

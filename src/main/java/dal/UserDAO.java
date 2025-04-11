@@ -2,10 +2,7 @@ package dal;
 
 import be.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class UserDAO {
         String sql = "INSERT INTO LoginInfo (Username, Password, Role, ProfileImagePath) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dbAccess.DBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
 
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
@@ -31,6 +28,17 @@ public class UserDAO {
             stmt.setString(4, user.getProfileImagePath());
 
             stmt.executeUpdate();
+
+            try(ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    user.setUser_Id(id);
+                    System.out.println("Assigned UserId " + id);
+                } else {
+                    throw new SQLException();
+                }
+            }
+
             System.out.println("User added successfully");
             return true;
 
@@ -60,7 +68,7 @@ public class UserDAO {
     }
 
     public User getUserByUsername(String username) {
-        String sql = "SELECT * FROM LoginInfo WHERE Username = ?";
+        String sql = "SELECT UserId, Username, Password, Role, ProfileImagePath, ProfileImage FROM LoginInfo WHERE Username = ?";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,10 +78,12 @@ public class UserDAO {
 
             if (rs.next()) {
                 return new User(
+                        rs.getInt("UserId"),
                         rs.getString("Username"),
                         rs.getString("Password"),
                         rs.getString("Role"),
-                        rs.getString("ProfileImagePath")
+                        rs.getString("ProfileImagePath"),
+                        rs.getBytes("ProfileImage")
                 );
             }
         } catch (SQLException e) {
@@ -92,10 +102,12 @@ public class UserDAO {
 
             while (rs.next()) {
                 userList.add(new User(
+                        rs.getInt("UserId"),
                         rs.getString("Username"),
                         rs.getString("Password"),
                         rs.getString("Role"),
-                        rs.getString("ProfileImagePath")
+                        rs.getString("ProfileImagePath"),
+                        rs.getBytes("ProfileImage")
                 ));
             }
 
@@ -130,10 +142,12 @@ public class UserDAO {
 
             while (rs.next()) {
                 userList.add(new User(
+                        rs.getInt("UserId"),
                         rs.getString("Username"),
                         rs.getString("Password"),
                         rs.getString("Role"),
-                        rs.getString("ProfileImagePath")
+                        rs.getString("ProfileImagePath"),
+                        rs.getBytes("ProfileImage")
                 ));
             }
         } catch (SQLException e) {
@@ -159,21 +173,32 @@ public class UserDAO {
         }
     }
 
-    public void updateProfileImage(User user) {
-        String sql = "UPDATE LoginInfo SET ProfileImagePath = ? WHERE Username = ?";
+    public void updateProfileImage(int userId, byte[] imageData) throws SQLException {
+        String sql = "UPDATE LoginInfo SET ProfileImage = ? WHERE UserId = ?";
 
         try (Connection conn = dbAccess.DBConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, user.getProfileImagePath());
-            stmt.setString(2, user.getUsername());
-
+            stmt.setBytes(1, imageData);
+            stmt.setInt(2, userId);
             stmt.executeUpdate();
-            System.out.println("Profile image updated for user: " + user.getUsername());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+    }
+
+    public byte[] getProfileImage(int userId) throws SQLException {
+        String sql = "SELECT ProfileImage FROM LoginInfo WHERE UserId = ?";
+
+        try (Connection conn = dbAccess.DBConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBytes("ProfileImage");
+            }
+        }
+        return null;
     }
 
     public void updateUser(User updatedUser, String originalUsername) {
