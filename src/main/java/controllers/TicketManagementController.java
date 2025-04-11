@@ -277,6 +277,7 @@ public class TicketManagementController {
                 ticket.setEventId(selectedEvent.getEventId());
                 ticket.setDiscount(discount);
                 ticket.setTicketType(selectedTicketType);
+                ticket.setDetails(detailsField.getText());
                 ticketDAO.saveTicket(ticket);
             }
             showAlert("Success", amount + " Tickets generated and saved.");

@@ -23,8 +23,7 @@ public class TicketDAO {
         String sql = "SELECT t.TicketId, tt.TicketTypeId, tt.Name AS TicketTypeName, " +
                 "c.CustomerId, c.FirstName, c.LastName, c.Email, " +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
-                "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
-                "t.Discount " +
+                "b.BarcodeId, b.BarcodeImage, b.BarcodeString, t.Discount, t.Details " +
                 "FROM Ticket t " +
                 "JOIN TicketType tt ON t.TicketTypeId = tt.TicketTypeId " +
                 "JOIN Customer c ON t.CustomerId = c.CustomerId " +
@@ -59,11 +58,12 @@ public class TicketDAO {
                 String lastName = rs.getString("LastName");
                 String email = rs.getString("Email");
                 int discount = rs.getInt("Discount");
+                String details = rs.getString("Details");
 
                 Ticket ticket = new Ticket(
                         ticketId, ticketTypeName, barcodeId, barcodeImage, barcodeString,
                         eventId, eventName, location, date, startTime, endTime, eventNote,
-                        customerId, firstName, lastName, email, discount
+                        customerId, firstName, lastName, email, discount, details
                 );
                 tickets.add(ticket);
             }
@@ -81,7 +81,10 @@ public class TicketDAO {
             System.out.println("Invalid Ticket Type.");
             return false;
         }
-        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId, Discount) VALUES (?, ?, ?, ?, ?)";
+
+        System.out.println("Details: " + ticket.getDetails());  // For debugging
+
+        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId, Discount, Details) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticket.getBarcodeId());
@@ -89,6 +92,13 @@ public class TicketDAO {
             stmt.setInt(3, ticketTypeId);
             stmt.setInt(4, ticket.getEventId());
             stmt.setInt(5, ticket.getDiscount());
+
+            // Optional details
+            if (ticket.getDetails() != null && !ticket.getDetails().isEmpty()) {
+                stmt.setString(6, ticket.getDetails());
+            } else {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            }
 
             stmt.executeUpdate();
             return true;
