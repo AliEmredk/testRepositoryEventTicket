@@ -20,10 +20,10 @@ public class TicketDAO {
 
     public List<Ticket> getAllTickets() {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT t.TicketId, t.Discount, t.Details, tt.TicketTypeId, tt.Name AS TicketTypeName, " +
+        String sql = "SELECT t.TicketId, tt.TicketTypeId, tt.Name AS TicketTypeName, " +
                 "c.CustomerId, c.FirstName, c.LastName, c.Email, " +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
-                "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
+                "b.BarcodeId, b.BarcodeImage, b.BarcodeString, t.Discount, t.Details " +
                 "FROM Ticket t " +
                 "JOIN TicketType tt ON t.TicketTypeId = tt.TicketTypeId " +
                 "JOIN Customer c ON t.CustomerId = c.CustomerId " +
@@ -57,16 +57,14 @@ public class TicketDAO {
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
                 String email = rs.getString("Email");
-
                 int discount = rs.getInt("Discount");
-                String details = rs.getString("Note");
+                String details = rs.getString("Details");
 
                 Ticket ticket = new Ticket(
-                        ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
+                        ticketId, ticketTypeName, barcodeId, barcodeImage, barcodeString,
                         eventId, eventName, location, date, startTime, endTime, eventNote,
-                        customerId, firstName, lastName, email,
-                        discount, details
-                        );
+                        customerId, firstName, lastName, email, discount, details
+                );
                 tickets.add(ticket);
             }
         } catch (SQLException e) {
@@ -77,15 +75,30 @@ public class TicketDAO {
     }
 
     public boolean saveTicket(Ticket ticket) {
+        int ticketTypeId = getTicketTypeId(ticket.getTicketType());
+
+        if (ticketTypeId == -1) {
+            System.out.println("Invalid Ticket Type.");
+            return false;
+        }
+
+        System.out.println("Details: " + ticket.getDetails());  // For debugging
+
         String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId, Discount, Details) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticket.getBarcodeId());
             stmt.setInt(2, ticket.getCustomerId());
-            stmt.setInt(3, ticket.getTicketType().getTicketTypeId()); // Using object
+            stmt.setInt(3, ticketTypeId);
             stmt.setInt(4, ticket.getEventId());
             stmt.setInt(5, ticket.getDiscount());
-            stmt.setString(6, ticket.getDetails());
+
+            // Optional details
+            if (ticket.getDetails() != null && !ticket.getDetails().isEmpty()) {
+                stmt.setString(6, ticket.getDetails());
+            } else {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            }
 
             stmt.executeUpdate();
             return true;
@@ -93,6 +106,23 @@ public class TicketDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private int getTicketTypeId(String ticketTypeName) {
+        String sql = "SELECT TicketTypeId FROM TicketType WHERE Name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, ticketTypeName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("TicketTypeId");
+            } else {
+                return -1;  // Return -1 if no matching ticket type found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;  // Return -1 on error
         }
     }
 }

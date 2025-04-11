@@ -25,8 +25,7 @@ public class TicketManager {
         return ticketDAO.getAllTickets();
     }
 
-    // Updated to accept TicketType object instead of String
-    public Ticket generateTicket(int customerId, int eventId, TicketType ticketType) {
+    public Ticket generateTicket(int customerId, int eventId, String ticketType) {
         try {
             String barcodeString = UUID.randomUUID().toString().substring(0, 12).toUpperCase();
             byte[] barcodeImage = BarCodeGenerator.generateBarcode(barcodeString);
