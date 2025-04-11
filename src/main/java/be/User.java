@@ -10,18 +10,21 @@ public class User {
     private String Password;
     private String Role;
     private String ProfileImagePath; // <-- New field
+    private byte[] ProfileImage;
 
     // For loading from the database
-    public User(String Username, String Password, String Role, String ProfileImagePath) {
+    public User(int User_Id, String Username, String Password, String Role, String ProfileImagePath, byte[] ProfileImage) {
+        this.User_Id = User_Id;
         this.Username = Username;
         this.Password = Password;
         this.Role = Role;
         this.ProfileImagePath = ProfileImagePath != null ? ProfileImagePath : "/images/profileImageTest.jpg";
+        this.ProfileImage = ProfileImage;
     }
 
     // Overloaded constructor without profile path (for backward compatibility)
     public User(int User_Id, String Username, String Password, String Role) {
-        this(Username, Password, Role, null);
+        this(User_Id, Username, Password, Role, null, null);
     }
 
     // For creating new users (before assigning an ID)
@@ -55,6 +58,8 @@ public class User {
         return ProfileImagePath;
     }
 
+    public byte[] getProfileImage() {return ProfileImage;}
+
     // I am not gonna create setter for id bc I don't think we should change id
 
     public void setUsername(String Username) {
@@ -72,6 +77,8 @@ public class User {
     public void setProfileImagePath(String profileImagePath) {
         this.ProfileImagePath = profileImagePath;
     }
+
+    public void setProfileImage(byte[] profileImage) {this.ProfileImage = profileImage;}
 
     @Override
     public String toString() {

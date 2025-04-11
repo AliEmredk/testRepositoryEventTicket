@@ -123,4 +123,48 @@ public class CustomerDAO {
             e.printStackTrace();
         }
     }
+
+    public Customer getOrCreateCustomerByEmail(String email, String firstName, String lastName) {
+        String selectSql = "SELECT * FROM Customer WHERE Email = ?";
+        String insertSql = "INSERT INTO Customer (FirstName, LastName, Email) VALUES (?, ?, ?)";
+
+        try (Connection conn = dbAccess.DBConnection()) {
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
+                selectStmt.setString(1, email);
+                ResultSet rs = selectStmt.executeQuery();
+
+                if (rs.next()) {
+                    return new Customer(
+                            rs.getInt("CustomerId"),
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("Email")
+                    );
+                }
+            }
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+                insertStmt.setString(1, firstName);
+                insertStmt.setString(2, lastName);
+                insertStmt.setString(3, email);
+
+                int affectedRows = insertStmt.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating customer failed, no rows affected.");
+                }
+
+                try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int newId = generatedKeys.getInt(1);
+                        return new Customer(newId, firstName, lastName, email);
+                    } else {
+                        throw new SQLException("Creating customer failed, no ID obtained.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
