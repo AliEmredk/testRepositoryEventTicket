@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Created necessary methods to assign event coordinators to the events">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Every time you print a ticket it saves it to the database along with the barcodes.&#10;Fixed the profile image saver so that it saves the picture to the database and doesn't just save locally.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bll/EventManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bll/EventManagement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/EventDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/EventDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/EventsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/EventsView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/be/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/Ticket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/be/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/TicketManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/UserManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/CustomerDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/CustomerDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/TicketDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/SettingsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/SettingsView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/TicketPreviewPage.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/be/TicketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/be/TicketTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,12 +43,12 @@
     &quot;assignee&quot;: &quot;AliEmredk&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/AliEmredk/testRepositoryEventTicket.git&quot;,
-    &quot;accountId&quot;: &quot;b7b93748-8f5e-412f-a8a0-d0a3c41ad131&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/AliEmredk/testRepositoryEventTicket.git",
+    "accountId": "aae588ca-c076-49e0-981b-a362be0a6d13"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -49,25 +56,25 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.App.executor": "Run",
-    "Application.TestAdminPageApp.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "laura",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "advanced.settings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TestAdminPageApp.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Katja&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.App">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dk.easv.App" />
@@ -105,8 +112,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.227" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.227" />
       </set>
     </attachedChunks>
   </component>
@@ -136,6 +143,7 @@
       <workItem from="1744184686342" duration="11447000" />
       <workItem from="1744209026794" duration="607000" />
       <workItem from="1744270253180" duration="127000" />
+      <workItem from="1744351657106" duration="1488000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -216,6 +224,8 @@
     <MESSAGE value="created CoordinatorEventDAO, CoordinatorEventManager I created every kind of method to assign event coordinators to the events. I suggest you to do this using the assignCoordinatorToEventByNames or if you'd like to you are able to assign them by just using ids&#10;I used joint for tables&#10;Added a method to CoordinatorEventManager" />
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created necessary methods to assign event coordinators to the events" />
+    <MESSAGE value="Made login user sensitive and made it so that it saves profile pictures. Also automatically puts in the username in the settings." />
+    <MESSAGE value="Every time you print a ticket it saves it to the database along with the barcodes.&#10;Fixed the profile image saver so that it saves the picture to the database and doesn't just save locally." />
+    <option name="LAST_COMMIT_MESSAGE" value="Every time you print a ticket it saves it to the database along with the barcodes.&#10;Fixed the profile image saver so that it saves the picture to the database and doesn't just save locally." />
   </component>
 </project>

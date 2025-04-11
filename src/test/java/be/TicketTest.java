@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
         public void testTicketCreationAndGetters() {
             // Arrange: prepare test data
             int ticketId = 1;
-            String ticketType = "VIP";
+            TicketType ticketType = new TicketType(2, "VIP");
             int barcodeId = 123;
             byte[] barcodeImage = {0x01, 0x02};
             String barcodeString = "123456789012";
@@ -25,11 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
             String firstName = "Jane";
             String lastName = "Doe";
             String email = "jane.doe@example.com";
+            int discount = 0;
+            String details = "Free slippers";
 
             // create Ticket object
             Ticket ticket = new Ticket(ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
                     eventId, eventName, location, eventDate, startTime, endTime, eventNote,
-                    customerId, firstName, lastName, email);
+                    customerId, firstName, lastName, email, discount, details);
 
             // check if getters return correct values
             assertEquals(ticketId, ticket.getTicketId());
@@ -48,5 +50,7 @@ import static org.junit.jupiter.api.Assertions.*;
             assertEquals(firstName, ticket.getFirstName());
             assertEquals(lastName, ticket.getLastName());
             assertEquals(email, ticket.getEmail());
+            assertEquals(discount, ticket.getDiscount());
+            assertEquals(details, ticket.getDetails());
         }
     }

@@ -3,7 +3,7 @@ package be;
 public class Ticket {
 
     private int ticketId;
-    private TicketType ticketType; // ✅ Updated
+    private TicketType ticketType;
     private int barcodeId;
     private byte[] barcodeImage;
     private String barcodeString;
@@ -18,11 +18,14 @@ public class Ticket {
     private String firstName;
     private String lastName;
     private String email;
+    private int discount;
+    private String details;
 
     public Ticket(int ticketId, TicketType ticketType, int barcodeId, byte[] barcodeImage, String barcodeString,
                   int eventId, String eventName, String location, String eventDate,
                   String startTime, String endTime, String eventNote,
-                  int customerId, String firstName, String lastName, String email) {
+                  int customerId, String firstName, String lastName, String email,
+                  int discount, String details) {
         this.ticketId = ticketId;
         this.ticketType = ticketType;
         this.barcodeId = barcodeId;
@@ -39,6 +42,8 @@ public class Ticket {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.discount = discount;
+        this.details = details;
     }
 
     public Ticket() {
@@ -61,6 +66,8 @@ public class Ticket {
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
+    public int getDiscount() { return discount; }
+    public String getDetails() { return details; }
 
     // Setters
     public void setTicketId(int ticketId) { this.ticketId = ticketId; }
@@ -79,6 +86,8 @@ public class Ticket {
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setEmail(String email) { this.email = email; }
+    public void setDiscount(int discount) { this.discount = discount; }
+    public void setDetails(String details) { this.details = details; }
 
     @Override
     public String toString() {
@@ -98,6 +107,8 @@ public class Ticket {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", discount=" + discount +
+                ", details='" + details + '\'' +
                 '}';
     }
 }

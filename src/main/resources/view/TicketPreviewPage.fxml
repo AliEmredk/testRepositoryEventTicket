@@ -103,11 +103,13 @@
                         <VBox fx:id="emailContainer">
                             <Label text="Email Address" />
                             <TextField fx:id="emailField" promptText="Enter customer's email address" />
+                            <TextField fx:id="firstNameField" promptText="Enter customer's first name" />
+                            <TextField fx:id="lastNameField" promptText="Enter customer's first name" />
                         </VBox>
 
                         <HBox spacing="10">
                             <Button text="Update Preview" onAction="#updatePreview" />
-                            <Button text="Print Ticket" onAction="#printTicket" />
+                            <Button text="Print Ticket" onAction="#generateAndPrintTickets" />
                         </HBox>
                     </VBox>
                 </content>

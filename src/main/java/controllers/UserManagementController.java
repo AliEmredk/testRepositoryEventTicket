@@ -19,7 +19,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
 
@@ -32,7 +34,7 @@ public class UserManagementController {
     @FXML
     private TableView<User> userTable;
     @FXML
-    private TableColumn<User, String> profileColumn;
+    private TableColumn<User, User> profileColumn;
     @FXML
     private TableColumn<User, String> nameColumn;
     @FXML
@@ -61,7 +63,7 @@ public class UserManagementController {
     public void initialize() {
         setupProfileColumn();
 
-        profileColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getProfileImagePath()));
+        profileColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue()));
         nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
         roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getRole()));
 
@@ -89,27 +91,21 @@ public class UserManagementController {
             }
 
             @Override
-            protected void updateItem(String path, boolean empty) {
-                super.updateItem(path, empty);
-                if (empty) {
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
                     setGraphic(null);
                     return;
                 }
 
                 Image img;
-                try {
-                    File file = (path == null) ? null : new File(path.replace("\\", "/"));
 
-                    if (file == null || !file.exists()) {
-                        URL imageUrl = getClass().getResource(DEFAULT_AVATAR_PATH);
-                        if (imageUrl != null) {
-                            img = new Image(imageUrl.toExternalForm(), 32, 32, true, true);
-                        } else {
-                            setGraphic(null);
-                            return;
-                        }
+                try {
+                    if (user.getProfileImage() != null) {
+                        img = new Image(new ByteArrayInputStream(user.getProfileImage()), 32, 32, true, true);
                     } else {
-                        img = new Image("file:" + file.getAbsolutePath(), 32, 32, true, true);
+                        URL imageUrl = getClass().getResource(DEFAULT_AVATAR_PATH);
+                        img = new Image(imageUrl.toExternalForm(), 32, 32, true, true);
                     }
 
                     imageView.setImage(img);
@@ -117,6 +113,7 @@ public class UserManagementController {
                     setGraphic(centeredBox);
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     setGraphic(null);
                 }
             }
