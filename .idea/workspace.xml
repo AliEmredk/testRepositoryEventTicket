@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="Sidebar bug fix">
+    <list default="true" id="03f3575e-d77c-4127-8b05-8040f45aaef9" name="Changes" comment="to checkout">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/be/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/be/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/EventDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/EventDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/easv/EventsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/easv/EventsView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,11 +21,6 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="main" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -36,12 +29,12 @@
     &quot;assignee&quot;: &quot;AliEmredk&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/AliEmredk/testRepositoryEventTicket.git",
-    "accountId": "3f57e04c-cb5e-4585-92c0-dcad16755fee"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AliEmredk/testRepositoryEventTicket.git&quot;,
+    &quot;accountId&quot;: &quot;b1018f64-c7a8-4f87-b54f-276c792a6b32&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -55,7 +48,7 @@
     &quot;Application.TestAdminPageApp.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Jennifer&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;emre2&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Ali Emre/Desktop/testEventTicket2/EASV_Ticket-master/EASV_Ticket-master&quot;,
@@ -99,16 +92,14 @@
       <list>
         <item itemvalue="Application.App" />
         <item itemvalue="Application.TestAdminPageApp" />
-        <item itemvalue="Application.App" />
-        <item itemvalue="Application.TestAdminPageApp" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.39" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.39" />
       </set>
     </attachedChunks>
   </component>
@@ -138,7 +129,6 @@
       <workItem from="1744184686342" duration="11447000" />
       <workItem from="1744209026794" duration="607000" />
       <workItem from="1744270253180" duration="127000" />
-      <workItem from="1744356803563" duration="3802000" />
     </task>
     <task id="LOCAL-00001" summary="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table">
       <option name="closed" value="true" />
@@ -204,38 +194,19 @@
       <option name="project" value="LOCAL" />
       <updated>1744209596018</updated>
     </task>
-    <task id="LOCAL-00009" summary="Update UserManagement with Status and Button updates">
+    <task id="LOCAL-00009" summary="Fixed errors in usermanagementcontroller">
       <option name="closed" value="true" />
-      <created>1744312879012</created>
+      <created>1744275937587</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1744312879012</updated>
+      <updated>1744275937587</updated>
     </task>
-    <task id="LOCAL-00010" summary="Sidebar bug fix">
-      <option name="closed" value="true" />
-      <created>1744314342291</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1744314342291</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="I drop old ticket table created new one&#10;I made the ticket dao bll be classes according to new Ticket table" />
@@ -246,8 +217,8 @@
     <MESSAGE value="created CoordinatorEventDAO, CoordinatorEventManager I created every kind of method to assign event coordinators to the events. I suggest you to do this using the assignCoordinatorToEventByNames or if you'd like to you are able to assign them by just using ids&#10;I used joint for tables&#10;Added a method to CoordinatorEventManager" />
     <MESSAGE value="commit to pull" />
     <MESSAGE value="Created necessary methods to assign event coordinators to the events" />
-    <MESSAGE value="Update UserManagement with Status and Button updates" />
-    <MESSAGE value="Sidebar bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sidebar bug fix" />
+    <MESSAGE value="Fixed errors in usermanagementcontroller" />
+    <MESSAGE value="to checkout" />
+    <option name="LAST_COMMIT_MESSAGE" value="to checkout" />
   </component>
 </project>

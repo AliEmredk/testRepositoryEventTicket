@@ -1,5 +1,6 @@
 package controllers;
 
+import be.User;
 import bll.UserSession;
 import dal.LoginDAO;
 import dk.easv.EventsView;
@@ -48,8 +49,9 @@ public abstract class BaseDashboard {
             settingsBtn = (Button) sidebar.lookup("#settingsBtn");
             Button signOutBtn = (Button) sidebar.lookup("#signOutBtn");
 
-            EventMainController eventMainController = new EventMainController();
-            eventsPane = new EventsView(UserSession.getRole(), eventMainController);
+            User loggedInUser = UserSession.getLoggedInUser();
+            EventMainController eventMainController = new EventMainController(loggedInUser);
+            eventsPane = new EventsView(loggedInUser, eventMainController);
             settingsPane = new SettingsView();
 
             contentArea.getChildren().addAll(eventsPane, settingsPane);

@@ -20,7 +20,7 @@ public class TicketDAO {
 
     public List<Ticket> getAllTickets() {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT t.TicketId, tt.TicketTypeId, tt.Name AS TicketTypeName, " +
+        String sql = "SELECT t.TicketId, t.Discount, t.Details, tt.TicketTypeId, tt.Name AS TicketTypeName, " +
                 "c.CustomerId, c.FirstName, c.LastName, c.Email, " +
                 "e.EventId, e.EventName, e.Location, e.Date, e.StartTime, e.EndTime, e.Note, " +
                 "b.BarcodeId, b.BarcodeImage, b.BarcodeString " +
@@ -58,11 +58,15 @@ public class TicketDAO {
                 String lastName = rs.getString("LastName");
                 String email = rs.getString("Email");
 
+                int discount = rs.getInt("Discount");
+                String details = rs.getString("Note");
+
                 Ticket ticket = new Ticket(
                         ticketId, ticketType, barcodeId, barcodeImage, barcodeString,
                         eventId, eventName, location, date, startTime, endTime, eventNote,
-                        customerId, firstName, lastName, email
-                );
+                        customerId, firstName, lastName, email,
+                        discount, details
+                        );
                 tickets.add(ticket);
             }
         } catch (SQLException e) {
@@ -73,13 +77,15 @@ public class TicketDAO {
     }
 
     public boolean saveTicket(Ticket ticket) {
-        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Ticket (BarcodeId, CustomerId, TicketTypeId, EventId, Discount, Details) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ticket.getBarcodeId());
             stmt.setInt(2, ticket.getCustomerId());
             stmt.setInt(3, ticket.getTicketType().getTicketTypeId()); // Using object
             stmt.setInt(4, ticket.getEventId());
+            stmt.setInt(5, ticket.getDiscount());
+            stmt.setString(6, ticket.getDetails());
 
             stmt.executeUpdate();
             return true;

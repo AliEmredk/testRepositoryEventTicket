@@ -1,5 +1,6 @@
 package controllers;
 
+import be.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
@@ -12,6 +13,7 @@ public class EventCoordinatorDashboard extends BaseDashboard {
 
     private Button ticketBtn;
     private Pane ticketPane;
+    private final User user;
 
     @Override
     protected void addCustomButtons(VBox customButtons, StackPane contentArea) {
@@ -42,5 +44,9 @@ public class EventCoordinatorDashboard extends BaseDashboard {
             e.printStackTrace();
             System.out.println("Failed to load TicketPreviewPage.fxml");
         }
+    }
+
+    public EventCoordinatorDashboard(User user) {
+        this.user = user;
     }
 }
