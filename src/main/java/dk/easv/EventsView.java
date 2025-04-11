@@ -2,6 +2,7 @@ package dk.easv;
 
 import be.Event;
 import be.User;
+import dal.CoordinatorEventDAO;
 import dal.EventDAO;
 import dal.UserDAO;
 import controllers.EventMainController;
@@ -32,9 +33,11 @@ public class EventsView extends StackPane {
     private TilePane eventContainer;
     private EventDAO eventDAO = new EventDAO();
     private Event selectedEvent;
-    private Button editEventBtn, deleteEventBtn;
+    private Button editEventBtn, deleteEventBtn, assignCoordinatorBtn;
     private List<Event> masterEventList = new ArrayList<>();
     private EventMainController eventMainController;
+    private final User loggedInUser;
+    private final CoordinatorEventDAO coordinatorEventDAO = new CoordinatorEventDAO();
 
     private static final String CARD_STYLE_DEFAULT = """
         -fx-background-color: white;
@@ -52,12 +55,12 @@ public class EventsView extends StackPane {
         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 4);
     """;
 
-    public EventsView(String role, EventMainController eventMainController) {
-//        VBox vbox = new VBox();
-//        vbox.getChildren().clear();
+    public EventsView(User loggedInUser, EventMainController eventMainController) {
+
         BorderPane mainLayout = new BorderPane();
-        this.role = role;
+        this.loggedInUser = loggedInUser;
         this.eventMainController = eventMainController;
+        this.role = loggedInUser.getRole();
 
 
         VBox eventsPane = new VBox(10);
@@ -79,6 +82,15 @@ public class EventsView extends StackPane {
         deleteEventBtn = new Button("🗑");
         deleteEventBtn.setTooltip(new Tooltip("Delete Selected Event"));
         deleteEventBtn.setOnAction(e -> openDeleteEventWindow());
+
+        assignCoordinatorBtn = new Button("Assign Coordinator");
+        assignCoordinatorBtn.setDisable(true);
+        assignCoordinatorBtn.setOnAction(e -> openAssignCoordinatorWindow());
+
+        if(!this.role.equalsIgnoreCase("Admin")) {
+            assignCoordinatorBtn.setVisible(false);
+            assignCoordinatorBtn.setManaged(false);
+        }
 
         // Handle Sorting
         ComboBox<String> sortComboBox = new ComboBox<>();
@@ -111,7 +123,7 @@ public class EventsView extends StackPane {
             addEventBtn.setManaged(false);
         }
 
-        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, sortComboBox, filterComboBox, searchField, searchBtn);
+        topBar.getChildren().addAll(addEventBtn, editEventBtn, deleteEventBtn, assignCoordinatorBtn, sortComboBox, filterComboBox, searchField, searchBtn);
 
         searchBtn.setOnAction(e -> {
             String searchQuery = searchField.getText();
@@ -355,6 +367,7 @@ public class EventsView extends StackPane {
         // Enable edit and delete buttons
         editEventBtn.setDisable(false);
         deleteEventBtn.setDisable(false);
+        assignCoordinatorBtn.setDisable(false);
     }
 
     private void openEditEventWindow() {
@@ -543,4 +556,51 @@ public class EventsView extends StackPane {
         sideBar.getChildren().addAll(header, name, location, date, time, price, notes, guidance);
         mainLayout.setRight(sideBar);
     }
+
+    private void openAssignCoordinatorWindow() {
+        if(selectedEvent == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event to assign coordinator!", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+
+        Stage assignStage = new Stage();
+        assignStage.setTitle("Assign Coordinator");
+        assignStage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        UserDAO userDAO = new UserDAO();
+        List<User> coordinators = userDAO.getAllEventCoordinators();
+        ObservableList<User> coordinatorsObservableList = FXCollections.observableList(coordinators);
+
+        ListView<User> coordinatorListView = new ListView<>(coordinatorsObservableList);
+        coordinatorListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        List<Integer> assignedCoordinatorIds = coordinatorEventDAO.getCoordinatorIdsForEvent(selectedEvent.getEventId());
+        for(User user : coordinators) {
+            if(assignedCoordinatorIds.contains(user.getUser_Id())) {
+                coordinatorListView.getSelectionModel().select(user);
+            }
+        }
+
+        Button assignBtn = new Button("Assign");
+        assignBtn.setOnAction(e -> {
+            coordinatorEventDAO.clearCoordinatorsForEvent(selectedEvent.getEventId());
+            for(User user : coordinatorListView.getSelectionModel().getSelectedItems()) {
+                coordinatorEventDAO.assignCoordinatorToEventById(user.getUser_Id(), selectedEvent.getEventId());
+                System.out.println("Assigned UserId " + user.getUser_Id());
+            }
+            assignStage.close();
+        });
+
+        vbox.getChildren().addAll(new Label("Select Coordinator:"), coordinatorListView, assignBtn);
+        Scene scene = new Scene(vbox, 400, 400);
+        assignStage.setScene(scene);
+        assignStage.show();
+    }
 }
+
+
