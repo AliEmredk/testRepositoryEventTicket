@@ -56,7 +56,7 @@ public class Customer {
         return firstName + " " + lastName + " (" + email + ")";
     }
 
-    public void setCustomerId(int anInt) {
-        this.customerId = anInt;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 }
